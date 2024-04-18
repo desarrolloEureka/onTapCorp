@@ -547,14 +547,14 @@ const ProfileProfessionalHook = ({
         case 'name':
           label = "Nombres";
           break;
-        case 'last_name':
-          label = "Apellidos";
+        case 'nit':
+          label = "NIT";
           break;
-        case 'profession':
-          label = "Profesión";
+        case 'sector':
+          label = "Sector";
           break;
-        case 'occupation':
-          label = "Ocupación";
+        case 'phone':
+          label = "Telefono";
           break;
         case 'address':
           label = "Dirección";

@@ -2009,9 +2009,9 @@
     merge-options "^3.0.4"
 
 "@react-native-clipboard/clipboard@^1.13.2":
-  version "1.13.2"
-  resolved "https://registry.yarnpkg.com/@react-native-clipboard/clipboard/-/clipboard-1.13.2.tgz#28adcfc43ed2addddf79a59198ec1b25087c115e"
-  integrity sha512-uVM55oEGc6a6ZmSATDeTcMm55A/C1km5X47g0xaoF0Zagv7N/8RGvLceA5L/izPwflIy78t7XQeJUcnGSib0nA==
+  version "1.14.0"
+  resolved "https://registry.npmjs.org/@react-native-clipboard/clipboard/-/clipboard-1.14.0.tgz"
+  integrity sha512-kDLfA6HzP4T+kfGTEGdbsc2r4q0xQALshRQp8Ph/5YD5qT4CZdgkQM3oloKHIdh+AVks+QjtVHK1cZ1xb0Or7w==
 
 "@react-native-community/cli-clean@12.3.2":
   version "12.3.2"
@@ -2179,17 +2179,17 @@
     opencollective-postinstall "^2.0.3"
     superstruct "^0.6.2"
 
-"@react-native-firebase/auth@^18.9.0":
-  version "18.9.0"
-  resolved "https://registry.npmjs.org/@react-native-firebase/auth/-/auth-18.9.0.tgz"
-  integrity sha512-EkkjoXU2iSUmcP1Hpb/uua9f47P3GxRgqMF2aAi/B+Db5h1Ua5I4cNx3M1iVz9+MApZeNyb1ES4fI9EbXJBfxQ==
+"@react-native-firebase/auth@^19.1.2":
+  version "19.1.2"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/auth/-/auth-19.1.2.tgz#df9ccc50192f70a8705591e8439154cd7f23c66e"
+  integrity sha512-rZJLGBDimw+JT+RwRyqm/HtotJ19qoeyw/qTClnHeh8cRzvq6PAB4f+y52V/kFqzuZtly/xRNmKBdAIAq94/5Q==
   dependencies:
     plist "^3.1.0"
 
-"@react-native-firebase/firestore@^18.9.0":
-  version "18.9.0"
-  resolved "https://registry.npmjs.org/@react-native-firebase/firestore/-/firestore-18.9.0.tgz"
-  integrity sha512-Hma+LB5wAYt+NgGxALWxCwrTkUz7jNXHIRZLghzMK4RFmhVCaL7q2qaFvMfbu58UmRbcocGetykI4R1qQOxY9w==
+"@react-native-firebase/firestore@^19.1.2":
+  version "19.1.2"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/firestore/-/firestore-19.1.2.tgz#085da50f4f551afd3fb94323fb50f29a2091273e"
+  integrity sha512-J/PUtAZY0mlPGYe7NAcdJ4eeWbWQeUCP4dueSHRr9CgQRyo4zq7WQQKVI9N3ZHSOgvX8RGmX8LDZSbUzwbVzfg==
 
 "@react-native-masked-view/masked-view@^0.3.1":
   version "0.3.1"

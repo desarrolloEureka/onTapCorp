@@ -1,122 +1,42 @@
 import React, { useEffect, useState } from 'react';
-import { Switch, View, Alert, Platform } from 'react-native';
-import {
-  GetUser,
-  SendSwitchActivateCard,
-  SendSwitchProfile
-} from '../../../../../reactQuery/users';
-import LogOut from '../../../../../hooks/logOut/LogOut';
+import { Switch, View, Platform } from 'react-native';
+import { GetUser, SendSwitchActivateCard } from '../../../../../reactQuery/users';
 
 const CustomSwitch = ({
-  profile,
-  handleModalAlert
+  uid,
+  setAlertSwitchOff
 }: {
-  profile: boolean;
-  handleModalAlert?: () => void;
+  uid?: string;
+  setAlertSwitchOff: (e: boolean) => void;
 }) => {
-  const [flag, setFlag] = useState(false);
-  const { data } = GetUser(flag, setFlag);
-  const [switchProfile, setSwitchProfile] = useState(false);
+  const { data } = GetUser();
   const [switchCard, setSwitchCard] = useState(false);
-  const { logOut } = LogOut();
+  const platform = Platform.OS;
 
   const handleSwitchChange = async () => {
-    const userId = data?.uid;
-    const plan = data?.plan;
+    setSwitchCard(!switchCard);
+    if (uid) {
+      SendSwitchActivateCard(uid, !switchCard);
 
-    if (profile && plan === 'standard') {
-      setSwitchProfile(switchProfile);
-      handleModalAlert && handleModalAlert();
-    } else {
-      if (userId && profile) {
-        setSwitchProfile(!switchProfile);
-        await SendSwitchProfile(userId, !switchProfile);
-      } else {
-        setSwitchCard(!switchCard);
-        setFlag(!flag);
+      if (!switchCard === false) {
+        setAlertSwitchOff(true);
       }
     }
   }
-
-  const handleSwitchContinue = async () => {
-    const userId = data?.uid;
-    if (userId && data?.isActiveByAdmin === true) {
-      SendSwitchActivateCard(userId, switchCard);
-    } else {
-      logOut();
-    }
-  }
-
-  /* const handleSwitchChange = async () => {
-    const userId = data?.uid;
-    const plan = data?.plan;
-    console.log("handleSwitchChange");
-
-    if (profile && plan === 'standard') {
-      setSwitchProfile(switchProfile);
-      handleModalAlert && handleModalAlert();
-    } else {
-      if (userId && profile) {
-        setSwitchProfile(!switchProfile);
-        await SendSwitchProfile(userId, !switchProfile);
-      } else {
-        console.log("Entreeeeeeeeeeeee 2");
-        setFlag(!flag);
-      }
-    }
-
-  };
-
-  const handleSwitchContinue = async () => {
-    const userId = data?.uid;
-    console.log("data?.isActiveByAdmin  ", data?.isActiveByAdmin);
-
-    if (userId && data?.isActiveByAdmin === true) {
-
-      if (switchCard === true) {
-        setSwitchCard(false);
-        Alert.alert('Alerta', 'Su perfil no se va a mostrar', [
-          { text: 'Cancelar', onPress: () => setSwitchCard(true) },
-          { text: 'OK', onPress: handleSwitchChange }
-        ]);
-      } else {
-        setSwitchCard(true);
-      }
-
-      SendSwitchActivateCard(userId, !switchCard);
-    } else {
-      logOut();
-    }
-
-  }; */
-
-  useEffect(() => {
-    handleSwitchContinue();
-  }, [flag, data])
-
 
   useEffect(() => {
     if (data) {
-      if (profile) {
-        setSwitchProfile(data?.switch_profile);
-      } else {
-        setSwitchCard(data?.switch_activateCard);
-      }
+      setSwitchCard(data.switch_activateCard);
     }
-  }, [data, profile]);
+  }, [data])
 
-  const platform = Platform.OS;
 
   return (
     <View>
       <Switch
-        value={profile ? switchProfile : switchCard}
+        value={switchCard}
         onValueChange={handleSwitchChange}
-        trackColor={
-          profile
-            ? { false: '#02AF9B', true: '#02AF9B' }
-            : { false: '#ABA9A6', true: '#02AF9B' }
-        }
+        trackColor={{ false: '#030124', true: '#030124' }}
         thumbColor={'#f4f3f4'}
         ios_backgroundColor="#02AF9B"
         style={{

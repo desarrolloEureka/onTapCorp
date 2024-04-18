@@ -1,87 +1,21 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useCallback, useEffect, useState } from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import React from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { GetLoginQuery } from '../../reactQuery/users';
-import { LoginError } from '../../types/login';
-import { StackNavigation } from '../../types/navigation';
+import LoginHook from './hooks/LoginHook';
 
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorForm, setErrorForm] = useState<LoginError | null>(null);
-  const [sendLogin, setSendLogin] = useState(false);
-  const navigation = useNavigation<StackNavigation>();
-
-  const handleForgotPassword = () => {
-    navigation.navigate('RecoveryPassword');
-  };
-
-  const handleGoTerms = () => {
-    navigation.navigate('Terminos');
-  };
-
-  const { data, isLoading, isRefetching } = GetLoginQuery({
-    user: email,
+  const {
+    showPassword,
+    setShowPassword,
+    email,
+    setEmail,
     password,
-    sendLogin
-  });
-
-  const loginHandle = async () => {
-    setErrorForm(null);
-    if (email && password) {
-      setErrorForm(null);
-      setSendLogin(true);
-    } else {
-      setSendLogin(false);
-      if (!email) {
-        setErrorForm({
-          errorType: 1,
-          errorMessage: 'El correo es obligatorio'
-        });
-      } else if (!password) {
-        setErrorForm({
-          errorType: 2,
-          errorMessage: 'La contraseña es obligatoria'
-        });
-      }
-    }
-  };
-
-  const userIsLogged = useCallback(() => {
-    if (data && data?.isActive === true && data?.isActiveByAdmin === true) {
-      setErrorForm(null);
-      navigation.navigate('Home');
-      setPassword('');
-      setEmail('');
-    } else if (sendLogin) {
-      setTimeout(() => {
-        setErrorForm({
-          errorType: 3,
-          errorMessage:
-            'Credenciales incorrectas. Por favor, inténtelo de nuevo.'
-        });
-      }, 4500);
-
-      setTimeout(() => {
-        setErrorForm(null);
-        setSendLogin(false);
-      }, 2000);
-    }
-  }, [data, navigation, sendLogin]);
-
-  useEffect(() => {
-    userIsLogged();
-  }, [userIsLogged]);
+    setPassword,
+    errorForm,
+    handleForgotPassword,
+    handleGoTerms,
+    handleLogin
+  } = LoginHook()
 
   return (
     <SafeAreaView style={{ backgroundColor: '#e8e8e8', flex: 1 }}>
@@ -295,7 +229,7 @@ const Login = () => {
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-          <TouchableOpacity style={styles.button} onPress={loginHandle}>
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
             <Text style={styles.buttonText}>Siguiente</Text>
           </TouchableOpacity>
         </View>
@@ -320,32 +254,30 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   heading: {
-    color: '#396593',
+    color: '#030124',
     fontFamily: 'Open Sans',
     fontSize: 20,
     fontWeight: '700',
     paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderColor: '#396593'
   },
   label: {
     fontFamily: 'Open Sans',
     fontSize: 15,
     fontWeight: '400',
-    color: '#008F9E'
+    color: '#396593'
   },
   input: {
     height: 52,
     width: '100%',
     borderBottomWidth: 1,
-    borderBottomColor: '#008F9E',
+    borderBottomColor: '#396593',
     color: '#030124',
     fontFamily: 'Open Sans',
     fontSize: 17,
     fontWeight: '300'
   },
   button: {
-    backgroundColor: '#02AF9B',
+    backgroundColor: '#396593',
     height: '30%',
     width: '60%',
     alignItems: 'center',

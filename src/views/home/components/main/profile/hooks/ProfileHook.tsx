@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
-  CareerDataFormValues,
   DataFormSorted,
   DataFormValues,
-  EducationDataFormValues,
   IndexDataForm,
   UrlDataFormValues,
   handleDataProps,
@@ -54,53 +52,7 @@ const ProfileHook = ({
   const [switchValue, setSwitchValue] = useState(false);
 
   const handleSendProfile = async (isProUser: boolean) => {
-    const userId = data?.uid;
-    const emails = dataForm?.emails?.map((email) => email.text);
-    const phones = dataForm?.phones?.map((phone) => phone.text);
-    const urls = dataForm?.urls?.map((urls) => urls);
 
-    /*   if (emails) {
-        const isEmailValid = emails.every((email) => validateEmail(email as string));
-        if (!isEmailValid) {
-          setStatus("El correo no es valido ó no se pueden dejar espacios en blanco");
-          setisEmailPhoneRight(true);
-          return;
-        }
-      } 
-      if (phones) {
-        const isPhoneValid = phones.every((phone) => validatePhoneNumber(phone as string));
-        if (!isPhoneValid) {
-          setStatus("El teléfono no es valido ó no se pueden dejar espacios en blanco");
-          setisEmailPhoneRight(true);
-          return;
-        }
-      }
-  
-      if (urls) {
-        const allObjectsFilled = dataForm?.urls?.every(obj => obj.name !== "" && obj.url !== "" && obj.icon !== "");
-        if (!allObjectsFilled) {
-          setStatus("No se pueden dejar espacios en blanco en urls");
-          setisEmailPhoneRight(true);
-          return;
-        }
-      }
-      */
-
-    setIsLoadingSendData(true);
-    if (userId) {
-      const isSendDataProfile = await SendDataUserProfile(userId, dataForm, isProUser);
-      if (isSendDataProfile?.success) {
-        setIsDataError(false);
-        setIsDataSuccess(true);
-        setIsLoadingSendData(false);
-      } else {
-        setIsDataError(true);
-        setIsDataSuccess(false);
-        setIsLoadingSendData(false);
-      }
-    } else {
-      setIsLoadingSendData(false);
-    }
   };
 
   const handleModalAlert = (itemDelete: { index: string; subindex: string }) => {
@@ -141,27 +93,7 @@ const ProfileHook = ({
     const isChecked = checked;
     const dataFormClone = { ...dataForm };
     const index = name as keyof typeof dataFormClone;
-    if (
-      index != 'phones' &&
-      index != 'emails' &&
-      index != 'urls' &&
-      (dataFormClone[index]?.label != 'phones' ||
-        dataFormClone[index]?.label != 'education' ||
-        dataFormClone[index]?.label != 'emails' ||
-        dataFormClone[index]?.label != 'professional_career' ||
-        dataFormClone[index]?.label != 'urls')
-    ) {
-      dataFormClone[index]!.checked = !isChecked;
-      setDataForm(dataFormClone);
-    } else {
-      let dataAux = dataFormClone[index] as DataFormValues[];
-      if (dataAux && subindex != undefined) {
-        dataAux[subindex].checked = !isChecked;
-        currentDataRef.current.length > 0 &&
-          (currentDataRef.current[subindex].checked = !isChecked);
-        setDataForm(dataFormClone);
-      }
-    }
+
   };
 
   const fillFields = (
@@ -171,10 +103,6 @@ const ProfileHook = ({
     subindexUrl?: NetworksSubIndexDataForm
   ) => {
     const dataFormClone = { ...dataForm };
-    dataFormClone &&
-      index == 'urls' &&
-      subindexUrl &&
-      (dataFormClone[index]![key][subindexUrl] = text);
 
     setDataForm(dataFormClone);
     setIsDataLoad(true);
@@ -203,9 +131,9 @@ const ProfileHook = ({
   }: handleDataProps) => {
     const dataFormClone = { ...dataForm };
     const index = name as keyof typeof dataFormClone;
-    if (
+    /* if (
       index == 'name' ||
-      index == 'last_name' ||
+      index == 'nit' ||
       index == 'profession' ||
       index == 'occupation' ||
       index == 'address'
@@ -232,7 +160,7 @@ const ProfileHook = ({
         currentDataRef.current[key][subindex] = text;
         fillFields(index, key, text, subindex);
       }
-    }
+    } */
   };
 
   const handleDeleteData = () => {
@@ -264,103 +192,103 @@ const ProfileHook = ({
 
   const handleAddData = (index: string) => {
     const dataFormClone = { ...dataForm };
-    if (index == 'phones' || index == 'emails' || index == 'urls') {
-      const count = dataFormClone?.[index]?.length;
-      if (index === 'phones') {
-        if ((count != null || count != undefined) && count < 3) {
-          if (count === 0) {
-            dataFormClone.phones = [
-              {
-                label: "Teléfono",
-                text: '',
-                checked: true,
-                principal: false,
-                social: true,
-                professional: true,
-                icon: 'LocalPhoneOutlinedIcon',
-                order: 9,
-              },
-            ];
-          } else {
-            dataFormClone[index]?.unshift({
-              label: dataFormClone[index]![0].label,
-              text: '',
-              checked: true,
-              principal: false,
-              social: true,
-              professional: true,
-              icon: 'LocalPhoneOutlinedIcon',
-              order: 9,
-            });
-          }
-        } else {
-          setIsModalAlertLimit(true);
-        }
-      }
-
-      if (index === 'emails') {
-        if ((count != null || count != undefined) && count < 3) {
-          if (count === 0) {
-            dataFormClone.phones = [
-              {
-                label: "Correo",
-                text: '',
-                checked: true,
-                principal: false,
-                social: true,
-                professional: true,
-                icon: 'EmailOutlinedIcon',
-                order: 10,
-              },
-            ];
-          } else {
-            dataFormClone[index]?.unshift({
-              label: dataFormClone[index]![0].label,
-              text: '',
-              checked: true,
-              principal: false,
-              social: true,
-              professional: true,
-              icon: 'EmailOutlinedIcon',
-              order: 10,
-            });
-          }
-        } else {
-          setIsModalAlertLimit(true);
-        }
-      }
-      if (index === 'urls') {
-        //if ((count != null || count != undefined) && count < 3) {
-        if (count === 0) {
-          dataFormClone.urls = [
-            {
-              label: 'urls',
-              name: '',
-              url: '',
-              icon: '',
-              checked: true,
-              principal: false,
-              social: true,
-              professional: true,
-              order: 13,
-            },
-          ];
-        } else {
-          dataFormClone[index]?.unshift({
-            label: dataFormClone[index]![0].label,
-            name: '',
-            url: '',
-            icon: '',
-            checked: true,
-            principal: false,
-            social: true,
-            professional: true,
-            order: 13,
-          });
-        }
-      }
-      setDataForm(dataFormClone);
-    }
+    /*  if (index == 'phones' || index == 'emails' || index == 'urls') {
+       const count = dataFormClone?.[index]?.length;
+       if (index === 'phones') {
+         if ((count != null || count != undefined) && count < 3) {
+           if (count === 0) {
+             dataFormClone.phones = [
+               {
+                 label: "Teléfono",
+                 text: '',
+                 checked: true,
+                 principal: false,
+                 social: true,
+                 professional: true,
+                 icon: 'LocalPhoneOutlinedIcon',
+                 order: 9,
+               },
+             ];
+           } else {
+             dataFormClone[index]?.unshift({
+               label: dataFormClone[index]![0].label,
+               text: '',
+               checked: true,
+               principal: false,
+               social: true,
+               professional: true,
+               icon: 'LocalPhoneOutlinedIcon',
+               order: 9,
+             });
+           }
+         } else {
+           setIsModalAlertLimit(true);
+         }
+       }
+ 
+       if (index === 'emails') {
+         if ((count != null || count != undefined) && count < 3) {
+           if (count === 0) {
+             dataFormClone.phones = [
+               {
+                 label: "Correo",
+                 text: '',
+                 checked: true,
+                 principal: false,
+                 social: true,
+                 professional: true,
+                 icon: 'EmailOutlinedIcon',
+                 order: 10,
+               },
+             ];
+           } else {
+             dataFormClone[index]?.unshift({
+               label: dataFormClone[index]![0].label,
+               text: '',
+               checked: true,
+               principal: false,
+               social: true,
+               professional: true,
+               icon: 'EmailOutlinedIcon',
+               order: 10,
+             });
+           }
+         } else {
+           setIsModalAlertLimit(true);
+         }
+       }
+       if (index === 'urls') {
+         //if ((count != null || count != undefined) && count < 3) {
+         if (count === 0) {
+           dataFormClone.urls = [
+             {
+               label: 'urls',
+               name: '',
+               url: '',
+               icon: '',
+               checked: true,
+               principal: false,
+               social: true,
+               professional: true,
+               order: 13,
+             },
+           ];
+         } else {
+           dataFormClone[index]?.unshift({
+             label: dataFormClone[index]![0].label,
+             name: '',
+             url: '',
+             icon: '',
+             checked: true,
+             principal: false,
+             social: true,
+             professional: true,
+             order: 13,
+           });
+         }
+       }
+       setDataForm(dataFormClone);
+     } */
   };
 
   const handleModalAlertLimit = () => {
@@ -368,7 +296,7 @@ const ProfileHook = ({
   }
 
   const checkedItems = (
-    data: DataFormValues[] | EducationDataFormValues[] | CareerDataFormValues[],
+    data: DataFormValues[],
     value: string,
     checked?: boolean,
     label?: string
@@ -398,38 +326,14 @@ const ProfileHook = ({
         case 'name':
           label = "Nombres";
           break;
-        case 'last_name':
-          label = "Apellidos";
+        case 'nit':
+          label = "NIT";
           break;
-        case 'profession':
-          label = "Profesión";
+        case 'sector':
+          label = "Sector";
           break;
-        case 'occupation':
-          label = "Ocupación";
-          break;
-        case 'address':
-          label = "Dirección";
-          break;
-        case 'company':
-          label = "Empresa";
-          break;
-        case 'position':
-          label = "Cargo";
-          break;
-        case 'professional_profile':
-          label = "Perfil Profesional";
-          break;
-        case 'other_competencies':
-          label = "Otras Competencias";
-          break;
-        case 'skills':
-          label = "Habilidades";
-          break;
-        case 'languages':
-          label = "Idiomas";
-          break;
-        case 'achievements_recognitions':
-          label = "Logros y reconocimientos";
+        case 'phone':
+          label = "Teléfono";
           break;
       }
       return label;
@@ -446,12 +350,6 @@ const ProfileHook = ({
     const newData = items.map((value) => {
       if (value[0] == 'phones' || value[0] == 'emails') {
         const data = value[1] as DataFormValues[];
-        return checkedItems(data, value[0], !isChecked);
-      } else if (value[0] == 'education') {
-        const data = value[1] as EducationDataFormValues[];
-        return checkedItems(data, value[0], !isChecked);
-      } else if (value[0] == 'professional_career') {
-        const data = value[1] as CareerDataFormValues[];
         return checkedItems(data, value[0], !isChecked);
       } else if (value[0] == 'urls') {
         const data = value[1] as UrlDataFormValues[];
@@ -515,22 +413,6 @@ const ProfileHook = ({
             value[0],
             false,
             "Correo"
-          );
-        } else if (value[0] == 'education') {
-          const data = value[1] as EducationDataFormValues[];
-          return checkedItems(
-            data,
-            value[0],
-            false,
-            "Educacion"
-          );
-        } else if (value[0] == 'professional_career') {
-          const data = value[1] as CareerDataFormValues[];
-          return checkedItems(
-            data,
-            value[0],
-            false,
-            "Profesion"
           );
         } else if (value[0] == 'urls') {
           const data = value[1] as UrlDataFormValues[];

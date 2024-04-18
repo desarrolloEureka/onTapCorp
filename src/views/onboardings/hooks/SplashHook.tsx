@@ -14,7 +14,6 @@ const SplashHook = () => {
         await AsyncStorage.setItem('firstTime', 'false');
       } else {
         const isUser = await AsyncStorage.getItem('@user');
-
         if (isUser) {
           const user = JSON.parse(isUser);
           if (user?.isActive) {

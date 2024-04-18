@@ -78,10 +78,10 @@ const dataPrincipalUrl = {
 };
 
 const dataPrincipalSocialUrl = {
-  label: '',
+  label: 'Url',
   name: '',
   url: '',
-  icon: '',
+  icon: 'document-attach-outline',
   checked: false,
   principal: true,
   social: false,
@@ -99,45 +99,35 @@ export const socialProfile = {
     icon: 'PersonOutlinedIcon',
     order: 1,
   },
-  last_name: {
+  nit: {
     label: '',
     text: '',
     checked: false,
     social: true,
     professional: false,
-    icon: 'PersonOutlinedIcon',
+    icon: 'document-attach-outline',/* Ionicons */
     order: 2,
   },
-  profession: {
+  sector: {
     label: '',
     text: '',
     checked: false,
     social: true,
     professional: false,
-    icon: 'FilePresentOutlinedIcon',
+    icon: 'bag-outline',/* Ionicons */
     order: 3,
   },
-  occupation: {
+  phone: {
     label: '',
     text: '',
     checked: false,
     social: true,
     professional: false,
-    icon: 'WorkOutlineOutlinedIcon',
+    icon: 'phone',/* Feather */
     order: 4,
   },
-  address: {
-    label: '',
-    text: '',
-    checked: false,
-    social: true,
-    professional: false,
-    icon: 'ExploreOutlinedIcon',
-    order: 5,
-  },
-  phones: [dataPrincipalSocialProfilePhone],
-  emails: [dataPrincipalSocialProfileEmail],
-  urls: [dataPrincipalSocialUrl],
+  urlsCompany: [dataPrincipalSocialUrl,dataPrincipalSocialUrl],
+  urlsCommercial: [dataPrincipalSocialUrl],
 };
 
 export const professionalProfile = {

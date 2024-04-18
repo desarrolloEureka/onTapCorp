@@ -21,7 +21,12 @@ import { TemplateData, UserData } from '../types/user';
 import { GetLoginQueryProps } from '../types/userQuery';
 import { useQuery } from '@tanstack/react-query';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RouteStackParamList } from '../types/navigation';
+const navigation = useNavigation<StackNavigationProp<RouteStackParamList, 'Home'>>();
 
 const GetAllUserQuery = () => {
 
@@ -46,6 +51,40 @@ const GetLoginQuery = ({ user, password, sendLogin }: GetLoginQueryProps) => {
   const query = useQuery({
     queryKey: ['user'],
     queryFn: async () => {
+      try {
+        await auth().signInWithEmailAndPassword(user!, password!);
+
+        const unsubscribe = auth().onAuthStateChanged(async (user) => {
+          if (user) {
+            const userDocument = firestore().collection('users').doc(user.uid);
+            try {
+              const documentSnapshot = await userDocument.get();
+              if (documentSnapshot.exists) {
+                const dataUser = documentSnapshot.data() as UserData;
+                await AsyncStorage.setItem('@user', JSON.stringify(dataUser));
+                navigation.navigate('Home');
+              }
+            } catch (error) {
+              console.error('Error al obtener datos del usuario:', error);
+            }
+          }
+        });
+      } catch (error) {
+        console.error('Error al iniciar sesión:', error);
+      }
+    },
+    retry: false,
+    enabled: sendLogin,
+  });
+
+  return query;
+};
+
+/* const GetLoginQuery = ({ user, password, sendLogin }: GetLoginQueryProps) => {
+  const query = useQuery({
+    queryKey: ['user'],
+    queryFn: async () => {
+      
       const resultUser = await loginFirebase({
         user: user!,
         password: password!,
@@ -53,7 +92,7 @@ const GetLoginQuery = ({ user, password, sendLogin }: GetLoginQueryProps) => {
 
       if (resultUser && resultUser.user) {
         const docSnap = await getUserByIdFireStore(resultUser.user.uid);
-        if (docSnap.exists()) {
+        if (docSnap.exists) {
           const user = docSnap.data() as UserData;
           const getUser = userDataToSend(user, resultUser);
           await AsyncStorage.setItem('@user', JSON.stringify(getUser));
@@ -70,14 +109,14 @@ const GetLoginQuery = ({ user, password, sendLogin }: GetLoginQueryProps) => {
     enabled: sendLogin,
   });
   return query;
-};
+}; */
 
 /* Actualizar react query*/
 const SendDataImage = async (isProUser: boolean, userId: string, base64String: string) => {
   let imageDataKey = isProUser ? 'imagePro' : 'image';
   await updateUserData(userId, { [imageDataKey]: base64String });
   const updatedUser = await getUserByIdFireStore(userId);
-  if (updatedUser.exists()) {
+  if (updatedUser.exists) {
     const userData = await updatedUser.data() as UserData;
     const getUser = await reBuildUserData(userData);
     await AsyncStorage.setItem('@user', JSON.stringify(getUser));
@@ -100,7 +139,7 @@ const SendSwitchProfile = async (userId: string, switchState: boolean) => {
     preview: "https://backoffice.onetap.com.co/es/views/cardView?uid=" + userId
   });
   const updatedUser = await getUserByIdFireStore(userId);
-  if (updatedUser.exists()) {
+  if (updatedUser.exists) {
     const userData = await updatedUser.data() as UserData;
     const getUser = await reBuildUserData(userData);
     await AsyncStorage.setItem('@user', JSON.stringify(getUser));
@@ -108,9 +147,10 @@ const SendSwitchProfile = async (userId: string, switchState: boolean) => {
 };
 
 const SendSwitchActivateCard = async (userId: string, switchState: boolean) => {
-  await updateSwitchActivateCard(userId, { switch_activateCard: switchState });
+  const userDocument = firestore().collection('users').doc(userId);
+  await userDocument.update({ switch_activateCard: switchState });
   const updatedUser = await getUserByIdFireStore(userId);
-  if (updatedUser.exists()) {
+  if (updatedUser.exists) {
     const userData = await updatedUser.data() as UserData;
     const getUser = await reBuildUserData(userData);
     await AsyncStorage.setItem('@user', JSON.stringify(getUser));
@@ -141,9 +181,11 @@ const SendTemplateSelected = async (
   queryClient: any
 ) => {
   const templateData = data;
-  await updateTemplateSelectedFirebase(userId, { templateData });
+  const userDocument = firestore().collection('users').doc(userId);
+  //await userDocument.set({ templateData }, { merge: true });
+  await userDocument.set({ templateData: data }, { merge: true }); // Sobrescribe el array templateData con los nuevos datos
   const updatedUser = await getUserByIdFireStore(userId);
-  if (updatedUser.exists()) {
+  if (updatedUser.exists) {
     const userData = await updatedUser.data() as UserData;
     const getUser = await reBuildUserData(userData);
     await AsyncStorage.setItem('@user', JSON.stringify(getUser));
@@ -159,7 +201,7 @@ const SendDataUserProfile = async (userId: string, data: SocialDataForm | Profes
   return await updateDataUserProfile(userId, data, isProUser)
     .then(async (response) => {
       const updatedUser = await getUserByIdFireStore(userId);
-      if (updatedUser.exists()) {
+      if (updatedUser.exists) {
         const userData = await updatedUser.data() as UserData;
         const getUser = await reBuildUserData(userData);
         await AsyncStorage.setItem('@user', JSON.stringify(getUser));
@@ -181,7 +223,8 @@ const GetUserById = (userUid: string) => {
     queryKey: ['user'],
     queryFn: async () => {
       const updatedUser = await getUserByIdFireStore(userUid);
-      if (updatedUser.exists()) {
+      console.log("updatedUser ", updatedUser);
+      if (updatedUser.exists) {
         const userData = await updatedUser.data() as UserData;
         const getUser = await reBuildUserData(userData);
         await AsyncStorage.setItem('@user', JSON.stringify(getUser));
@@ -195,11 +238,17 @@ const GetUserById = (userUid: string) => {
 };
 
 const SendInactiveUser = async (userId: string) => {
-  const res = await updateInactiveUser(userId, { isActive: false });
-  return res;
+  try {
+    const userDocument = firestore().collection('users').doc(userId);
+    await userDocument.update({ isActive: false });
+    return true; // Otra forma de indicar que la actualización fue exitosa
+  } catch (error) {
+    console.error("Error al actualizar el usuario:", error);
+    return false; // Indicar que la actualización falló
+  }
 };
 
-const GetUser = (flag?: boolean, setFlag?: (e: boolean) => void) =>
+const GetUser = (refetch?: boolean) =>
   useQuery({
     queryKey: ['user'],
     queryFn: async () => {
@@ -207,22 +256,20 @@ const GetUser = (flag?: boolean, setFlag?: (e: boolean) => void) =>
       if (userLogged) {
         const user = await JSON.parse(userLogged) as UserData;
         const updatedUser = await getUserByIdFireStore(user.uid);
-        if (updatedUser.exists()) {
+        if (updatedUser.exists) {
           const userData = await updatedUser.data() as UserData;
           const getUser = await reBuildUserData(userData);
           await AsyncStorage.setItem('@user', JSON.stringify(getUser));
+          console.log("updatedUser ", getUser);
           return getUser;
         } else {
-          setFlag && setFlag(false);
           return user;
         }
       } else {
-        setFlag && setFlag(false);
         return null;
       }
     },
-    //refetchOnWindowFocus: refetch ?? false,
-    enabled: !!flag,
+    refetchOnWindowFocus: refetch ?? false,
   });
 
 const SendPreView = async (userId: string, url: string) => {

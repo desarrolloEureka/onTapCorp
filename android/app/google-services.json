@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "828170350312",
+    "project_id": "onetapcorp-d0146",
+    "storage_bucket": "onetapcorp-d0146.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:828170350312:android:320195a60a64f19133235d",
+        "android_client_info": {
+          "package_name": "onetapcorp.appspot.com"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhCq98G0tdFvHIsuRpha-L9vow4D-qvEo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

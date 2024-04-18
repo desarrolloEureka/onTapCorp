@@ -3,7 +3,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 
 export type RouteStackParamList = {
   Home: undefined;
-  PreviewTemplate: { tab: string };
+  PreviewTemplate: undefined;
   Profile: undefined;
   ProfileProfessional: undefined;
   ChangePassword: undefined;
@@ -21,6 +21,7 @@ export type RouteStackParamList = {
   Politicas: undefined;
   Plantillas: undefined;
   Splash: undefined;
+  Meetings: undefined;
 };
 
 export type StackNavigation = StackNavigationProp<RouteStackParamList>;

@@ -1,60 +1,27 @@
 export interface DataFormSorted {
   name?: DataFormValues;
-  last_name?: DataFormValues;
-  profession?: DataFormValues;
-  occupation?: DataFormValues;
-  address?: DataFormValues;
-  company?: DataFormValues;
-  position?: DataFormValues;
-  professional_profile?: DataFormValues;
-  phones?: DataFormValues[];
-  emails?: DataFormValues[];
-  education?: EducationDataFormValues[];
-  professional_career?: CareerDataFormValues[];
-  urls?: UrlDataFormValues[];
-  other_competencies?: DataFormValues;
-  skills?: DataFormValues;
-  languages?: DataFormValues;
-  achievements_recognitions?: DataFormValues;
+  nit?: DataFormValues;
+  sector?: DataFormValues;
+  phone?: DataFormValues;
+  urlsCompany?: UrlDataFormValues[];
+  urlsCommercial?: UrlDataFormValues[];
 }
 
 export type SocialDataForm = {
   name?: DataFormValues;
-  last_name?: DataFormValues;
-  profession?: DataFormValues;
-  occupation?: DataFormValues;
-  address?: DataFormValues;
-  phones?: DataFormValues[];
-  emails?: DataFormValues[];
-  urls?: UrlDataFormValues[];
+  nit?: DataFormValues;
+  sector?: DataFormValues;
+  phone?: DataFormValues;
+  urlsCompany?: UrlDataFormValues[];
+  urlsCommercial?: UrlDataFormValues[];
 };
-export type ProfessionalDataForm = {
-  name?: DataFormValues;
-  last_name?: DataFormValues;
-  profession?: DataFormValues;
-  occupation?: DataFormValues;
-  address?: DataFormValues;
-  company?: DataFormValues;
-  position?: DataFormValues;
-  professional_profile?: DataFormValues;
-  phones?: DataFormValues[];
-  emails?: DataFormValues[];
-  education?: EducationDataFormValues[];
-  professional_career?: CareerDataFormValues[];
-  urls?: UrlDataFormValues[];
-  other_competencies?: DataFormValues;
-  skills?: DataFormValues;
-  languages?: DataFormValues;
-  achievements_recognitions?: DataFormValues;
-};
+
 export interface DataForm {
   social?: SocialDataForm;
-  professional?: ProfessionalDataForm;
 }
 
 export interface DataFormSortedArray {
   social: [string, any][];
-  professional: [string, any][];
 }
 
 export type DataFormValues = {
@@ -62,35 +29,6 @@ export type DataFormValues = {
   text?: string;
   checked?: boolean;
   principal?: boolean;
-  social?: boolean;
-  professional?: boolean;
-  icon?: string;
-  order: number;
-};
-
-export type EducationDataFormValues = {
-  label?: string;
-  title: string;
-  institution: string;
-  year: string;
-  checked?: boolean;
-  principal?: boolean;
-  social?: boolean;
-  professional?: boolean;
-  icon?: string;
-  order: number;
-};
-
-export type CareerDataFormValues = {
-  label?: string;
-  company: string;
-  position: string;
-  data_init: string;
-  data_end: string;
-  checked?: boolean;
-  principal?: boolean;
-  social?: boolean;
-  professional?: boolean;
   icon?: string;
   order: number;
 };
@@ -102,44 +40,23 @@ export type UrlDataFormValues = {
   icon: string;
   checked?: boolean;
   principal?: boolean;
-  social?: boolean;
-  professional?: boolean;
   order: number;
 };
 
 export type IndexDataForm =
   | 'name'
-  | 'last_name'
-  | 'profession'
-  | 'occupation'
-  | 'address'
-  | 'company'
-  | 'position'
-  | 'professional_profile'
-  | 'other_competencies'
-  | 'skills'
-  | 'languages'
-  | 'achievements_recognitions'
-  | 'phones'
-  | 'emails'
-  | 'education'
-  | 'professional_career'
-  | 'urls';
+  | 'nit'
+  | 'sector'
+  | 'phone'
+  | 'urlsCompany'
+  | 'urlsCommercial'
 
-export type EducationSubIndexDataForm = 'title' | 'institution' | 'year';
-export type CareerSubIndexDataForm =
-  | 'company'
-  | 'position'
-  | 'data_init'
-  | 'data_end';
 export type NetworksSubIndexDataForm = 'name' | 'url' | 'icon';
 export type handleDataProps = {
   name: string;
   text: string;
   subindex?:
-    | EducationSubIndexDataForm
-    | CareerSubIndexDataForm
-    | NetworksSubIndexDataForm;
+  | NetworksSubIndexDataForm;
   key?: number;
   currentDataRef?: any;
 };
@@ -163,7 +80,7 @@ export interface ItemFormParams {
   }: handleDataProps) => void;
   checked?: boolean;
   icon?: string;
-  deleteAction?: boolean;
+  switchAction?: boolean;
   handleDeleteData?: ({ name }: { name: string }) => void;
   handleModalAlert?: ({
     index,
@@ -178,7 +95,5 @@ export interface ItemFormParams {
   subindex?: number;
   withCheck?: boolean;
   subLabel?:
-    | EducationSubIndexDataForm
-    | CareerSubIndexDataForm
-    | NetworksSubIndexDataForm;
+  | NetworksSubIndexDataForm;
 }

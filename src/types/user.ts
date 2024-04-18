@@ -1,7 +1,6 @@
 import { profile } from '../initialData/profileInitialData';
 import { DataForm } from './profile';
 export interface TemplateData {
-  type: string;
   id: string;
   background_id?: string;
   checked: boolean;

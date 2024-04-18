@@ -11,7 +11,7 @@ export const profileStyles = StyleSheet.create({
     containerPhotoCircle: {
         height: "90%",
         width: "85%",
-        backgroundColor: '#02AF9B',
+        backgroundColor: '#030124',
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 100,
@@ -38,9 +38,9 @@ export const profileStyles = StyleSheet.create({
         justifyContent: 'center',
     },
     borderTargetName: {
-        height: "85%",
+        height: "90%",
         width: "100%",
-        backgroundColor: '#02AF9B',
+        backgroundColor: '#030124',
         borderTopLeftRadius: 0,
         borderTopRightRadius: 40,
         borderBottomRightRadius: 0,
@@ -91,8 +91,8 @@ export const profileStyles = StyleSheet.create({
     },
 
     label: {
-        color: '#02AF9B',
-        fontSize: 13,
+        color: '#396593',
+        fontSize: 14,
         marginTop: 0,
         //marginRight: 170
     },

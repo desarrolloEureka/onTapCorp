@@ -7,7 +7,6 @@ export const homeStyles = StyleSheet.create({
   },
   rootContainer: {
     flex: 1,
-    backgroundColor: '#CCCCCC',
   },
   body: {
     height: 400
@@ -124,12 +123,12 @@ export const homeStyles = StyleSheet.create({
 
   buttonText: {
     fontFamily: 'Ubuntu',
-    fontSize: 17,
-    fontWeight: '500',
+    fontSize: 18,
+    fontWeight: '700',
     lineHeight: 28,
     letterSpacing: 0.03,
     textAlign: 'left',
-    color: '#396593'
+    color: '#030124'
   },
 
   container: {

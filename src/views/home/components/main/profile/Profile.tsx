@@ -103,7 +103,7 @@ const Profile = () => {
     data &&
     user &&
     dataForm && (
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#e9e9e9" }}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={{ flex: 1 }}>
@@ -134,35 +134,14 @@ const Profile = () => {
                   width: '100%',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  marginTop: 9
+                  marginTop: 9,
+                  marginBottom: 10
                 }}>
                 <CustomSwitchGeneral
                   name="all_true"
                   handleSwitch={(e: any) => handleSwitchAll(e)}
                   checked={switchValue}
                 />
-              </View>
-
-              <View
-                style={{
-                  height: 100,
-                  width: '100%',
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: '#02AF9B',
-                    height: '45%',
-                    width: '40%',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRadius: 22,
-                    shadowColor: '#000'
-                  }}
-                  onPress={() => handleSendProfile(false)}>
-                  <Text style={{ color: 'white' }}>Guardar</Text>
-                </TouchableOpacity>
               </View>
 
               <FormDataUser
@@ -200,55 +179,8 @@ const Profile = () => {
                 handleDeleteData={handleDeleteData}
               />
 
-              <View
-                style={{
-                  height: 210,
-                  width: '100%',
-                  justifyContent: 'flex-start',
-                  alignItems: 'center',
-                  marginTop: 20
-                }}>
-                <View
-                  style={{
-                    height: '50%',
-                    width: '100%',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                  }}>
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: '#02AF9B',
-                      height: '45%',
-                      width: '40%',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: 22,
-                      shadowColor: '#000'
-                    }}
-                    onPress={() => handleSendProfile(false)}>
-                    <Text style={{ color: 'white' }}>Guardar</Text>
-                  </TouchableOpacity>
-                </View>
+              <View style={{ height: 120, width: '100%', justifyContent: 'flex-start', alignItems: 'center', marginTop: 20 }}>
               </View>
-
-              <ModalAlert
-                isModalAlert={isModalAlert}
-                handleModalAlert={handleModalAux}
-                handleDeleteData={handleDeleteData}
-                noDeleted={noDeleted}
-              />
-
-              <CustomModalAlert
-                isModalAlert={isModalAlertNavigation}
-                handleModalAlert={setIsModalAlertNavigation}
-                title="Acceso Restringido"
-                description="Actualmente no tienes acceso a las opciones de profesional porque estás utilizando un plan básico."
-              />
-
-              <ModalSuccessDelete
-                isSuccessDelete={isSuccessDelete}
-                handleSuccessDelete={handleSuccessDelete}
-              />
 
               <CustomModalAlert
                 isModalAlert={isDataError}
@@ -267,68 +199,32 @@ const Profile = () => {
                 }
               />
 
-              <CustomModalAlert
-                isModalAlert={isEmailPhoneRight}
-                handleModalAlert={setisEmailPhoneRight}
-                title={'One Tap dice!'}
-                description={status}
-              />
-
               <CustomModalLoading isLoadingSendData={isLoadingSendData} />
+
             </ScrollView>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
 
-        <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-around',
-                  alignItems: 'center',
-                  backgroundColor: '#E9E9E9',
-                  height: 80,
-                  position: 'absolute',
-                  bottom: 0,
-                  width: '100%'
-                }}>
-                <TouchableOpacity
-                  style={{
-                    height: '100%',
-                    width: '33.3%',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                  onPress={() => handleTabPress('Home')}>
-                  <Icon name="home" size={25} color="black" />
-                  <Text style={{ color: 'black' }}>Home</Text>
-                </TouchableOpacity>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', backgroundColor: '#E9E9E9', height: 90, position: 'absolute', bottom: 0, width: '100%' }}>
+          <TouchableOpacity style={{ height: "100%", width: "25%", alignItems: 'center', justifyContent: 'center' }} onPress={() => handleTabPress('Home')}>
+            <Ionicons name="car-outline" size={30} color='#396593' />
+            <Text style={{ color: '#396593' }}>Home</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{ height: "100%", width: "25%", alignItems: 'center', justifyContent: 'center', borderTopWidth: 3.5, borderColor: '#396593' }} onPress={() => handleTabPress('Profile')}>
+            <Ionicons name="person-outline" size={25} color='#606060' />
+            <Text style={{ color: '#606060' }}>Empleado</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{ height: "100%", width: "25%", alignItems: 'center', justifyContent: 'center' }}>
+            <Ionicons name="person-outline" size={25} color='#606060' />
+            <Text style={{ color: '#606060' }}>Reuniones</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{ height: "100%", width: "25%", alignItems: 'center', justifyContent: 'center' }}>
+            <Ionicons name="car-outline" size={30} color='#606060' />
+            <Text style={{ color: '#606060' }}>Rutas</Text>
+          </TouchableOpacity>
+        </View>
 
-                <TouchableOpacity
-                  style={{
-                    height: '100%',
-                    width: '33.3%',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderTopWidth: 3.5,
-                    borderColor: '#396593'
-                  }}
-                  onPress={() => handleTabPress('Social')}>
-                  <FontAwesome name="users" size={25} color="black" />
-                  <Text style={{ color: 'black' }}>Social</Text>
-                </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={{
-                    height: '100%',
-                    width: '33.3%',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                  onPress={() => handleTabPress('Professional')}>
-                  <Ionicons name="newspaper-sharp" size={28} color="black" />
-                  <Text style={{ color: 'black' }}>PRO</Text>
-                </TouchableOpacity>
-              </View>
-              
       </SafeAreaView>
     )
   );

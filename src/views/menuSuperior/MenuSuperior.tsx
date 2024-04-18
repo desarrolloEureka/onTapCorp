@@ -4,10 +4,10 @@ import {
   TouchableOpacity,
   Text,
   StyleSheet,
-  Alert,
+  Modal,
   Linking,
 } from 'react-native';
-import Modal from 'react-native-modal';
+
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigation } from '../../types/navigation';
 import Feather from 'react-native-vector-icons/Feather';
@@ -18,33 +18,13 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import { GetUser, SendInactiveUser } from '../../reactQuery/users';
-import LogOut from '../../hooks/logOut/LogOut';
 
-const MenuSuperior = () => {
+const MenuSuperior = ({ setAlertLogOut, setAlertDelte }: { setAlertLogOut: (e: boolean) => void; setAlertDelte: (e: boolean) => void; }) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation<StackNavigation>();
-  const { data } = GetUser();
-  const { logOut } = LogOut();
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
-  };
-
-  const handleDeleteUser = async () => {
-    const userId = data?.uid;
-    if (userId) {
-      const resUpdate = await SendInactiveUser(userId);
-      if (resUpdate === true) {
-        Alert.alert('Alerta', 'Se eliminó correctamente la cuenta');
-        logOut();
-      } else {
-        Alert.alert(
-          'Error',
-          'Ocurrió un error y no fue posible eliminar la cuenta. Por favor, inténtalo de nuevo.',
-        );
-      }
-    }
   };
 
   const handleItemPress = (item: { id: number; name: string }) => {
@@ -73,54 +53,17 @@ const MenuSuperior = () => {
     } else if (item.id === 10) {
       navigation.navigate('ChangePassword');
     } else if (item.id === 11) {
-      Alert.alert(
-        'Alerta',
-        '¿Estás seguro de que deseas eliminar tu cuenta?',
-        [
-          {
-            text: 'NO',
-            style: 'cancel',
-          },
-          {
-            text: 'SI',
-            onPress: async () => {
-              handleDeleteUser();
-            },
-          },
-        ],
-        { cancelable: false },
-      );
+      setAlertDelte(true);
     } else if (item.id === 12) {
-      Alert.alert(
-        'Alerta',
-        '¿Estás seguro de que deseas cerrar sesión?',
-        [
-          {
-            text: 'NO',
-            style: 'cancel',
-          },
-          {
-            text: 'SI',
-            onPress: async () => {
-              logOut();
-            },
-          },
-        ],
-        { cancelable: false },
-      );
+      setAlertLogOut(true);
     }
   };
 
   const renderModalContent = () => {
     const items = [
-      /* { id: 1, name: 'Comprar Planes Personales', icon: 'shopping-cart' },
-      { id: 2, name: 'Comprar Plan Corporativo', icon: 'shopping-cart' }, 
-      { id: 3, name: 'Cambiar Material de la Tarjeta', icon: 'restore' },
-      { id: 4, name: 'Ver Tienda', icon: 'storefront-outline' },*/
       { id: 5, name: 'Acerca De', icon: 'information-outline' },
       { id: 6, name: 'Políticas de Privacidad', icon: 'lock' },
       { id: 7, name: 'Términos y Condiciones', icon: 'file-contract' },
-    /*   { id: 8, name: 'Políticas de Devolución', icon: 'shopping-basket-remove' }, */
       { id: 9, name: 'Preguntas Frecuentes', icon: 'chat-question-outline' },
       { id: 10, name: 'Cambiar Contraseña', icon: 'password' },
       { id: 11, name: 'Eliminar Cuenta', icon: 'deleteuser' },
@@ -128,33 +71,43 @@ const MenuSuperior = () => {
     ];
 
     return (
-      <View style={styles.modalContent}>
-        {items.map(item => (
-          <TouchableOpacity
-            key={item.id}
-            onPress={() => handleItemPress(item)}
-            style={styles.item}>
-            {item.icon === 'shopping-cart' ? <Feather name={item.icon} size={24} color="black" /> : null}
-            {item.icon === 'restore' || item.icon === 'storefront-outline' || item.icon === 'information-outline' || item.icon === 'chat-question-outline' ? <MaterialCommunityIcons name={item.icon} size={24} color="black" /> : null}
-            {item.icon === 'file-present' || item.icon === 'password' || item.icon === 'logout' ? <MaterialIcons name={item.icon} size={24} color="black" /> : null}
-            {item.icon === 'deleteuser' ? <AntDesign name={item.icon} size={24} color="black" /> : null}
-            {item.icon === 'lock' ? <SimpleLineIcons name={item.icon} size={23} color="black" /> : null}
-            {item.icon === 'file-contract' ? <FontAwesome5 name={item.icon} size={22} color="black" /> : null}
-            {item.icon === 'shopping-basket-remove' ? <Fontisto name={item.icon} size={22} color="black" /> : null}
-            <Text style={{ color: 'black', paddingLeft: 12 }}> {item.name}</Text>
+      <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'flex-end', backgroundColor: 'rgba(128, 128, 128, 0.1)' }}>
+        <View style={{ height: '10%', width: '65%', alignItems: 'flex-end', borderTopLeftRadius: 15, backgroundColor: 'white', borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
+
+          <TouchableOpacity style={{ height: '100%', width: '25%', justifyContent: 'center', alignItems: 'center' }} onPress={toggleModal}>
+            <Text style={styles.iconText}>☰</Text>
           </TouchableOpacity>
-        ))}
+
+        </View>
+        <View style={{ height: '90%', width: '65%', justifyContent: 'flex-start', backgroundColor: 'white' }}>
+          {items.map(item => (
+            <TouchableOpacity key={item.id} onPress={() => handleItemPress(item)} style={styles.item}>
+              <View style={{ height: '100%', width: '7%' }}>
+              </View>
+              <View style={{ height: '100%', width: '90%', flexDirection: 'row', }}>
+                {item.icon === 'shopping-cart' ? <Feather name={item.icon} size={24} color="black" /> : null}
+                {item.icon === 'restore' || item.icon === 'storefront-outline' || item.icon === 'information-outline' || item.icon === 'chat-question-outline' ? <MaterialCommunityIcons name={item.icon} size={24} color="black" /> : null}
+                {item.icon === 'file-present' || item.icon === 'password' || item.icon === 'logout' ? <MaterialIcons name={item.icon} size={24} color="black" /> : null}
+                {item.icon === 'deleteuser' ? <AntDesign name={item.icon} size={24} color="black" /> : null}
+                {item.icon === 'lock' ? <SimpleLineIcons name={item.icon} size={23} color="black" /> : null}
+                {item.icon === 'file-contract' ? <FontAwesome5 name={item.icon} size={22} color="black" /> : null}
+                {item.icon === 'shopping-basket-remove' ? <Fontisto name={item.icon} size={22} color="black" /> : null}
+                <Text style={{ color: 'black', paddingLeft: 12 }}> {item.name}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
     );
   };
 
   return (
     <View style={[styles.container]}>
-      <TouchableOpacity onPress={toggleModal} style={styles.button}>
+      <TouchableOpacity onPress={toggleModal}>
         <Text style={styles.iconText}>☰</Text>
       </TouchableOpacity>
 
-      <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
+      <Modal transparent={true} visible={isModalVisible} onRequestClose={toggleModal}>
         {renderModalContent()}
       </Modal>
     </View>
@@ -167,9 +120,6 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginRight: 10,
   },
-  button: {
-    //padding: 10
-  },
   modalContent: {
     backgroundColor: 'white',
     padding: 22,
@@ -179,7 +129,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0, 0, 0, 0.1)',
   },
   iconText: {
-    fontSize: 30, // Tamaño del texto ajustado según tu preferencia
+    fontSize: 30,
     color: '#396593',
   },
   item: {

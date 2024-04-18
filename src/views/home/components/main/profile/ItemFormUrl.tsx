@@ -8,14 +8,11 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 
 import {
-  CareerDataFormValues,
   IndexDataForm,
   DataFormValues,
-  EducationDataFormValues,
   DataForm,
   NetworksSubIndexDataForm,
   SocialDataForm,
-  ProfessionalDataForm,
   handleDataProps,
   handleDataNetworksProps,
 } from '../../../../../types/profile';
@@ -23,6 +20,7 @@ import ProfileHook from './hooks/ProfileHook';
 import FormUrl from './FormUrl';
 import ModalIcons from './ModalIcons';
 import { UserData } from '../../../../../types/user';
+import ItemForm from './ItemForm';
 
 const ItemFormUrl = ({
   dataForm,
@@ -44,13 +42,10 @@ const ItemFormUrl = ({
   isModalIcons,
   handleDeleteData,
 }: {
-  dataForm: SocialDataForm | ProfessionalDataForm;
-  handleDataSet: (e: SocialDataForm | ProfessionalDataForm) => void;
+  dataForm: SocialDataForm;
+  handleDataSet: (e: SocialDataForm) => void;
   index: IndexDataForm;
-  labelArray:
-  | DataFormValues[]
-  | EducationDataFormValues[]
-  | CareerDataFormValues[];
+  labelArray: | DataFormValues[];
   value: any;
   handleModalAlert: ({
     index,
@@ -84,191 +79,45 @@ const ItemFormUrl = ({
   handleDeleteData: () => void;
 }) => {
   return (
-    <View
-      style={{
-        height: 'auto',
-        minHeight: 280,
-        width: '100%',
-        justifyContent: 'center',
-        paddingTop: 20,
-        marginBottom: 20,
-      }}>
+    <View style={{ height: 'auto', minHeight: 200, width: '100%', justifyContent: 'center', marginTop: 20 }}>
       <View
-        style={{ minHeight: 230, width: "100%", justifyContent: 'center', alignItems: 'center', backgroundColor: "#e9e9e9" }}>
+        style={{ minHeight: 130, width: "100%", justifyContent: 'center', alignItems: 'center', backgroundColor: "white" }}>
         <View style={{ height: 50, width: "95%", alignItems: 'flex-end', flexDirection: 'row' }}>
           <View style={{ height: "100%", width: "65%", justifyContent: 'flex-start', alignItems: 'flex-end', flexDirection: 'row' }}>
-            <View style={{ height: "75%", width: "48%", justifyContent: 'center', alignItems: 'center', backgroundColor: '#02af9b', borderRadius: 5 }}>
-              <Text style={{ fontSize: 13, color: 'white' }}>Registro de URLs</Text>
+            <View style={{ height: "75%", width: "48%", justifyContent: 'center', alignItems: 'center', backgroundColor: '#396593', borderRadius: 5 }}>
+              <Text style={{ fontSize: 13, color: 'white' }}>{index != 'urlsCommercial' ? 'Urls Empresa' : 'Area Comercial'}</Text>
             </View>
           </View>
-          <TouchableOpacity style={{ height: "100%", width: "35%", justifyContent: 'center', flexDirection: 'row' }} onPress={() => { handleAddData('urls'); }}>
-            <View style={{ height: '100%', width: '20%', alignItems: 'center', justifyContent: 'center', }}>
-              <Icon name="plus-circle" size={20} color="#02AF9B" />
-            </View>
-            <View
-              style={{ height: '100%', width: '50%', justifyContent: 'center' }}>
-              <Text style={{ fontSize: 11, color: 'black' }}>Agregar URL</Text>
-            </View>
-          </TouchableOpacity>
         </View>
 
         {labelArray.map((val, key) => {
-          if (index == 'urls') {
-            const myValue = (user && user.profile
-              ? isProUser
-                ? user.profile.professional
-                  ? user.profile.professional?.[index]
-                  : dataForm && dataForm[index]
-                : user.profile.social
-                  ? user.profile?.social?.[index]
-                  : dataForm && dataForm[index]
-              : dataForm && dataForm[index]) as unknown as DataFormValues;
-
+          if (index == 'urlsCompany' || index == 'urlsCommercial') {
+            const myValue = (user && user.profile ? dataForm && dataForm[index] : null) as unknown as DataFormValues;
             return (
-              <View
-                key={key}
-                style={{
-                  height: 230,
-                  justifyContent: 'center',
-                  borderBottomWidth:
-                    key !== labelArray.length - 1 ? 2 : undefined,
-                  borderBlockColor:
-                    key !== labelArray.length - 1 ? '#d4d4d4' : undefined,
-                  marginTop: 10,
-                }}>
-                <View
-                  style={{
-                    height: '60%',
-                    width: '100%',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                  }}>
-                  <View
-                    style={{
-                      height: '100%',
-                      width: '98%',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <View
-                      style={{
-                        height: '40%',
-                        width: '90%',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
-                      <FormUrl
-                        label={'Nombre: '}
+              <View key={key} style={{ height: 100, justifyContent: 'center', marginTop: 25 }}>
+                <View style={{ height: '80%', width: '100%', justifyContent: 'center', flexDirection: 'row', alignItems: 'center' }}>
+                  <View style={{ height: '100%', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                    <View style={{ height: '80%', width: '95%', alignItems: 'center', justifyContent: 'center' }}>
+                      <ItemForm
+                        label={value[1][0].label + " " + (key + 1)}
                         handleSwitch={(e: any) => handleSwitch(e)}
                         handleData={handleData}
                         name={index}
-                        checked={val.checked}
-                        subindex={key}
-                        icon={val.icon}
-                        deleteAction={true}
-                        handleDeleteData={handleDeleteData}
-                        handleModalAlert={({ index, subindex }) =>
-                          handleModalAlert({ index, subindex })
-                        }
+                        checked={value[1].checked}
+                        key={key}
+                        icon={value[1][0].icon}
                         myValue={myValue}
                         index={index}
-                        withCheck={true}
-                        subLabel={'name' as NetworksSubIndexDataForm}
+                        switchAction={index == 'urlsCommercial' ? true : false}
                       />
                     </View>
-
-                    <View
-                      style={{
-                        height: '40%',
-                        width: '90%',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
-                      <View
-                        style={{
-                          height: '100%',
-                          width: '100%',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          flexDirection: 'row',
-                        }}>
-                        <FormUrl
-                          label={'Sitio Web/URL: '}
-                          handleSwitch={(e: any) => handleSwitch(e)}
-                          handleData={handleData}
-                          name={index}
-                          checked={val.checked}
-                          subindex={key}
-                          icon={val.icon}
-                          deleteAction={true}
-                          handleDeleteData={handleDeleteData}
-                          handleModalAlert={({ index, subindex }) =>
-                            handleModalAlert({ index, subindex })
-                          }
-                          myValue={myValue}
-                          index={index}
-                          withCheck={false}
-                          subLabel={'url' as NetworksSubIndexDataForm}
-                        />
-                      </View>
-                    </View>
                   </View>
-                </View>
-
-                <View
-                  style={{
-                    height: '40%',
-                    width: '100%',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                  }}>
-                  <View
-                    style={{
-                      height: '100%',
-                      width: '20%',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      paddingLeft: 1,
-                    }}>
-                    <TouchableOpacity
-                      style={{
-                        height: '55%',
-                        width: '68%',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        //backgroundColor: 'white',
-                        borderRadius: 80,
-                      }}
-                      onPress={() => handleModalIcons(val, key)}>
-                      <Fontisto name="world-o" size={32} color="#396593" />
-                    </TouchableOpacity>
-                    <Text style={{ fontSize: 12, textAlign: 'center', color: 'black' }}>
-                      Seleccionar Icono
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      height: '100%',
-                      width: '80%',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  />
                 </View>
               </View>
             );
           }
         })}
       </View>
-
-      <ModalIcons
-        isModalIcons={isModalIcons}
-        setModalIcons={setModalIcons}
-        value={value}
-        val={itemUrlSelected}
-        keyItem={itemUrlKey}
-        handleDataNetworks={handleDataNetworks}
-      />
     </View>
   );
 };

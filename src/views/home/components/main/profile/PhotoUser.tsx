@@ -100,9 +100,9 @@ const PhotoUser = ({ name, isProUser }: { name?: string; isProUser: boolean; }) 
   return (
     <GestureHandlerRootView>
       <SafeAreaView>
-        <View style={profileStyles.containerPhoto}>
-          <View style={profileStyles.container}>
-            <View style={profileStyles.containerPhotoCircle}>
+        <View style={{ height: 245, alignItems: 'center', justifyContent: 'center', marginTop: 5 }}>
+          <View style={{ height: "70%", width: "45%", alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ height: "90%", width: "85%", backgroundColor: '#030124', alignItems: 'center', justifyContent: 'center', borderRadius: 100 }}>
               {!isProUser && selectedImage ? (
                 <Image
                   style={{ borderRadius: 100, width: '85%', height: '85%' }}
@@ -130,19 +130,18 @@ const PhotoUser = ({ name, isProUser }: { name?: string; isProUser: boolean; }) 
                 />
               )}
             </View>
-            <View style={profileStyles.containerEdit}>
-              <TouchableOpacity
-                style={profileStyles.containerPencil}
-                onPress={openImagePicker}>
-                <Icon name="pencil" size={20} color="#396593" />
-              </TouchableOpacity>
-            </View>
           </View>
-          <View style={{ height: '25%', width: '45%' }}>
+          <View style={{ height: '20%', width: '45%' }}>
             <View style={profileStyles.borderTargetName}>
               <Text style={profileStyles.textName}>
-                {/* Hola {data && data?.user_name} */}
                 Hola {name ?? ''}
+              </Text>
+            </View>
+          </View>
+          <View style={{ height: '10%', width: '45%', alignItems: 'center' }}>
+            <View style={{ height: '95%', width: '100%', justifyContent: 'flex-end', alignItems: 'center' }}>
+              <Text style={{ color: "#396593", fontSize: 15 }}>
+                Area Comercial
               </Text>
             </View>
           </View>

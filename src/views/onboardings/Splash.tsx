@@ -1,19 +1,37 @@
 import React from 'react';
-import {Image, View} from 'react-native';
+import {Image, ImageBackground, Text, View} from 'react-native';
 import SplashHook from './hooks/SplashHook';
 import {splashStyles} from './styles/splashStyles';
+import LinearGradient from 'react-native-linear-gradient';
 
 const Splash = () => {
   SplashHook();
   return (
-    <View style={splashStyles.container}>
-      <View style={splashStyles.imageContainer}>
-        <Image
-          source={require('../../images/logo_OT.png')}
-          style={splashStyles.image}
-        />
+    // <ImageBackground
+    //   source={require('../../images/fondo1.png')} // ruta de la imagen de fondo
+    //   style={splashStyles.background}>
+    // <View style={splashStyles.container}>
+    //   <View style={splashStyles.imageContainer}>
+    //     <Image
+    //       source={require('../../images/logo_OT.png')}
+    //       style={splashStyles.image}
+    //     />
+    //   </View>
+    // </View>
+    // </ImageBackground>
+
+    <LinearGradient
+      colors={['#000000', '#1f1f1f','#4f4f4f','#6e6e6e' ]}
+      style={splashStyles.background}>
+      <View style={splashStyles.container}>
+        <View style={splashStyles.imageContainer}>
+          <Image
+            source={require('../../images/logo_OT.png')}
+            style={splashStyles.image}
+          />
+        </View>
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 

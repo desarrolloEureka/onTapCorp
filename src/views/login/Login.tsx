@@ -1,13 +1,13 @@
 import React from 'react';
 import {
+  ImageBackground,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
-  ImageBackground
+  View
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LoginHook from './hooks/LoginHook';
@@ -27,10 +27,10 @@ const Login = () => {
   } = LoginHook();
 
   return (
-    <ImageBackground
-      source={require('../../images/fondo3.png')} // ruta de la imagen de fondo
-      style={styles.background}>
-      <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}}>
+      <ImageBackground
+        source={require('../../images/fondo3.png')} // ruta de la imagen de fondo
+        style={styles.background}>
         <ScrollView>
           <View style={styles.headerContainer}></View>
 
@@ -63,6 +63,7 @@ const Login = () => {
                   <Text style={styles.label}>Correo Electrónico</Text>
                   <TextInput
                     style={styles.input}
+                    selectionColor={'#396593'}
                     placeholderTextColor="#396593"
                     underlineColorAndroid="transparent"
                     value={email}
@@ -119,7 +120,8 @@ const Login = () => {
                   <View style={styles.passwordContainer}>
                     <TextInput
                       style={styles.passwordInput}
-                      placeholderTextColor="#396593"
+                      selectionColor={'#396593'}
+                      placeholderTextColor="black"
                       secureTextEntry={!showPassword}
                       underlineColorAndroid="transparent"
                       value={password}
@@ -249,8 +251,8 @@ const Login = () => {
             </TouchableOpacity>
           </View>
         </ScrollView>
-      </SafeAreaView>
-    </ImageBackground>
+      </ImageBackground>
+    </SafeAreaView>
   );
 };
 
@@ -325,7 +327,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 52,
     fontSize: 16,
-    color: '#396593',
+    color: '#030124',
     paddingLeft: 10
   },
   eyeIcon: {

@@ -1,12 +1,6 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import React from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const AcercaDe = () => {
@@ -61,13 +55,13 @@ const AcercaDe = () => {
             }}>
             <View
               style={{
-                height: '95%',
-                width: '40%',
+                height: '100%',
+                width: '60%',
                 alignItems: 'center',
                 justifyContent: 'center'
               }}>
               <Image
-                resizeMode="contain"
+                style={styles.image}
                 source={require('../../images/logoName.png')}
               />
             </View>
@@ -206,8 +200,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#e8e8e8',
+    backgroundColor: '#e8e8e8'
   },
+  image: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain'
+  }
 });
 
 export default AcercaDe;

@@ -3,16 +3,15 @@ import {
   Image,
   ImageBackground,
   SafeAreaView,
-  ScrollView,
   Text,
   TouchableOpacity,
   View
 } from 'react-native';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import RoadsHook from './hook/RoadsHook';
-import {roadsStyles} from './styles/roadsStyles';
+import { roadsStyles } from './styles/roadsStyles';
 
 const data = [
   {titulo: 'Nombre de Ruta', texto: 'Ruta centro A'},
@@ -33,13 +32,14 @@ const Roads = () => {
         resizeMode="cover"
         style={{height: '100%', width: '100%'}}
         source={require('../../../../../images/background.png')}>
-        <View style={{height: '5%', width: '100%'}}>
+        <View style={{height: '7%', width: '100%'}}>
           <TouchableOpacity
             style={{
               height: '100%',
               width: '18%',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              paddingLeft: 5
             }}
             onPress={handleBackPress}>
             <Icon name="arrow-back-ios" size={27} color="black" />
@@ -50,7 +50,7 @@ const Roads = () => {
           style={{
             height: '25%',
             alignItems: 'center',
-            justifyContent: 'center',
+            justifyContent: 'center'
           }}>
           <View
             style={{
@@ -66,7 +66,8 @@ const Roads = () => {
                 backgroundColor: '#030124',
                 alignItems: 'center',
                 justifyContent: 'center',
-                borderRadius: 100
+                borderRadius: 100,
+                elevation: 30
               }}>
               <Image
                 style={{
@@ -83,7 +84,8 @@ const Roads = () => {
             style={{
               height: '20%',
               width: '40%',
-              marginTop: 15
+              marginTop: 15,
+              elevation: 30
             }}>
             <View style={roadsStyles.borderTargetName}>
               <Text style={roadsStyles.textName}>Hola David</Text>
@@ -97,9 +99,9 @@ const Roads = () => {
             width: '100%',
             justifyContent: 'center',
             alignItems: 'flex-start',
-            marginTop: 20,
+            marginTop: 10,
             paddingLeft: 20,
-            marginBottom: 20,
+            marginBottom: 20
           }}>
           <Text style={{fontSize: 20, fontWeight: '500', color: '#396593'}}>
             Ruta Asignada
@@ -110,19 +112,20 @@ const Roads = () => {
           style={{
             flex: 1,
             height: '65%',
-            width: '100%',
+            width: '100%'
           }}>
           <View
             style={{
               height: 320,
               width: '95%',
               backgroundColor: '#FFFFFF',
-              borderRadius: 10,
+              borderRadius: 15,
               marginLeft: 10,
               elevation: 16
             }}>
             {data.map((item, index) => (
               <View
+                key={index}
                 style={{
                   flex: 1,
                   flexDirection: 'row',
@@ -131,13 +134,13 @@ const Roads = () => {
                   marginHorizontal: 10
                 }}>
                 <View
-                  key={index}
                   style={{
                     flex: 1,
                     justifyContent: 'center',
                     alignItems: 'flex-start',
                     borderRightWidth: 1,
-                    borderRightColor: '#e6e6e6'
+                    borderRightColor: '#e6e6e6',
+                    paddingLeft: 15
                   }}>
                   <Text
                     style={{
@@ -168,7 +171,7 @@ const Roads = () => {
             ))}
           </View>
         </View>
-        
+
         <View
           style={{
             flexDirection: 'row',
@@ -188,7 +191,7 @@ const Roads = () => {
               justifyContent: 'center'
             }}
             onPress={() => handleTabPress('Home')}>
-            <Ionicons name="home-outline" size={30} color="#606060" />
+            <Ionicons name="home-outline" size={25} color="#606060" />
             <Text style={{color: '#606060'}}>Home</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -225,6 +228,17 @@ const Roads = () => {
             onPress={() => handleTabPress('Roads')}>
             <Ionicons name="car-outline" size={30} color="#396593" />
             <Text style={{color: '#396593'}}>Rutas</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              height: '100%',
+              width: '25%',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            onPress={() => handleTabPress('ShareQR')}>
+            <Feather name="share" size={25} color="#606060" />
+            <Text style={{color: '#606060'}}>Compartir</Text>
           </TouchableOpacity>
         </View>
       </ImageBackground>

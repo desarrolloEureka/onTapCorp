@@ -11,6 +11,7 @@ import ChangePassword from './src/views/home/components/main/profile/ChangePassw
 import ProfileScreen from './src/views/home/components/main/profile/Profile';
 import ProfileProfessionalScreen from './src/views/home/components/main/profile/ProfileProfessional';
 import Roads from './src/views/home/components/main/roads/Roads';
+import ShareQR from './src/views/home/components/main/share/ShareQR';
 import Login from './src/views/login/Login';
 import OnboardingOne from './src/views/onboardings/OnboardigndOne';
 import OnboardingInicioSesion from './src/views/onboardings/OnboardingInicioSesion';
@@ -33,18 +34,24 @@ const App = () => {
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
-            headerShown: false,
+            headerShown: false
           }}
           initialRouteName="Splash">
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="PreviewTemplate" component={PreviewTemplate} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
-          <Stack.Screen name="ProfileProfessional" component={ProfileProfessionalScreen} />
+          <Stack.Screen
+            name="ProfileProfessional"
+            component={ProfileProfessionalScreen}
+          />
           <Stack.Screen name="ChangePassword" component={ChangePassword} />
           <Stack.Screen name="OnboardingOne" component={OnboardingOne} />
           <Stack.Screen name="OnboardingTwo" component={OnboardingTwo} />
           <Stack.Screen name="OnboardingThree" component={OnboardingThree} />
-          <Stack.Screen name="OnboardingInicioSesion" component={OnboardingInicioSesion} />
+          <Stack.Screen
+            name="OnboardingInicioSesion"
+            component={OnboardingInicioSesion}
+          />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="RecoveryPassword" component={RecoveryPassword} />
           <Stack.Screen name="AcercaDe" component={AcercaDe} />
@@ -54,6 +61,7 @@ const App = () => {
           <Stack.Screen name="Meetings" component={Meetings} />
           <Stack.Screen name="Roads" component={Roads} />
           <Stack.Screen name="Splash" component={Splash} />
+          <Stack.Screen name="ShareQR" component={ShareQR} />
         </Stack.Navigator>
       </NavigationContainer>
     </QueryClientProvider>

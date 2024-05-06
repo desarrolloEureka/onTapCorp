@@ -23,6 +23,7 @@ export type RouteStackParamList = {
   Splash: undefined;
   Meetings: undefined;
   Roads: undefined;
+  ShareQR: undefined;
 };
 
 export type StackNavigation = StackNavigationProp<RouteStackParamList>;

@@ -25,8 +25,10 @@ import FormDataUser from './FormDataUser';
 import ProfileHook from './hooks/ProfileHook';
 import PhotoUser from './PhotoUser';
 // Iconos
+import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+
 
 const Profile = () => {
   const {
@@ -83,20 +85,16 @@ const Profile = () => {
   };
 
   const handleTabPress = (tabName: string) => {
-    if (tabName === 'Professional' && userData?.data?.plan === 'standard') {
-      setIsModalAlertNavigation(true);
+    if (tabName === 'Profile') {
+      navigation.navigate('Profile');
+    } else if (tabName === 'Meetings') {
+      navigation.navigate('Meetings');
+    } else if (tabName === 'Roads') {
+      navigation.navigate('Roads');
+    } else if (tabName === 'ShareQR') {
+      navigation.navigate('ShareQR');
     } else {
-      if (tabName === 'Profile') {
-        navigation.navigate('Profile');
-      } else if (tabName === 'Professional') {
-        navigation.navigate('ProfileProfessional');
-      } else if (tabName === 'Meetings') {
-        navigation.navigate('Meetings');
-      } else if (tabName === 'Roads') {
-        navigation.navigate('Roads');
-      } else {
-        navigation.navigate('Home');
-      }
+      navigation.navigate('Home');
     }
   };
 
@@ -238,7 +236,7 @@ const Profile = () => {
                 justifyContent: 'center'
               }}
               onPress={() => handleTabPress('Home')}>
-              <Ionicons name="home-outline" size={30} color="#606060" />
+              <Ionicons name="home-outline" size={25} color="#606060" />
               <Text style={{color: '#606060'}}>Home</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -275,6 +273,17 @@ const Profile = () => {
               onPress={() => handleTabPress('Roads')}>
               <Ionicons name="car-outline" size={30} color="#606060" />
               <Text style={{color: '#606060'}}>Rutas</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                height: '100%',
+                width: '25%',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              onPress={() => handleTabPress('ShareQR')}>
+              <Feather name="share" size={25} color="#606060" />
+              <Text style={{color: '#606060'}}>Compartir</Text>
             </TouchableOpacity>
           </View>
         </ImageBackground>

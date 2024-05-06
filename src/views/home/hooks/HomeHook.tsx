@@ -69,6 +69,8 @@ const HomeHook = () => {
       navigation.navigate('Meetings');
     } else if (tabName === 'Roads') {
       navigation.navigate('Roads');
+    } else if (tabName === 'ShareQR') {
+      navigation.navigate('ShareQR');
     } else {
       navigation.navigate('Home');
     }

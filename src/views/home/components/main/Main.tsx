@@ -396,7 +396,7 @@ const Main = () => {
               borderColor: '#396593'
             }}
             onPress={() => handleTabPress('Home')}>
-            <Ionicons name="home-outline" size={30} color="#396593" />
+            <Ionicons name="home-outline" size={25} color="#396593" />
             <Text style={{color: '#396593'}}>Home</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -431,6 +431,17 @@ const Main = () => {
             onPress={() => handleTabPress('Roads')}>
             <Ionicons name="car-outline" size={30} color="#606060" />
             <Text style={{color: '#606060'}}>Rutas</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              height: '100%',
+              width: '25%',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            onPress={() => handleTabPress('ShareQR')}>
+            <Feather name="share" size={25} color="#606060" />
+            <Text style={{color: '#606060'}}>Compartir</Text>
           </TouchableOpacity>
         </View>
 

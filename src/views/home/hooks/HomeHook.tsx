@@ -41,15 +41,15 @@ const HomeHook = () => {
   const handleAlertDelete = (status: boolean) => setAlertDelte(!alertDelte);
 
   const handleNavigatePreview = async (template: TemplateData | undefined) => {
-    if (data?.profile?.social) {
-      if (template) {
+    // if (data?.profile?.social) {
+      // if (template) {
         navigation.navigate('PreviewTemplate');
-      } else {
-        setIsModalAlertBg(true);
-      }
-    } else {
-      setIsAlertProfileSocial(true);
-    }
+      // } else {
+      //   setIsModalAlertBg(true);
+      // }
+    // } else {
+    //   setIsAlertProfileSocial(true);
+    // }
   };
 
   const copyToClipboard = () => {

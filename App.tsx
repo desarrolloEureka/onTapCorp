@@ -19,6 +19,7 @@ import OnboardingThree from './src/views/onboardings/OnboardingThree';
 import OnboardingTwo from './src/views/onboardings/OnboargindTwo';
 import Splash from './src/views/onboardings/Splash';
 import AcercaDe from './src/views/opcionesMenu/AcercaDe';
+import Documentos from './src/views/opcionesMenu/Documentos';
 import Politicas from './src/views/opcionesMenu/Politicas';
 import Terminos from './src/views/opcionesMenu/Terminos';
 import RecoveryPassword from './src/views/recovery/components/main/RecoveryPassword';
@@ -62,6 +63,7 @@ const App = () => {
           <Stack.Screen name="Roads" component={Roads} />
           <Stack.Screen name="Splash" component={Splash} />
           <Stack.Screen name="ShareQR" component={ShareQR} />
+          <Stack.Screen name="Documentos" component={Documentos} />
         </Stack.Navigator>
       </NavigationContainer>
     </QueryClientProvider>

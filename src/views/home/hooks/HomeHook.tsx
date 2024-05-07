@@ -1,30 +1,38 @@
-import { useEffect, useState } from 'react';
-import { TemplateData } from '../../../types/user';
-import { useQueryClient } from '@tanstack/react-query';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { useNavigation } from '@react-navigation/native';
-import { RouteStackParamList } from '../../../types/navigation';
-import { Alert, BackHandler } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
-import { GetUser, SendInactiveUser, SendTemplateSelected } from '../../../reactQuery/users';
-import { GetAllTemplates } from '../../../reactQuery/home';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useQueryClient } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+import { Alert, BackHandler } from 'react-native';
 import LogOut from '../../../hooks/logOut/LogOut';
+import { GetAllTemplates } from '../../../reactQuery/home';
+import {
+  GetUser,
+  SendInactiveUser,
+  SendTemplateSelected
+} from '../../../reactQuery/users';
+import { RouteStackParamList } from '../../../types/navigation';
+import { TemplateData } from '../../../types/user';
 
 const HomeHook = () => {
-  const { data } = GetUser();
+  const {data} = GetUser();
   const templates = GetAllTemplates();
   const queryClient = useQueryClient();
-  const { logOut } = LogOut();
+  const {logOut} = LogOut();
   const [isAlertProfileSocial, setIsAlertProfileSocial] = useState(false);
   const [isModalAlertBg, setIsModalAlertBg] = useState(false);
   const [isLoadingSendData, setIsLoadingSendData] = useState(false);
   const [copiedText, setIscopiedText] = useState(false);
-  const navigation = useNavigation<StackNavigationProp<RouteStackParamList, 'Home'>>();
-  const handleAlertProfileSocial = (status: boolean) => setIsAlertProfileSocial(!isAlertProfileSocial);
-  const handleModalAlertBg = (status: boolean) => setIsModalAlertBg(!isModalAlertBg);
+  const navigation =
+    useNavigation<StackNavigationProp<RouteStackParamList, 'Home'>>();
+  const handleAlertProfileSocial = (status: boolean) =>
+    setIsAlertProfileSocial(!isAlertProfileSocial);
+  const handleModalAlertBg = (status: boolean) =>
+    setIsModalAlertBg(!isModalAlertBg);
 
   const [alertSwitchOff, setAlertSwitchOff] = useState(false);
-  const handleAlertSwitch = (status: boolean) => setAlertSwitchOff(!alertSwitchOff);
+  const handleAlertSwitch = (status: boolean) =>
+    setAlertSwitchOff(!alertSwitchOff);
 
   const [alertLogOut, setAlertLogOut] = useState(false);
   const handleAlertLogOut = (status: boolean) => setAlertLogOut(!alertLogOut);
@@ -32,34 +40,37 @@ const HomeHook = () => {
   const [alertDelte, setAlertDelte] = useState(false);
   const handleAlertDelete = (status: boolean) => setAlertDelte(!alertDelte);
 
-
   const handleNavigatePreview = async (template: TemplateData | undefined) => {
-    if (data?.profile?.social) {
-      if (template) {
+    // if (data?.profile?.social) {
+      // if (template) {
         navigation.navigate('PreviewTemplate');
-      } else {
-        setIsModalAlertBg(true);
-      }
-    } else {
-      setIsAlertProfileSocial(true);
-    }
+      // } else {
+      //   setIsModalAlertBg(true);
+      // }
+    // } else {
+    //   setIsAlertProfileSocial(true);
+    // }
   };
 
   const copyToClipboard = () => {
     const url = data?.preview;
-    Clipboard.setString("" + url);
+    Clipboard.setString('' + url);
     setIscopiedText(true);
     setTimeout(() => {
       setIscopiedText(false);
     }, 5000);
   };
 
-  //Funcion navegacion tabNav 
+  //Funcion navegacion tabNav
   const handleTabPress = (tabName: string) => {
     if (tabName === 'Profile') {
       navigation.navigate('Profile');
     } else if (tabName === 'Meetings') {
       navigation.navigate('Meetings');
+    } else if (tabName === 'Roads') {
+      navigation.navigate('Roads');
+    } else if (tabName === 'ShareQR') {
+      navigation.navigate('ShareQR');
     } else {
       navigation.navigate('Home');
     }
@@ -67,12 +78,14 @@ const HomeHook = () => {
 
   //Funcion selecionar plantilla(CheckBox)
   const selectTemplate = async (value: any) => {
-    let fakeDataClone = []
+    let fakeDataClone = [];
     setIsLoadingSendData(true);
-    fakeDataClone = [({
-      id: value.id,
-      checked: true,
-    })];
+    fakeDataClone = [
+      {
+        id: value.id,
+        checked: true
+      }
+    ];
     if (data?.uid) {
       await SendTemplateSelected(data?.uid, fakeDataClone, queryClient);
       await setIsLoadingSendData(false);
@@ -89,7 +102,7 @@ const HomeHook = () => {
         } else {
           Alert.alert(
             'Error',
-            'Ocurrió un error y no fue posible eliminar la cuenta. Por favor, inténtalo de nuevo.',
+            'Ocurrió un error y no fue posible eliminar la cuenta. Por favor, inténtalo de nuevo.'
           );
         }
       } else {

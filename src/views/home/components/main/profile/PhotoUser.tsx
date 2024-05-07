@@ -1,26 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect, useState } from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
+  Alert,
   Image,
-  Alert
+  SafeAreaView,
+  Text,
+  View
 } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
-  launchImageLibrary,
   ImageLibraryOptions,
+  launchImageLibrary,
   MediaType
 } from 'react-native-image-picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { profileStyles } from '../../../styles/profileStyles';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SendDataImage } from '../../../../../reactQuery/users';
-import { GetUser } from '../../../../../reactQuery/users';
+import { GetUser, SendDataImage } from '../../../../../reactQuery/users';
 import { UserData } from '../../../../../types/user';
+import { profileStyles } from '../../../styles/profileStyles';
 
-const PhotoUser = ({ name, isProUser }: { name?: string; isProUser: boolean; }) => {
+const PhotoUser = ({name, isProUser}: {name?: string; isProUser: boolean}) => {
   const user = GetUser();
   const data = user.data as unknown as UserData;
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -71,7 +68,6 @@ const PhotoUser = ({ name, isProUser }: { name?: string; isProUser: boolean; }) 
 
       const asset = result.assets && result.assets[0];
       if (asset && asset.uri && asset.base64 && data && data?.uid) {
-
         if (isProUser === true) {
           setSelectedImagePro(asset.uri);
           await AsyncStorage.setItem('selectedImagePro', asset.uri);
@@ -100,47 +96,71 @@ const PhotoUser = ({ name, isProUser }: { name?: string; isProUser: boolean; }) 
   return (
     <GestureHandlerRootView>
       <SafeAreaView>
-        <View style={{ height: 245, alignItems: 'center', justifyContent: 'center', marginTop: 5 }}>
-          <View style={{ height: "70%", width: "45%", alignItems: 'center', justifyContent: 'center' }}>
-            <View style={{ height: "90%", width: "85%", backgroundColor: '#030124', alignItems: 'center', justifyContent: 'center', borderRadius: 100 }}>
+        <View
+          style={{
+            height: 245,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: 5
+          }}>
+          <View
+            style={{
+              height: '70%',
+              width: '45%',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+            <View
+              style={{
+                height: '90%',
+                width: '85%',
+                backgroundColor: '#030124',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 100
+              }}>
               {!isProUser && selectedImage ? (
                 <Image
-                  style={{ borderRadius: 100, width: '85%', height: '85%' }}
-                  source={{ uri: selectedImage }}
+                  style={{borderRadius: 100, width: '85%', height: '85%'}}
+                  source={{uri: selectedImage}}
                 />
               ) : isProUser && selectedImagePro ? (
                 <Image
-                  style={{ borderRadius: 100, width: '85%', height: '85%' }}
-                  source={{ uri: selectedImagePro }}
+                  style={{borderRadius: 100, width: '85%', height: '85%'}}
+                  source={{uri: selectedImagePro}}
                 />
               ) : !isProUser && data?.image ? (
                 <Image
-                  style={{ borderRadius: 100, width: '85%', height: '85%' }}
-                  source={{ uri: `${data?.image}` }}
+                  style={{borderRadius: 100, width: '85%', height: '85%'}}
+                  source={{uri: `${data?.image}`}}
                 />
               ) : isProUser && data?.imagePro ? (
                 <Image
-                  style={{ borderRadius: 100, width: '85%', height: '85%' }}
-                  source={{ uri: `${data?.imagePro}` }}
+                  style={{borderRadius: 100, width: '85%', height: '85%'}}
+                  source={{uri: `${data?.imagePro}`}}
                 />
               ) : (
                 <Image
-                  style={{ borderRadius: 100, width: '85%', height: '85%' }}
+                  style={{borderRadius: 100, width: '85%', height: '85%'}}
                   source={require('./../../../../../images/profilePhoto.png')}
                 />
               )}
             </View>
           </View>
-          <View style={{ height: '20%', width: '45%' }}>
+          <View style={{height: '20%', width: '45%'}}>
             <View style={profileStyles.borderTargetName}>
-              <Text style={profileStyles.textName}>
-                Hola {name ?? ''}
-              </Text>
+              <Text style={profileStyles.textName}>Hola {name ?? ''}</Text>
             </View>
           </View>
-          <View style={{ height: '10%', width: '45%', alignItems: 'center' }}>
-            <View style={{ height: '95%', width: '100%', justifyContent: 'flex-end', alignItems: 'center' }}>
-              <Text style={{ color: "#396593", fontSize: 15 }}>
+          <View style={{height: '10%', width: '45%', alignItems: 'center'}}>
+            <View
+              style={{
+                height: '95%',
+                width: '100%',
+                justifyContent: 'flex-end',
+                alignItems: 'center'
+              }}>
+              <Text style={{color: '#396593', fontSize: 15}}>
                 Area Comercial
               </Text>
             </View>

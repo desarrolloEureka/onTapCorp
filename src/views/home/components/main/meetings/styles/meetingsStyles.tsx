@@ -40,8 +40,8 @@ export const meetingsStyles = StyleSheet.create({
     elevation: 15
   },
   item: {
+    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-around',
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
@@ -59,8 +59,8 @@ export const meetingsStyles = StyleSheet.create({
     fontSize: 10
   },
   header: {
+    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-around',
     alignItems: 'center',
     paddingVertical: 10
   },
@@ -103,5 +103,19 @@ export const meetingsStyles = StyleSheet.create({
     borderRadius: 100,
     height: 40,
     width: '10%'
+  },
+  inputBox: {
+    height: '100%',
+    width: '95%',
+    fontSize: 15,
+    color: 'black',
+    marginBottom: -5
+    //paddingLeft: 1,
+  },
+  label: {
+    color: '#396593',
+    fontSize: 14,
+    marginTop: 0
+    //marginRight: 170,
   }
 });

@@ -32,11 +32,11 @@ const OnboardingInicioSesion = () => {
           <Text style={styles.buttonText}>Iniciar Sesión</Text>
         </TouchableOpacity>
       </View>
-      <View>
+      {/* <View>
         <TouchableOpacity style={styles.link}>
           <Text style={styles.linkText}>Términos y condiciones</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </ImageBackground>
   );
 };

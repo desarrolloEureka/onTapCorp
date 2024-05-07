@@ -192,7 +192,8 @@ const Profile = () => {
                     width: '100%',
                     justifyContent: 'flex-start',
                     alignItems: 'center',
-                    marginTop: 20
+                    marginTop: 20,
+                    backgroundColor: 'yellow'
                   }}></View>
 
                 <CustomModalAlert

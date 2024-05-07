@@ -1,16 +1,17 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
-  View,
+  Alert,
+  ImageBackground,
+  StyleSheet,
   Text,
   TextInput,
-  StyleSheet,
   TouchableOpacity,
-  Alert,
+  View
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
-import { resetPasswordFirebase } from '../../../../firebase/auth';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { resetPasswordFirebase } from '../../../../firebase/auth';
 
 const RecoveryPassword = () => {
   const navigation = useNavigation();
@@ -21,7 +22,7 @@ const RecoveryPassword = () => {
       await resetPasswordFirebase(email);
       Alert.alert(
         'Alerta',
-        'Si el correo existe en nuestra base de datos, un email será entregado para reestablecer tu contraseña'
+        'Si el correo existe en nuestra base de datos, un email será entregado para restablecer tu contraseña'
       );
     } catch (error) {
       Alert.alert(
@@ -36,42 +37,46 @@ const RecoveryPassword = () => {
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: '#e8e8e8', flex: 1 }}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={handleBackPress}>
-          <Icon name="arrow-back-ios" size={27} color="black" />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.contentContainer}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.heading}>Recuperar Contraseña</Text>
-        </View>
-
-        <View style={styles.container}>
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Correo</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Correo Electrónico"
-              placeholderTextColor="white"
-              underlineColorAndroid="transparent"
-              onChangeText={(text) => setEmail(text)}
-            />
-          </View>
-        </View>
-      </View>
-      <View style={styles.footerContainer}>
-        {email != '' ?
-          <TouchableOpacity style={styles.button} onPress={handleNextPress}>
-            <Text style={styles.buttonText}>Siguiente</Text>
+    <SafeAreaView style={{flex: 1}}>
+      <ImageBackground
+        source={require('../../../../images/fondo3.png')} // ruta de la imagen de fondo
+        style={styles.background}>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity onPress={handleBackPress}>
+            <Icon name="arrow-back-ios" size={27} color="black" />
           </TouchableOpacity>
-          :
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>Siguiente</Text>
+        </View>
+        <View style={styles.contentContainer}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.heading}>Recuperar Contraseña</Text>
           </View>
-        }
 
-      </View>
+          <View style={styles.container}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Correo</Text>
+              <TextInput
+                style={styles.input}
+                selectionColor={'#396593'}
+                placeholder="Correo Electrónico"
+                placeholderTextColor="grey"
+                underlineColorAndroid="transparent"
+                onChangeText={text => setEmail(text)}
+              />
+            </View>
+          </View>
+        </View>
+        <View style={styles.footerContainer}>
+          {email != '' ? (
+            <TouchableOpacity style={styles.button} onPress={handleNextPress}>
+              <Text style={styles.buttonText}>Siguiente</Text>
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>Siguiente</Text>
+            </View>
+          )}
+        </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 };
@@ -82,39 +87,38 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'flex-start',
     justifyContent: 'center',
-    paddingLeft: 15,
+    paddingLeft: 15
   },
   contentContainer: {
     height: '77%',
     width: '100%',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   titleContainer: {
     height: '15%',
     width: '60%',
     alignItems: 'center',
-    justifyContent: 'center',
-
+    justifyContent: 'center'
   },
   container: {
     paddingTop: 2,
-    height: "85%",
-    width: "100%",
+    height: '85%',
+    width: '100%',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-start'
   },
   inputContainer: {
     height: '25%',
     width: '90%',
     alignItems: 'flex-start',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   footerContainer: {
     height: '15%',
     width: '100%',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   heading: {
     color: '#396593',
@@ -123,32 +127,32 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderColor: "#396593"
+    borderColor: '#396593'
   },
   label: {
     fontFamily: 'Open Sans',
     fontSize: 15,
     fontWeight: '400',
-    color: '#008F9E',
+    color: '#396593'
   },
   input: {
     height: 52,
     width: '100%',
     borderBottomWidth: 1,
-    borderBottomColor: '#008F9E',
+    borderBottomColor: '#396593',
     color: '#030124',
     fontFamily: 'Open Sans',
     fontSize: 17,
-    fontWeight: '300',
+    fontWeight: '300'
   },
   button: {
-    backgroundColor: '#02AF9B',
+    backgroundColor: '#396593',
     height: '45%',
     width: '60%',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 30,
-    shadowColor: '#000',
+    shadowColor: '#000'
   },
   buttonText: {
     color: '#FFFFFF',
@@ -157,8 +161,12 @@ const styles = StyleSheet.create({
     fontWeight: '300',
     lineHeight: 19,
     letterSpacing: 0.08,
-    textAlign: 'left',
+    textAlign: 'left'
   },
+  background: {
+    flex: 1,
+    resizeMode: 'cover'
+  }
 });
 
 export default RecoveryPassword;

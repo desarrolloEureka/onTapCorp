@@ -5,8 +5,6 @@ export const splashStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
-    paddingTop: 103
   },
   imageContainer: {
     width: 165,
@@ -17,5 +15,10 @@ export const splashStyles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'cover'
+  },
+  background: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });

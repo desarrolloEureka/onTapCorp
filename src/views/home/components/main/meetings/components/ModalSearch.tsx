@@ -64,7 +64,7 @@ function ModalSearch({showConfigSearch, handleConfigSearch}: Props) {
                         fontWeight: '500',
                         color: '#396593'
                       }}>
-                      Filtrar por Estado
+                      Filtrar por estado
                     </Text>
                   </View>
                   <TouchableOpacity

@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   ScrollView,
   Text,
+  Image,
   TouchableOpacity,
   View
 } from 'react-native';
@@ -17,6 +18,9 @@ import TabHeader from './components/TabHeader';
 import MeetingsHook from './hook/MeetingsHook';
 import {meetingsStyles} from './styles/meetingsStyles';
 import FirstTap from './components/FirstTap';
+import MenuSuperior from '../../../../menuSuperior/MenuSuperior';
+import HomeHook from '../../../hooks/HomeHook';
+import ModalAlertDown from '../profile/ModalAlertDown';
 
 const data = [
   {id: '1', fecha: '01/05/2024', nombre: 'Cliente A', estado: 'Llamar'},
@@ -38,6 +42,15 @@ const Meetings = () => {
     handleShowDetail,
     showModalDetail
   } = MeetingsHook();
+  const {
+    setAlertLogOut,
+    setAlertDelte,
+    handleAlertDelete,
+    handleAlertLogOut,
+    handlePressModalYes,
+    alertDelte,
+    alertLogOut
+  } = HomeHook();
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#E9E9E9'}}>
@@ -45,18 +58,11 @@ const Meetings = () => {
         resizeMode="cover"
         style={{height: '100%', width: '100%'}}
         source={require('../../../../../images/background.png')}>
-        <View style={{height: '7%', width: '100%'}}>
-          <TouchableOpacity
-            style={{
-              height: '100%',
-              width: '18%',
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingLeft: 5
-            }}
-            onPress={handleBackPress}>
-            <Icon name="arrow-back-ios" size={27} color="black" />
-          </TouchableOpacity>
+        <View style={{height: '7%', width: '90%', paddingLeft: 10}}>
+          <MenuSuperior
+            setAlertLogOut={setAlertLogOut}
+            setAlertDelte={setAlertDelte}
+          />
         </View>
 
         <TabHeader activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -101,7 +107,11 @@ const Meetings = () => {
               justifyContent: 'center'
             }}
             onPress={() => handleTabPress('Home')}>
-            <Ionicons name="home-outline" size={25} color="#606060" />
+            {/* <Ionicons name="home-outline" size={25} color="#606060" /> */}
+            <Image
+              source={require('../../../../../images/icon.png')}
+              style={{width: 25, height: 25, tintColor: '#606060'}}
+            />
             <Text style={{color: '#606060'}}>Home</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -151,6 +161,21 @@ const Meetings = () => {
             <Text style={{color: '#606060'}}>Compartir</Text>
           </TouchableOpacity>
         </View>
+        <ModalAlertDown
+          isModalAlert={alertLogOut}
+          handleModalAlert={handleAlertLogOut}
+          handlePressModalYes={handlePressModalYes}
+          description={'¿Estás seguro de que deseas cerrar sesión?'}
+          isDelete={false}
+        />
+
+        <ModalAlertDown
+          isModalAlert={alertDelte}
+          handleModalAlert={handleAlertDelete}
+          handlePressModalYes={handlePressModalYes}
+          description={'¿Estás seguro de que deseas eliminar tu cuenta?'}
+          isDelete={true}
+        />
       </ImageBackground>
     </SafeAreaView>
   );

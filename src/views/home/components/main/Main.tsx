@@ -5,6 +5,7 @@ import {
   ImageBackground,
   SafeAreaView,
   Text,
+  ScrollView,
   TouchableOpacity,
   View
 } from 'react-native';
@@ -47,13 +48,93 @@ const Main = () => {
     handlePressModalYes
   } = HomeHook();
 
+
+  const SectionHeader = ({title}) => (
+    <View
+      style={{
+        height: 30,
+        width: '100%',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        paddingLeft: 20
+      }}>
+      <View
+        style={{
+          paddingVertical: 5,
+          paddingHorizontal: 15,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#396593',
+          borderRadius: 3
+        }}>
+        <Text style={{fontSize: 13, color: 'white'}}>{title}</Text>
+      </View>
+    </View>
+  );
+
+  const SectionItem = ({icon, text}) => (
+    <TouchableOpacity
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 50,
+        width: '90%',
+        borderBottomWidth: 1,
+        borderBottomColor: '#9b9db3',
+        marginTop: 30,
+        backgroundColor: 'white'
+      }}>
+      <View
+        style={{
+          height: '100%',
+          width: '15%',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+        <Ionicons name={icon} size={28} color="#396593" />
+      </View>
+      <View
+        style={{
+          height: '100%',
+          width: '85%',
+          alignItems: 'flex-start',
+          justifyContent: 'center'
+        }}>
+        <Text
+          style={{
+            fontSize: 16,
+            color: 'black'
+          }}>
+          {text}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  const Section = ({title, items}) => (
+    <View
+      style={{
+        paddingVertical: 20,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        marginBottom: 20
+      }}>
+      <SectionHeader title={title} />
+      {items.map((item, index) => (
+        <SectionItem key={index} icon={item.icon} text={item.text} />
+      ))}
+    </View>
+  );
+
   return (
     <SafeAreaView style={homeStyles.rootContainer}>
       <ImageBackground
         resizeMode="cover"
         style={{height: '100%', width: '100%'}}
         source={require('../../../../images/background.png')}>
-        <View
+        {/* <View
           style={{
             height: 150,
             width: '100%',
@@ -61,24 +142,27 @@ const Main = () => {
             alignItems: 'center'
           }}>
           <View style={{height: '50%', width: '100%', flexDirection: 'row'}}>
-            <View style={{height: '100%', width: '20%', flexDirection: 'row'}}>
+            <View style={{height: '100%', width: '20%', flexDirection: 'row'}}> */}
               <View
-                style={{
-                  height: '95%',
-                  width: '65%',
-                  justifyContent: 'center',
-                  alignItems: 'flex-end',
-                  marginLeft: 14,
-                  marginTop: 3
-                }}>
-                <Image
-                  resizeMode="contain"
-                  style={{width: '100%', height: '100%'}}
-                  source={require('../../../../images/logo_inicio.png')}
-                />
-              </View>
-            </View>
-            <View
+          style={{
+            height: '8%',
+            width: '100%',
+            flexDirection: 'row'
+          }}>
+          <View
+            style={{
+              height: '100%',
+              width: '50%',
+              justifyContent: 'flex-end',
+              alignItems: 'flex-start'
+            }}>
+            <Image
+              resizeMode="contain"
+              style={{width: '55%', height: '70%'}}
+              source={require('../../../../images/logo_inicio.png')}
+            />
+          </View>
+          {/* <View
               style={{
                 height: '100%',
                 width: '60%',
@@ -122,21 +206,21 @@ const Main = () => {
                   )}
                 </TouchableOpacity>
               </View>
-            </View>
+            </View> */}
             <View
               style={{
                 height: '100%',
-                width: '20%',
-                alignItems: 'flex-end',
+                width: '50%',
+                alignItems: 'center',
                 justifyContent: 'flex-end',
                 flexDirection: 'row'
               }}>
               <View
                 style={{
                   height: '100%',
-                  width: '100%',
+                  width: '40%',
                   justifyContent: 'center',
-                  alignItems: 'flex-end'
+                  alignItems: 'center'
                 }}>
                 <MenuSuperior
                   setAlertLogOut={setAlertLogOut}
@@ -146,7 +230,7 @@ const Main = () => {
             </View>
           </View>
 
-          <View style={{height: '50%', width: '90%', flexDirection: 'row'}}>
+           {/* <View style={{height: '50%', width: '90%', flexDirection: 'row'}}>
             <View
               style={{height: '100%', width: '50%', justifyContent: 'center'}}>
               <View
@@ -165,7 +249,7 @@ const Main = () => {
               </View>
             </View>
 
-            <View
+            {/* <View
               style={{
                 height: '100%',
                 width: '50%',
@@ -197,8 +281,9 @@ const Main = () => {
               </View>
             </View>
           </View>
-        </View>
+        </View>*/}
 
+        <ScrollView contentContainerStyle={{flexGrow: 1, paddingBottom: 90}}>
         <View
           style={{
             height: 60,
@@ -213,12 +298,69 @@ const Main = () => {
               justifyContent: 'center',
               alignItems: 'center'
             }}>
-            <Text style={{fontSize: 22, fontWeight: '500', color: '#396593'}}>
-              Plantillas
-            </Text>
+              <Text style={{fontSize: 22, fontWeight: '600', color: 'black'}}>
+                Comunicaciones
+              </Text>
+            </View>
           </View>
-        </View>
 
+          <Section
+            title="Circulares"
+            items={[
+              {
+                icon: 'document-attach-outline',
+                text: 'Comunicado interno'
+              }
+            ]}
+          />
+          <Section
+            title="Eventos"
+            items={[
+              {
+                icon: 'document-attach-outline',
+                text: 'Día del trabajador'
+              },
+              {
+                icon: 'document-attach-outline',
+                text: 'Día de la Familia'
+              }
+            ]}
+          />
+
+          <Section
+            title="Políticas"
+            items={[
+              {
+                icon: 'document-attach-outline',
+                text: 'Políticas y procedimientos'
+              }
+            ]}
+          />
+
+          <Section
+            title="Formularios y solicitudes"
+            items={[
+              {
+                icon: 'document-attach-outline',
+                text: 'Aumento salarial'
+              },
+              {
+                icon: 'document-attach-outline',
+                text: 'Permiso laboral'
+              }
+            ]}
+          />
+          <Section
+            title="Noticias"
+            items={[
+              {
+                icon: 'document-attach-outline',
+                text: 'Cambio horario'
+              }
+            ]}
+          />
+        </ScrollView>
+        {/* 
         <View
           style={{
             height: 475,
@@ -373,7 +515,7 @@ const Main = () => {
               />
             )}
           </View>
-        </View>
+        </View> */}
 
         <View
           style={{
@@ -396,7 +538,11 @@ const Main = () => {
               borderColor: '#396593'
             }}
             onPress={() => handleTabPress('Home')}>
-            <Ionicons name="home-outline" size={25} color="#396593" />
+            {/* <Ionicons name="home-outline" size={25} color="#396593" /> */}
+            <Image
+              source={require('../../../../images/icon.png')}
+              style={{width: 25, height: 25, tintColor: '#396593'}}
+            />            
             <Text style={{color: '#396593'}}>Home</Text>
           </TouchableOpacity>
           <TouchableOpacity

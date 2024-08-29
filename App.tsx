@@ -1,8 +1,8 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import React from 'react';
-import { RouteStackParamList } from './src/types/navigation';
+import {RouteStackParamList} from './src/types/navigation';
 import HomeScreen from './src/views/home/Home';
 import Plantillas from './src/views/home/components/main/home/Plantillas';
 import PreviewTemplate from './src/views/home/components/main/home/PreviewTemplate';
@@ -23,6 +23,7 @@ import Documentos from './src/views/opcionesMenu/Documentos';
 import Politicas from './src/views/opcionesMenu/Politicas';
 import Terminos from './src/views/opcionesMenu/Terminos';
 import RecoveryPassword from './src/views/recovery/components/main/RecoveryPassword';
+import RecoveryPasswordTwo from './src/views/recovery/components/main/RecoveryPasswordTwo';
 
 const Stack = createNativeStackNavigator<RouteStackParamList>();
 
@@ -55,6 +56,10 @@ const App = () => {
           />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="RecoveryPassword" component={RecoveryPassword} />
+          <Stack.Screen
+            name="RecoveryPasswordTwo"
+            component={RecoveryPasswordTwo}
+          />
           <Stack.Screen name="AcercaDe" component={AcercaDe} />
           <Stack.Screen name="Terminos" component={Terminos} />
           <Stack.Screen name="Politicas" component={Politicas} />

@@ -59,12 +59,12 @@ const ProfileProfessionalHook = ({
 
   const handleSendProfile = async (isProUser: boolean) => {
     const userId = data?.uid;
-    const emails = dataForm?.emails?.map((email) => email.text);
-    const phones = dataForm?.phones?.map((phone) => phone.text);
-    const urls = dataForm?.urls?.map((urls) => urls);
-    const education = dataForm?.education?.map((education) => education);
+    const emails = dataForm?.emails?.map(email => email.text);
+    const phones = dataForm?.phones?.map(phone => phone.text);
+    const urls = dataForm?.urls?.map(urls => urls);
+    const education = dataForm?.education?.map(education => education);
     const professionalCareer = dataForm?.professional_career?.map(
-      (proCareer) => proCareer
+      proCareer => proCareer
     );
 
     /* if (emails) {

@@ -1,10 +1,13 @@
 import React from 'react';
-import { ImageBackground, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, SafeAreaView, Text,Image, TouchableOpacity, View } from 'react-native';
 import QRCodeStyled from 'react-native-qrcode-styled';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import ShareHook from './hook/ShareHook';
+import MenuSuperior from '../../../../menuSuperior/MenuSuperior';
+import HomeHook from '../../../hooks/HomeHook';
+import ModalAlertDown from '../profile/ModalAlertDown';
 
 const ShareQR = () => {
   const {
@@ -17,6 +20,15 @@ const ShareQR = () => {
     handleShare
   } = ShareHook();
 
+  const {
+    setAlertLogOut,
+    setAlertDelte,
+    handleAlertDelete,
+    handleAlertLogOut,
+    handlePressModalYes,
+    alertDelte,
+    alertLogOut
+  } = HomeHook();
   return (
     urlGlobal && (
       <SafeAreaView style={{flex: 1}}>
@@ -24,17 +36,11 @@ const ShareQR = () => {
           resizeMode="cover"
           style={{height: '100%', width: '100%'}}
           source={require('../../../../../images/background.png')}>
-          <View style={{height: '10%', width: '100%'}}>
-            <TouchableOpacity
-              style={{
-                height: '100%',
-                width: '20%',
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}
-              onPress={handleBackPress}>
-              <MaterialIcons name="arrow-back-ios" size={27} color="black" />
-            </TouchableOpacity>
+          <View style={{height: '7%', width: '90%', paddingLeft: 10}}>
+            <MenuSuperior
+              setAlertLogOut={setAlertLogOut}
+              setAlertDelte={setAlertDelte}
+            />
           </View>
 
           <View
@@ -212,7 +218,11 @@ const ShareQR = () => {
                 justifyContent: 'center'
               }}
               onPress={() => handleTabPress('Home')}>
-              <Ionicons name="home-outline" size={25} color="#606060" />
+              {/* <Ionicons name="home-outline" size={25} color="#606060" /> */}
+              <Image
+                source={require('../../../../../images/icon.png')}
+                style={{width: 25, height: 25, tintColor: '#606060'}}
+              />
               <Text style={{color: '#606060'}}>Home</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -261,7 +271,23 @@ const ShareQR = () => {
               <Feather name="share" size={25} color="#396593" />
               <Text style={{color: '#396593'}}>Compartir</Text>
             </TouchableOpacity>
-          </View>
+            </View>
+
+<ModalAlertDown
+  isModalAlert={alertLogOut}
+  handleModalAlert={handleAlertLogOut}
+  handlePressModalYes={handlePressModalYes}
+  description={'¿Estás seguro de que deseas cerrar sesión?'}
+  isDelete={false}
+/>
+
+<ModalAlertDown
+  isModalAlert={alertDelte}
+  handleModalAlert={handleAlertDelete}
+  handlePressModalYes={handlePressModalYes}
+  description={'¿Estás seguro de que deseas eliminar tu cuenta?'}
+  isDelete={true}
+/>
         </ImageBackground>
       </SafeAreaView>
     )

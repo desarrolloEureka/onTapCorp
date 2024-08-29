@@ -55,9 +55,13 @@ const MenuSuperior = ({
     } else if (item.id === 6) {
       navigation.navigate('AcercaDe');
     } else if (item.id === 7) {
-      navigation.navigate('Politicas');
+      Linking.openURL(
+        'https://drive.google.com/file/d/1ple9F3bJ7acszQTHKRWNJ9TGU065TZHr/view'
+      ); // CAMBIAR A URL DONDE ESTA EL ARCHIVO DE Políticas de Privacidad
     } else if (item.id === 9) {
-      navigation.navigate('Terminos');
+      Linking.openURL(
+        'https://drive.google.com/file/d/1Rtiph9Tx0Po1eiWZqKdOy1-3kBHCSnaN/view'
+      ); // CAMBIAR A URL DONDE ESTA EL ARCHIVO DE Términos y Condiciones
     } else if (item.id === 11) {
       navigation.navigate('ChangePassword');
     } else if (item.id === 12) {
@@ -69,7 +73,7 @@ const MenuSuperior = ({
 
   const renderModalContent = () => {
     const items = [
-      {id: 5, name: 'Documentos', icon: 'newspaper'},
+      // {id: 5, name: 'Documentos', icon: 'newspaper'},
       {id: 6, name: 'Acerca De', icon: 'information-outline'},
       {id: 7, name: 'Políticas de Privacidad', icon: 'lock'},
       {id: 9, name: 'Términos y Condiciones', icon: 'file-contract'},
@@ -83,16 +87,17 @@ const MenuSuperior = ({
       <View
         style={{
           flex: 1,
-          justifyContent: 'flex-end',
-          alignItems: 'flex-end',
-          backgroundColor: 'rgba(128, 128, 128, 0.1)'
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgba(128, 128, 128, 0.5)'
         }}>
         <View
           style={{
-            height: '10%',
-            width: '65%',
+            height: '9%',
+            width: '90%',
             alignItems: 'flex-end',
-            borderTopLeftRadius: 15,
+            borderTopLeftRadius: 13,
+            borderTopRightRadius: 13,
             backgroundColor: 'white',
             borderBottomWidth: 1,
             borderBottomColor: '#ccc'
@@ -100,19 +105,26 @@ const MenuSuperior = ({
           <TouchableOpacity
             style={{
               height: '100%',
-              width: '25%',
+              width: '20%',
               justifyContent: 'center',
               alignItems: 'center'
             }}
             onPress={toggleModal}>
-            <Text style={styles.iconText}>☰</Text>
-          </TouchableOpacity>
+            <AntDesign name={'close'} size={30} color="#396593" />
+            </TouchableOpacity>
         </View>
         <View
           style={{
-            height: '90%',
-            width: '65%',
-            justifyContent: 'flex-start',
+            width: '90%',
+            alignItems: 'center',
+            backgroundColor: 'white',
+            borderBottomLeftRadius: 13,
+            borderBottomRightRadius: 13
+          }}>
+          <View
+            style={{
+              width: '90%',
+              height: '42.5%',            
             backgroundColor: 'white'
           }}>
           {items.map(item => (
@@ -124,45 +136,46 @@ const MenuSuperior = ({
               <View
                 style={{height: '100%', width: '90%', flexDirection: 'row'}}>
                 {item.icon === 'shopping-cart' ? (
-                  <Feather name={item.icon} size={24} color="black" />
-                ) : null}
+                    <Feather name={item.icon} size={26} color="black" />
+                  ) : null}
                 {item.icon === 'restore' ||
                 item.icon === 'storefront-outline' ||
                 item.icon === 'information-outline' ||
                 item.icon === 'chat-question-outline' ? (
                   <MaterialCommunityIcons
                     name={item.icon}
-                    size={24}
+                    size={26}
                     color="black"
                   />
                 ) : null}
                 {item.icon === 'file-present' ||
                 item.icon === 'password' ||
                 item.icon === 'logout' ? (
-                  <MaterialIcons name={item.icon} size={24} color="black" />
+                  <MaterialIcons name={item.icon} size={26} color="black" />
                 ) : null}
                 {item.icon === 'deleteuser' ? (
-                  <AntDesign name={item.icon} size={24} color="black" />
-                ) : null}
-                {item.icon === 'lock' ? (
-                  <SimpleLineIcons name={item.icon} size={23} color="black" />
-                ) : null}
-                {item.icon === 'file-contract' ? (
-                  <FontAwesome5 name={item.icon} size={22} color="black" />
-                ) : null}
-                {item.icon === 'shopping-basket-remove' ? (
-                  <Fontisto name={item.icon} size={22} color="black" />
-                ) : null}
-                {item.icon === 'newspaper' ? (
-                  <Ionicons name={item.icon} size={22} color="black" />
-                ) : null}
-                <Text style={{color: 'black', paddingLeft: 12}}>
-                  {' '}
-                  {item.name}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          ))}
+                    <AntDesign name={item.icon} size={26} color="black" />
+                  ) : null}
+                  {item.icon === 'lock' ? (
+                    <SimpleLineIcons name={item.icon} size={25} color="black" />
+                  ) : null}
+                  {item.icon === 'file-contract' ? (
+                    <FontAwesome5 name={item.icon} size={24} color="black" />
+                  ) : null}
+                  {item.icon === 'shopping-basket-remove' ? (
+                    <Fontisto name={item.icon} size={24} color="black" />
+                  ) : null}
+                  {item.icon === 'newspaper' ? (
+                    <Ionicons name={item.icon} size={24} color="black" />
+                  ) : null}
+                  <Text style={{color: 'black', paddingLeft: 12, fontSize: 16}}>
+                    {' '}
+                    {item.name}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
       </View>
     );

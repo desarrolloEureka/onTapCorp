@@ -45,7 +45,7 @@ const ItemFormUrl = ({
   dataForm: SocialDataForm;
   handleDataSet: (e: SocialDataForm) => void;
   index: IndexDataForm;
-  labelArray: | DataFormValues[];
+  labelArray: DataFormValues[];
   value: any;
   handleModalAlert: ({
     index,

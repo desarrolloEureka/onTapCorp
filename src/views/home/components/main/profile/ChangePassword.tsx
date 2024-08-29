@@ -16,8 +16,8 @@ const ChangePassword = () => {
     const [stateUpdate, setStateUpdate] = useState(false);
 
     const handleSeePassword = () => {
-        setShowPasswordOne(!showPasswordOne)
-    }
+        setShowPasswordOne(!showPasswordOne);
+    };
 
     const handleSeePasswordTwo = () => {
         setShowPasswordTwo(!showPasswordTwo)
@@ -260,14 +260,14 @@ const ChangePassword = () => {
             <TouchableOpacity
               style={{
                 height: '15%',
-                width: '55%',
-                backgroundColor: '#030124',
+                width: '65%',
+                backgroundColor: '#396593',
                 justifyContent: 'center',
                 alignItems: 'center',
                 borderRadius: 100
               }}
               onPress={handleChangePassword}>
-              <Text style={styles.buttonText}>Continuar</Text>
+              <Text style={styles.buttonText}>Guardar</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

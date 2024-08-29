@@ -1,5 +1,5 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import {useNavigation} from '@react-navigation/native';
+import React, {useState} from 'react';
 import {
   Alert,
   ImageBackground,
@@ -9,25 +9,33 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { resetPasswordFirebase } from '../../../../firebase/auth';
+import {resetPasswordFirebase} from '../../../../firebase/auth';
 
 const RecoveryPassword = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
+  const [statusSendEmail, setStatusSendEmail] = useState('');
 
   const handleNextPress = async () => {
-    try {
-      await resetPasswordFirebase(email);
+    const res = await resetPasswordFirebase(email);
+    setStatusSendEmail(res as any);
+    if (res === 'success') {
       Alert.alert(
-        'Alerta',
-        'Si el correo existe en nuestra base de datos, un email será entregado para restablecer tu contraseña'
+        'Enhorabuena',
+        'Se ha enviado un correo para restablecer tu contraseña. Por favor, revisa tu bandeja de entrada.'
       );
-    } catch (error) {
+      navigation.goBack();
+    } else if (res === 'user_not_found') {
       Alert.alert(
         'Error',
-        'Hubo un problema al intentar reiniciar la contraseña. Por favor, inténtalo de nuevo.'
+        'El correo electrónico no está registrado. Por favor, verifica y vuelve a intentarlo.'
+      );
+    } else if (res === 'send_email_failed') {
+      Alert.alert(
+        'Error',
+        'Hubo un problema al intentar enviar el correo de restablecimiento. Por favor, inténtalo de nuevo.'
       );
     }
   };

@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { LoginError } from '../../../types/login';
 import { StackNavigation } from '../../../types/navigation';
 import { UserData } from '../../../types/user';
+import {Linking} from 'react-native';
 
 const HomeHook = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,7 +25,13 @@ const HomeHook = () => {
   };
 
   const handleGoTerms = () => {
-    navigation.navigate('Terminos');
+    Linking.openURL(
+      'https://drive.google.com/file/d/1Rtiph9Tx0Po1eiWZqKdOy1-3kBHCSnaN/view'
+    ); // CAMBIAR A URL DONDE ESTA EL ARCHIVO DE Términos y Condiciones
+  };
+
+  const handleBackPress = () => {
+    navigation.goBack();
   };
 
   const handleLogin = async () => {
@@ -100,6 +107,7 @@ const HomeHook = () => {
     navigation,
     handleForgotPassword,
     handleGoTerms,
+    handleBackPress,
     handleLogin
   };
 };

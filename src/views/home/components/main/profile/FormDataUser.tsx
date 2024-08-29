@@ -15,8 +15,7 @@ const FormDataUser = ({
     handleData,
     user,
     handleSwitch,
-}:
-    {
+}: {
         dataForm: SocialDataForm;
         handleDataSet: (e: SocialDataForm) => void;
         isProUser: boolean;
@@ -38,8 +37,8 @@ const FormDataUser = ({
                 if (
                     index == 'name' ||
                     index == 'nit' ||
-                    index == 'sector' ||
-                    index == 'phone'
+                    index == 'phone' ||
+                    index == 'address'
                 ) {
                     console.log("value" ,value)
                     const myValue = (user && user.profile
@@ -47,7 +46,7 @@ const FormDataUser = ({
                         : dataForm && dataForm[index]) as unknown as DataFormValues;
                     return (
                         <View style={{ backgroundColor: "white" }} key={key}>
-                            {key === 0 ?
+                            {key === 0 ? (
                                 <View style={{ height: 60, width: "100%", justifyContent: 'center', alignItems: 'center', marginBottom: 15 }}>
                                     <View style={{ height: "100%", width: "96%", justifyContent: 'center' }}>
                                         <View style={{ height: "65%", width: "30%", justifyContent: 'center', backgroundColor: '#396593', borderRadius: 5 }}>
@@ -55,9 +54,7 @@ const FormDataUser = ({
                                         </View>
                                     </View>
                                 </View>
-                                :
-                                null
-                            }
+              ) : null}
                             <ItemForm
                                 label={value[1].label}
                                 handleSwitch={(e: any) => handleSwitch(e)}
@@ -73,7 +70,6 @@ const FormDataUser = ({
                     );
                 }
             })}
-
         </SafeAreaView>
     );
 };

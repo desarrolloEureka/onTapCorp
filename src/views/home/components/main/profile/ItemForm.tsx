@@ -132,7 +132,6 @@ const ItemForm = ({
           />
         )}
       </View>
-
     </View>
   );
 };

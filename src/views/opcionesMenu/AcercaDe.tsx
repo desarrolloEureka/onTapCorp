@@ -140,9 +140,7 @@ const AcercaDe = () => {
                   letterSpacing: 0.03,
                   textAlign: 'left',
                   color: '#030124'
-                }}>
-                REDACOL S.A.S
-              </Text>
+                }}></Text>
             </View>
 
             <View

@@ -51,9 +51,11 @@ const ProfileHook = ({
   const [isLoadingSendData, setIsLoadingSendData] = useState(false);
   const [switchValue, setSwitchValue] = useState(false);
 
-  const handleSendProfile = async (isProUser: boolean) => {
+  const handleSendProfile = async (isProUser: boolean) => {};
 
-  };
+  const [alertSwitchOff, setAlertSwitchOff] = useState(false);
+  const handleAlertSwitch = (status: boolean) =>
+    setAlertSwitchOff(!alertSwitchOff);
 
   const handleModalAlert = (itemDelete: { index: string; subindex: string }) => {
     if (!isModalAlert) {
@@ -87,8 +89,8 @@ const ProfileHook = ({
   }: {
     currentDataRef?: any;
     checked?: boolean;
-    name?: string
-    subindex?: number
+    name?: string;
+    subindex?: number;
   }) => {
     const isChecked = checked;
     const dataFormClone = { ...dataForm };
@@ -324,22 +326,20 @@ const ProfileHook = ({
       let label = '';
       switch (key) {
         case 'name':
-          label = "Nombres";
+          label = 'Nombre comercial';
           break;
         case 'nit':
-          label = "NIT";
-          break;
-        case 'sector':
-          label = "Sector";
+          label = 'NIT';
           break;
         case 'phone':
-          label = "Teléfono";
+          label = 'Teléfono';
+          break;
+        case 'address':
+          label = 'Dirección principal';
           break;
       }
       return label;
-    },
-    []
-  );
+    }, []);
 
   const handleSwitchAll = (val: any) => {
     setSwitchValue(!switchValue);
@@ -482,7 +482,9 @@ const ProfileHook = ({
     isEmailPhoneRight,
     setisEmailPhoneRight,
     noDeleted,
-    handleModalAlertLimit
+    handleModalAlertLimit,
+    setAlertSwitchOff,
+    handleAlertSwitch
   };
 };
 

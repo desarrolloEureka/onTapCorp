@@ -8,6 +8,7 @@ import {
   ImageBackground
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import LoginHook from '../login/hooks/LoginHook';
 
 const OnboardingInicioSesion = () => {
   const navigation = useNavigation();
@@ -17,6 +18,7 @@ const OnboardingInicioSesion = () => {
     navigation.navigate('Login');
   };
 
+  const {handleGoTerms} = LoginHook();
   return (
     <ImageBackground
       source={require('../../images/fondo3.png')} // ruta de la imagen de fondo
@@ -37,6 +39,11 @@ const OnboardingInicioSesion = () => {
           <Text style={styles.linkText}>Términos y condiciones</Text>
         </TouchableOpacity>
       </View> */}
+      <View>
+        <TouchableOpacity style={styles.link} onPress={handleGoTerms}>
+          <Text style={styles.linkText}>Términos y condiciones</Text>
+        </TouchableOpacity>
+      </View>
     </ImageBackground>
   );
 };

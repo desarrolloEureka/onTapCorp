@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LoginHook from './hooks/LoginHook';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import RoadsHook from './hooks/LoginHook';
 
 const Login = () => {
   const {
@@ -23,6 +25,7 @@ const Login = () => {
     errorForm,
     handleForgotPassword,
     handleGoTerms,
+    handleBackPress,
     handleLogin
   } = LoginHook();
 
@@ -31,6 +34,19 @@ const Login = () => {
       <ImageBackground
         source={require('../../images/fondo3.png')} // ruta de la imagen de fondo
         style={styles.background}>
+                  <View style={{height: '7%', width: '100%'}}>
+          <TouchableOpacity
+            style={{
+              height: '100%',
+              width: '18%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingLeft: 5
+            }}
+            onPress={handleBackPress}>
+            <Icon name="arrow-back-ios" size={27} color="black" />
+          </TouchableOpacity>
+        </View>
         <ScrollView>
           <View style={styles.headerContainer}></View>
 
@@ -214,7 +230,7 @@ const Login = () => {
                   <Text style={{color: 'black'}}>Recuperar Contraseña</Text>
                 </TouchableOpacity>
               </View>
-              <View
+              {/* <View
                 style={{
                   height: '10%',
                   width: '100%',
@@ -234,7 +250,7 @@ const Login = () => {
                     Términos y Condiciones
                   </Text>
                 </TouchableOpacity>
-              </View>
+              </View> */}
             </View>
           </View>
 

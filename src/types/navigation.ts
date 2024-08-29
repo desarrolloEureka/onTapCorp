@@ -13,6 +13,7 @@ export type RouteStackParamList = {
   OnboardingInicioSesion: undefined;
   Login: undefined;
   RecoveryPassword: undefined;
+  RecoveryPasswordTwo: undefined;
   RecoveryCode: undefined;
   CreateNewPassword: undefined;
   PasswordChanged: undefined;

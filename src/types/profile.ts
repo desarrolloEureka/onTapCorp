@@ -1,8 +1,8 @@
 export interface DataFormSorted {
   name?: DataFormValues;
   nit?: DataFormValues;
-  sector?: DataFormValues;
   phone?: DataFormValues;
+  address?: DataFormValues;
   urlsCompany?: UrlDataFormValues[];
   urlsCommercial?: UrlDataFormValues[];
 }
@@ -10,8 +10,8 @@ export interface DataFormSorted {
 export type SocialDataForm = {
   name?: DataFormValues;
   nit?: DataFormValues;
-  sector?: DataFormValues;
   phone?: DataFormValues;
+  address?: DataFormValues;
   urlsCompany?: UrlDataFormValues[];
   urlsCommercial?: UrlDataFormValues[];
 };
@@ -44,12 +44,12 @@ export type UrlDataFormValues = {
 };
 
 export type IndexDataForm =
-  | 'name'
-  | 'nit'
-  | 'sector'
-  | 'phone'
-  | 'urlsCompany'
-  | 'urlsCommercial'
+| 'name'
+| 'nit'
+| 'phone'
+| 'address'
+| 'urlsCompany'
+| 'urlsCommercial'
 
 export type NetworksSubIndexDataForm = 'name' | 'url' | 'icon';
 export type handleDataProps = {

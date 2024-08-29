@@ -47,6 +47,12 @@ const FirstTap = (props: Props) => {
               height: 20,
               width: '100%'
             }}>
+            <View
+              style={{
+                alignItems: 'center'
+              }}>
+              <Text style={meetingsStyles.label}>Fecha</Text>
+            </View>
             <Text style={{color: 'black', fontSize: 13}}>02/06/2024</Text>
           </View>
 
@@ -200,7 +206,7 @@ const FirstTap = (props: Props) => {
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: '#030124',
+              backgroundColor: '#888888',
               height: 40,
               width: 150
             }}>
@@ -243,7 +249,7 @@ const FirstTap = (props: Props) => {
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: '#888888',
+              backgroundColor: '#030124',
               height: 40,
               width: 150
             }}>
@@ -357,7 +363,7 @@ const FirstTap = (props: Props) => {
             style={{
               backgroundColor: '#396593',
               height: 40,
-              width: '40%',
+              width: '50%',
               justifyContent: 'center',
               alignItems: 'center',
               elevation: 5,

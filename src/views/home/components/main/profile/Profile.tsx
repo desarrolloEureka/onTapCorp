@@ -1,25 +1,28 @@
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useState } from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import React, {useState} from 'react';
 import {
   ImageBackground,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  Image,
   SafeAreaView,
   ScrollView,
   Text,
+  TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View
 } from 'react-native';
-import { GetUser } from '../../../../../reactQuery/users';
-import { RouteStackParamList } from '../../../../../types/navigation';
-import { SocialDataForm } from '../../../../../types/profile';
-import { profileStyles } from '../../../styles/profileStyles';
+import {GetUser} from '../../../../../reactQuery/users';
+import {RouteStackParamList} from '../../../../../types/navigation';
+import {SocialDataForm} from '../../../../../types/profile';
+import {profileStyles} from '../../../styles/profileStyles';
 import CustomModalAlert from './CustomModalAlert';
 import CustomModalLoading from './CustomModalLoading';
 import CustomSwitchGeneral from './CustomSwitchGeneral';
+import CustomSwitch from '../home/CustomSwitch';
 import FormAddDataUser from './FormAddDataUser';
 import FormDataUser from './FormDataUser';
 import ProfileHook from './hooks/ProfileHook';
@@ -27,8 +30,9 @@ import PhotoUser from './PhotoUser';
 // Iconos
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-
+// import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Profile = () => {
   const {
@@ -60,6 +64,7 @@ const Profile = () => {
     handleData,
     handleAddData,
     handleModalAlertLimit,
+    setAlertSwitchOff,
     isModalAlertLimit,
     handleDataNetworks,
     setModalIcons,
@@ -72,8 +77,10 @@ const Profile = () => {
   });
 
   const [isModalAlertNavigation, setIsModalAlertNavigation] = useState(false);
+
   const navigation =
     useNavigation<StackNavigationProp<RouteStackParamList, 'Home'>>();
+
   const userData = GetUser();
 
   const handleDataSet = (data: SocialDataForm) => {
@@ -113,8 +120,89 @@ const Profile = () => {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <ScrollView
                 contentContainerStyle={profileStyles.scrollViewContainer}>
-                <View style={{height: 50, width: '100%'}}>
-                  <TouchableOpacity
+                <View
+                  style={{
+                    height: 70,
+                    width: '100%',
+                    flexDirection: 'row'
+                  }}>
+                  <View
+                    style={{
+                      height: '100%',
+                      width: '27%',
+                      justifyContent: 'center'
+                    }}>
+                    <TouchableOpacity
+                      style={{
+                        height: '70%',
+                        width: '100%',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}>
+                      <Text
+                        style={{
+                          fontFamily: 'Ubuntu',
+                          fontSize: 18,
+                          fontWeight: '700',
+                          lineHeight: 28,
+                          letterSpacing: 0.03,
+                          textAlign: 'left',
+                          color: '#030124'
+                        }}>
+                        <Icon name="eye" size={22} color="#030124" />
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 11,
+                          fontWeight: 'bold',
+                          color: '#030124'
+                        }}>
+                        Vista previa perfil
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View
+                    style={{
+                      height: '100%',
+                      width: '46%',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginTop: 15
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 'bold',
+                        color: '#396593'
+                      }}>
+                      Iniciar Jornada
+                    </Text>
+                    <TouchableOpacity
+                      style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginTop: 5
+                      }}>
+                      <View
+                        style={{
+                          padding: 7,
+                          borderRadius: 50,
+                          backgroundColor: 'white',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                        <Icon2 name="power-standby" size={30} color="#396593" />
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    height: 100,
+                    width: '100%',
+                    flexDirection: 'row'
+                  }}>
+                  {/* <TouchableOpacity
                     style={{
                       height: '100%',
                       width: '18%',
@@ -123,7 +211,90 @@ const Profile = () => {
                     }}
                     onPress={handleBackPress}>
                     <Icon name="arrow-back-ios" size={27} color="black" />
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
+                  <View
+                    style={{
+                      height: '100%',
+                      width: '100%',
+                      flexDirection: 'row'
+                    }}>
+                    <View
+                      style={{
+                        height: '70%',
+                        width: '50%',
+                        paddingLeft: '3%',
+                        justifyContent: 'flex-end'
+                      }}>
+                      <View
+                        style={{
+                          backgroundColor: 'white',
+                          height: '53%',
+                          width: '57%',
+                          borderRadius: 10,
+                          justifyContent: 'center',
+                          alignItems: 'center'
+                        }}>
+                        <Text
+                          style={{
+                            fontFamily: 'Ubuntu',
+                            fontSize: 18,
+                            fontWeight: '700',
+                            lineHeight: 28,
+                            letterSpacing: 0.03,
+                            textAlign: 'left',
+                            color: '#030124'
+                          }}>
+                          <Icon name="eye" size={22} color="#030124" />{' '}
+                          {user ? user.views : ''}
+                        </Text>
+                      </View>
+                    </View>
+
+                    <View
+                      style={{
+                        height: '100%',
+                        width: '50%',
+                        flexDirection: 'row',
+                        justifyContent: 'flex-end',
+                        alignItems: 'center'
+                      }}>
+                      <View
+                        style={{
+                          height: '100%',
+                          width: '50%',
+                          justifyContent: 'center',
+                          alignItems: 'center'
+                        }}>
+                        <View
+                          style={{
+                            marginVertical: 10,
+                            alignItems: 'center'
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 11,
+                              fontWeight: 'bold',
+                              color: '#030124'
+                            }}>
+                            Ináctivar perfil
+                          </Text>
+
+                          <CustomSwitch
+                            uid={user?.uid}
+                            setAlertSwitchOff={setAlertSwitchOff}
+                          />
+                          <Text
+                            style={{
+                              fontSize: 11,
+                              fontWeight: 'bold',
+                              color: '#030124'
+                            }}>
+                            On | Off
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
                 </View>
 
                 <PhotoUser
@@ -150,6 +321,192 @@ const Profile = () => {
                     checked={switchValue}
                   />
                 </View>
+
+                <View style={{backgroundColor: 'white'}}>
+                  <View
+                    style={{
+                      height: 60,
+                      width: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginBottom: 15
+                    }}>
+                    <View
+                      style={{
+                        height: '100%',
+                        width: '96%',
+                        justifyContent: 'center'
+                      }}>
+                      <View
+                        style={{
+                          height: '65%',
+                          width: '30%',
+                          justifyContent: 'center',
+                          backgroundColor: '#396593',
+                          borderRadius: 5
+                        }}>
+                        <Text style={{color: 'white'}}> Datos empleado</Text>
+                      </View>
+                    </View>
+                  </View>
+
+                  <View
+                    style={{
+                      height: 100,
+                      justifyContent: 'flex-start',
+                      flexDirection: 'row'
+                    }}>
+                    <View
+                      style={{
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        height: '90%',
+                        width: '85%'
+                      }}>
+                      <View
+                        style={{
+                          flexDirection: 'column',
+                          alignItems: 'flex-start',
+                          height: '100%',
+                          width: '100%',
+                          paddingLeft: 10
+                        }}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            height: '20%',
+                            width: '90%'
+                          }}>
+                          <Text style={profileStyles.label}>Nombre</Text>
+                        </View>
+
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            height: '55%',
+                            width: '90%',
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#9b9db3'
+                          }}>
+                          <View
+                            style={{
+                              height: '100%',
+                              width: '15%',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}>
+                            <Ionicons
+                              name="person-outline"
+                              size={28}
+                              color="#396593"
+                            />
+                          </View>
+
+                          <View
+                            style={{
+                              height: '100%',
+                              width: '85%',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}>
+                            <TextInput
+                              keyboardType={'default'}
+                              style={profileStyles.inputBox}
+                              placeholderTextColor="#000000"
+                              underlineColorAndroid="transparent"
+                              maxLength={undefined}
+                              onChangeText={(text: any) => {}}
+                            />
+                          </View>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+
+                  <View
+                    style={{
+                      height: 100,
+                      justifyContent: 'flex-start',
+                      flexDirection: 'row'
+                    }}>
+                    <View
+                      style={{
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        height: '90%',
+                        width: '85%'
+                      }}>
+                      <View
+                        style={{
+                          flexDirection: 'column',
+                          alignItems: 'flex-start',
+                          height: '100%',
+                          width: '100%',
+                          paddingLeft: 10
+                        }}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            height: '20%',
+                            width: '90%'
+                          }}>
+                          <Text style={profileStyles.label}>Cargo</Text>
+                        </View>
+
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            height: '55%',
+                            width: '90%',
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#9b9db3'
+                          }}>
+                          <View
+                            style={{
+                              height: '100%',
+                              width: '15%',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}>
+                            <Ionicons
+                              name="document-attach-outline"
+                              size={28}
+                              color="#396593"
+                            />
+                          </View>
+
+                          <View
+                            style={{
+                              height: '100%',
+                              width: '85%',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}>
+                            <TextInput
+                              keyboardType={'default'}
+                              style={profileStyles.inputBox}
+                              placeholderTextColor="#000000"
+                              underlineColorAndroid="transparent"
+                              maxLength={undefined}
+                              onChangeText={(text: any) => {}}
+                            />
+                          </View>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    height: '1%',
+                    width: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}></View>
 
                 <FormDataUser
                   isProUser={false}
@@ -192,7 +549,7 @@ const Profile = () => {
                     width: '100%',
                     justifyContent: 'flex-start',
                     alignItems: 'center',
-                    marginTop: 20,
+                    marginTop: 20
                   }}></View>
 
                 <CustomModalAlert
@@ -236,7 +593,11 @@ const Profile = () => {
                 justifyContent: 'center'
               }}
               onPress={() => handleTabPress('Home')}>
-              <Ionicons name="home-outline" size={25} color="#606060" />
+              {/* <Ionicons name="home-outline" size={25} color="#606060" /> */}
+              <Image
+                source={require('../../../../../images/icon.png')}
+                style={{width: 25, height: 25, tintColor: '#606060'}}
+              />
               <Text style={{color: '#606060'}}>Home</Text>
             </TouchableOpacity>
             <TouchableOpacity

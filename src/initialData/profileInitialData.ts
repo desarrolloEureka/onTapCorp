@@ -108,15 +108,6 @@ export const socialProfile = {
     icon: 'document-attach-outline',/* Ionicons */
     order: 2,
   },
-  sector: {
-    label: '',
-    text: '',
-    checked: false,
-    social: true,
-    professional: false,
-    icon: 'bag-outline',/* Ionicons */
-    order: 3,
-  },
   phone: {
     label: '',
     text: '',
@@ -125,6 +116,15 @@ export const socialProfile = {
     professional: false,
     icon: 'phone',/* Feather */
     order: 4,
+  },
+  address: {
+    label: '',
+    text: '',
+    checked: false,
+    social: true,
+    professional: false,
+    icon: 'bag-outline',/* Ionicons */
+    order: 3,
   },
   urlsCompany: [dataPrincipalSocialUrl,dataPrincipalSocialUrl],
   urlsCommercial: [dataPrincipalSocialUrl],

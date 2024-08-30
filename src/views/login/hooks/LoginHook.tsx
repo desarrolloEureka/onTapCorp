@@ -1,12 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
-import { LoginError } from '../../../types/login';
-import { StackNavigation } from '../../../types/navigation';
-import { UserData } from '../../../types/user';
+import {useNavigation} from '@react-navigation/native';
+import {useState} from 'react';
+import {LoginError} from '../../../types/login';
+import {StackNavigation} from '../../../types/navigation';
+import {UserData} from '../../../types/user';
 import {Linking} from 'react-native';
+import {loginFirebase} from '../../../firebase/auth';
 
 const HomeHook = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -36,7 +37,6 @@ const HomeHook = () => {
 
   const handleLogin = async () => {
     setErrorForm(null);
-
     if (email && password) {
       try {
         await auth().signInWithEmailAndPassword(email, password);

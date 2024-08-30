@@ -22,11 +22,11 @@ const RecoveryPassword = () => {
     const res = await resetPasswordFirebase(email);
     setStatusSendEmail(res as any);
     if (res === 'success') {
-      Alert.alert(
-        'Enhorabuena',
-        'Se ha enviado un correo para restablecer tu contraseña. Por favor, revisa tu bandeja de entrada.'
-      );
-      navigation.goBack();
+      // Alert.alert(
+      //   'Enhorabuena',
+      //   'Se ha enviado un correo para restablecer tu contraseña. Por favor, revisa tu bandeja de entrada.'
+      // );
+      navigation.navigate('RecoveryPasswordTwo');
     } else if (res === 'user_not_found') {
       Alert.alert(
         'Error',

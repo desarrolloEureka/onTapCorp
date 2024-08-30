@@ -34,7 +34,7 @@ const Login = () => {
       <ImageBackground
         source={require('../../images/fondo3.png')} // ruta de la imagen de fondo
         style={styles.background}>
-                  <View style={{height: '7%', width: '100%'}}>
+        <View style={{height: '7%', width: '100%'}}>
           <TouchableOpacity
             style={{
               height: '100%',

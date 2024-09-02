@@ -93,8 +93,10 @@ export const updateSwitchAllFirebase = async (userId: string, newData: any) => {
 };
 
 export const updatePasswordFirebase = async (newPassword: string) => {
-  const auth = await getAuth();
-  const user = await auth.currentUser;
+  const auth =  getAuth();
+  const user =  auth.currentUser;
+  console.log(auth);
+  console.log("usuario",user);
 
   if (user) {
     return await updatePassword(user, newPassword)

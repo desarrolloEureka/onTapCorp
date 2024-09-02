@@ -49,7 +49,6 @@ export const resetPasswordFirebase = async (email: string) => {
   try {
     // Verificar si el usuario existe en Firestore
     const querySnapshot = await getDocs(userRefByEmail(email));
-    console.log(querySnapshot)
     if (!querySnapshot.empty) {
       // Enviar correo de restablecimiento de contraseña
       await sendPasswordResetEmail(auth, email);

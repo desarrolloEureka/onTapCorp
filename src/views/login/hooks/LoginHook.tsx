@@ -1,6 +1,5 @@
+import {getUserByIdFireStore} from '../../../firebase/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 import {useState} from 'react';
 import {LoginError} from '../../../types/login';
@@ -39,28 +38,45 @@ const HomeHook = () => {
     setErrorForm(null);
     if (email && password) {
       try {
-        await auth().signInWithEmailAndPassword(email, password);
         setEmail('');
         setPassword('');
         setErrorForm(null);
+        const resultUser = await loginFirebase({user: email, password});
 
-        const unsubscribe = auth().onAuthStateChanged(user => {
-          if (user) {
-            const userDocument = firestore().collection('users').doc(user.uid);
-            userDocument
-              .get()
-              .then(documentSnapshot => {
-                if (documentSnapshot.exists) {
-                  const dataUser = documentSnapshot.data() as UserData;
-                  AsyncStorage.setItem('@user', JSON.stringify(dataUser));
-                  navigation.navigate('Home');
-                }
-              })
-              .catch(error => {
-                console.error('Error al obtener datos del usuario:', error);
-              });
+        // Verifica si resultUser es nulo
+        if (!resultUser || !resultUser.user) {
+          setErrorForm({errorType: 2, errorMessage: 'Credenciales inválidas'});
+        }
+        if (resultUser && resultUser.user) {
+          const docSnap = await getUserByIdFireStore(resultUser.user.uid);
+          if (docSnap.exists) {
+            const user = docSnap.data() as UserData;
+            console.log('formato usuario', user);
+            await AsyncStorage.setItem('@user', JSON.stringify(user));
+            navigation.navigate('Home');
+          } else {
+            console.error('Error al obtener datos del usuario:', docSnap);
           }
-        });
+        } else {
+        }
+
+        // const unsubscribe = auth().onAuthStateChanged(user => {
+        //   if (user) {
+        //     const userDocument = firestore().collection('users').doc(user.uid);
+        //     userDocument
+        //       .get()
+        //       .then(documentSnapshot => {
+        //         if (documentSnapshot.exists) {
+        //           const dataUser = documentSnapshot.data() as UserData;
+        //           AsyncStorage.setItem('@user', JSON.stringify(dataUser));
+        //           navigation.navigate('Home');
+        //         }
+        //       })
+        //       .catch(error => {
+        //         console.error('Error al obtener datos del usuario:', error);
+        //       });
+        //   }
+        // });
         //
       } catch (error) {
         const firebaseError = error as FirebaseError;

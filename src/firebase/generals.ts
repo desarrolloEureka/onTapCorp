@@ -1,4 +1,4 @@
-import { Templates } from '../types/home';
+import { Templates, Communications } from '../types/home';
 import firestore from '@react-native-firebase/firestore';
 
 export const getAllTemplates = async () => {
@@ -15,3 +15,19 @@ export const getAllTemplates = async () => {
     });
   return templatesData;
 };
+
+export const getAllCommunications = async () => {
+  const communicationsData: Communications[] = [];
+  const communications = firestore().collection('communications');
+  await communications.get()
+    .then(querySnapshot => {
+      querySnapshot.forEach((doc: any) => {
+        const dataResult = doc.data() as Communications;
+        communicationsData.push({ ...dataResult, uid: doc.id });
+      });
+    }).catch(error => {
+      console.error('Error al obtener documentos:', error);
+    });
+  return communicationsData;
+};
+

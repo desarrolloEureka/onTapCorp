@@ -1,22 +1,23 @@
 import Clipboard from '@react-native-clipboard/clipboard';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
-import { Alert, BackHandler } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {useQueryClient} from '@tanstack/react-query';
+import {useEffect, useState} from 'react';
+import {Alert, BackHandler} from 'react-native';
 import LogOut from '../../../hooks/logOut/LogOut';
-import { GetAllTemplates } from '../../../reactQuery/home';
+import {GetAllTemplates, GetAllCommunications} from '../../../reactQuery/home';
 import {
   GetUser,
   SendInactiveUser,
   SendTemplateSelected
 } from '../../../reactQuery/users';
-import { RouteStackParamList } from '../../../types/navigation';
-import { TemplateData } from '../../../types/user';
+import {RouteStackParamList} from '../../../types/navigation';
+import {TemplateData} from '../../../types/user';
 
 const HomeHook = () => {
   const {data} = GetUser();
   const templates = GetAllTemplates();
+  const communications = GetAllCommunications();
   const queryClient = useQueryClient();
   const {logOut} = LogOut();
   const [isAlertProfileSocial, setIsAlertProfileSocial] = useState(false);
@@ -42,11 +43,11 @@ const HomeHook = () => {
 
   const handleNavigatePreview = async (template: TemplateData | undefined) => {
     // if (data?.profile?.social) {
-      // if (template) {
-        navigation.navigate('PreviewTemplate');
-      // } else {
-      //   setIsModalAlertBg(true);
-      // }
+    // if (template) {
+    navigation.navigate('PreviewTemplate');
+    // } else {
+    //   setIsModalAlertBg(true);
+    // }
     // } else {
     //   setIsAlertProfileSocial(true);
     // }
@@ -130,6 +131,8 @@ const HomeHook = () => {
 
   return {
     templates: templates.data,
+    communicationsStatus: communications.status,
+    communications: communications.data,
     copiedText,
     user: data,
     isModalAlertBg,

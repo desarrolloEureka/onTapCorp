@@ -7,8 +7,9 @@ import {StackNavigation} from '../../../types/navigation';
 import {UserData} from '../../../types/user';
 import {Linking} from 'react-native';
 import {loginFirebase} from '../../../firebase/auth';
+import {Alert} from 'react-native';
 
-const HomeHook = () => {
+const LoginHook = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -42,7 +43,6 @@ const HomeHook = () => {
         setPassword('');
         setErrorForm(null);
         const resultUser = await loginFirebase({user: email, password});
-
         // Verifica si resultUser es nulo
         if (!resultUser || !resultUser.user) {
           setErrorForm({errorType: 2, errorMessage: 'Credenciales inválidas'});
@@ -51,13 +51,18 @@ const HomeHook = () => {
           const docSnap = await getUserByIdFireStore(resultUser.user.uid);
           if (docSnap.exists) {
             const user = docSnap.data() as UserData;
-            console.log('formato usuario', user);
-            await AsyncStorage.setItem('@user', JSON.stringify(user));
-            navigation.navigate('Home');
+            if (user?.isActive) {
+              await AsyncStorage.setItem('@user', JSON.stringify(user));
+              navigation.navigate('Home');
+            } else {
+              Alert.alert(
+                'Alerta',
+                'Actualmente la cuenta no se encuentra activa, comunicarse con el administrador'
+              );
+            }
           } else {
             console.error('Error al obtener datos del usuario:', docSnap);
           }
-        } else {
         }
 
         // const unsubscribe = auth().onAuthStateChanged(user => {
@@ -128,4 +133,4 @@ const HomeHook = () => {
   };
 };
 
-export default HomeHook;
+export default LoginHook;

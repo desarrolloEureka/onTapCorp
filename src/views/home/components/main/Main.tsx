@@ -15,7 +15,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import CustomAlertBadge from '../../../../componets/customAlertBadge/CustomAlertBadge';
 import MenuSuperior from '../../../menuSuperior/MenuSuperior';
 import HomeHook from '../../hooks/HomeHook';
-import { homeStyles } from '../../styles/homeStyles';
+import {homeStyles} from '../../styles/homeStyles';
 import CustomCheckbox from './home/CustomCheckbox';
 import CustomSwitch from './home/CustomSwitch';
 import CustomModalAlert from './profile/CustomModalAlert';
@@ -25,6 +25,8 @@ import ModalAlertDown from './profile/ModalAlertDown';
 const Main = () => {
   const {
     templates,
+    communications,
+    communicationsStatus,
     copiedText,
     user,
     isModalAlertBg,
@@ -47,7 +49,6 @@ const Main = () => {
     handleAlertDelete,
     handlePressModalYes
   } = HomeHook();
-
 
   const SectionHeader = ({title}) => (
     <View
@@ -72,61 +73,68 @@ const Main = () => {
     </View>
   );
 
-  const SectionItem = ({icon, text}) => (
-    <TouchableOpacity
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        height: 50,
-        width: '90%',
-        borderBottomWidth: 1,
-        borderBottomColor: '#9b9db3',
-        marginTop: 30,
-        backgroundColor: 'white'
-      }}>
-      <View
+  const SectionItem = ({isActive, title, URL}) =>
+    isActive && (
+      <TouchableOpacity
         style={{
-          height: '100%',
-          width: '15%',
+          flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'center'
+          height: 50,
+          width: '90%',
+          borderBottomWidth: 1,
+          borderBottomColor: '#9b9db3',
+          marginTop: 30,
+          backgroundColor: 'white'
+          // onPress = {URL}
         }}>
-        <Ionicons name={icon} size={28} color="#396593" />
-      </View>
+        <View
+          style={{
+            height: '100%',
+            width: '15%',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+          <Ionicons name="document-attach-outline" size={28} color="#396593" />
+        </View>
+        <View
+          style={{
+            height: '100%',
+            width: '85%',
+            alignItems: 'flex-start',
+            justifyContent: 'center'
+          }}>
+          <Text
+            style={{
+              fontSize: 16,
+              color: 'black'
+            }}>
+            {title}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+
+  const Section = ({title, items, isActive}) =>
+    isActive && (
       <View
         style={{
-          height: '100%',
-          width: '85%',
-          alignItems: 'flex-start',
-          justifyContent: 'center'
+          paddingVertical: 20,
+          width: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'white',
+          marginBottom: 20
         }}>
-        <Text
-          style={{
-            fontSize: 16,
-            color: 'black'
-          }}>
-          {text}
-        </Text>
+        <SectionHeader title={title} />
+        {items.map((item, index) => (
+          <SectionItem
+            isActive={item.isActive}
+            title={item.title}
+            URL={item.URL}
+          />
+        ))}
       </View>
-    </TouchableOpacity>
-  );
-
-  const Section = ({title, items}) => (
-    <View
-      style={{
-        paddingVertical: 20,
-        width: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'white',
-        marginBottom: 20
-      }}>
-      <SectionHeader title={title} />
-      {items.map((item, index) => (
-        <SectionItem key={index} icon={item.icon} text={item.text} />
-      ))}
-    </View>
-  );
+    );
 
   return (
     <SafeAreaView style={homeStyles.rootContainer}>
@@ -143,7 +151,7 @@ const Main = () => {
           }}>
           <View style={{height: '50%', width: '100%', flexDirection: 'row'}}>
             <View style={{height: '100%', width: '20%', flexDirection: 'row'}}> */}
-              <View
+        <View
           style={{
             height: '8%',
             width: '100%',
@@ -207,30 +215,30 @@ const Main = () => {
                 </TouchableOpacity>
               </View>
             </View> */}
+          <View
+            style={{
+              height: '100%',
+              width: '50%',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              flexDirection: 'row'
+            }}>
             <View
               style={{
                 height: '100%',
-                width: '50%',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                flexDirection: 'row'
+                width: '40%',
+                justifyContent: 'center',
+                alignItems: 'center'
               }}>
-              <View
-                style={{
-                  height: '100%',
-                  width: '40%',
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}>
-                <MenuSuperior
-                  setAlertLogOut={setAlertLogOut}
-                  setAlertDelte={setAlertDelte}
-                />
-              </View>
+              <MenuSuperior
+                setAlertLogOut={setAlertLogOut}
+                setAlertDelte={setAlertDelte}
+              />
             </View>
           </View>
+        </View>
 
-           {/* <View style={{height: '50%', width: '90%', flexDirection: 'row'}}>
+        {/* <View style={{height: '50%', width: '90%', flexDirection: 'row'}}>
             <View
               style={{height: '100%', width: '50%', justifyContent: 'center'}}>
               <View
@@ -284,81 +292,39 @@ const Main = () => {
         </View>*/}
 
         <ScrollView contentContainerStyle={{flexGrow: 1, paddingBottom: 90}}>
-        <View
-          style={{
-            height: 60,
-            width: '100%',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
           <View
             style={{
-              height: '100%',
+              height: 60,
               width: '100%',
               justifyContent: 'center',
               alignItems: 'center'
             }}>
+            <View
+              style={{
+                height: '100%',
+                width: '100%',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}>
               <Text style={{fontSize: 22, fontWeight: '600', color: 'black'}}>
                 Comunicaciones
               </Text>
             </View>
           </View>
 
-          <Section
-            title="Circulares"
-            items={[
-              {
-                icon: 'document-attach-outline',
-                text: 'Comunicado interno'
-              }
-            ]}
-          />
-          <Section
-            title="Eventos"
-            items={[
-              {
-                icon: 'document-attach-outline',
-                text: 'Día del trabajador'
-              },
-              {
-                icon: 'document-attach-outline',
-                text: 'Día de la Familia'
-              }
-            ]}
-          />
-
-          <Section
-            title="Políticas"
-            items={[
-              {
-                icon: 'document-attach-outline',
-                text: 'Políticas y procedimientos'
-              }
-            ]}
-          />
-
-          <Section
-            title="Formularios y solicitudes"
-            items={[
-              {
-                icon: 'document-attach-outline',
-                text: 'Aumento salarial'
-              },
-              {
-                icon: 'document-attach-outline',
-                text: 'Permiso laboral'
-              }
-            ]}
-          />
-          <Section
-            title="Noticias"
-            items={[
-              {
-                icon: 'document-attach-outline',
-                text: 'Cambio horario'
-              }
-            ]}
-          />
+          {communications && communicationsStatus === 'success' && (
+            <FlatList
+              data={communications}
+              keyExtractor={item => item.uid}
+              renderItem={({item, index}) => (
+                <Section
+                  title={item?.title}
+                  items={item?.items}
+                  isActive={item?.isActive}
+                />
+              )}
+            />
+          )}
         </ScrollView>
         {/* 
         <View
@@ -542,7 +508,7 @@ const Main = () => {
             <Image
               source={require('../../../../images/icon.png')}
               style={{width: 25, height: 25, tintColor: '#396593'}}
-            />            
+            />
             <Text style={{color: '#396593'}}>Home</Text>
           </TouchableOpacity>
           <TouchableOpacity

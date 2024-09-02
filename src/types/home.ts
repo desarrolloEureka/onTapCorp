@@ -16,6 +16,13 @@ export interface Templates {
   image: string;
 }
 
+export interface Communications {
+  uid: any;
+  title: string;
+  isActive: boolean;
+  items: any;
+}
+
 export interface BackgroundImages {
   id: string;
   name: string;

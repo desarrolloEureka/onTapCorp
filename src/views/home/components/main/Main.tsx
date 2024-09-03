@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   FlatList,
   Image,
@@ -21,6 +21,7 @@ import CustomSwitch from './home/CustomSwitch';
 import CustomModalAlert from './profile/CustomModalAlert';
 import CustomModalLoading from './profile/CustomModalLoading';
 import ModalAlertDown from './profile/ModalAlertDown';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Main = () => {
   const {
@@ -49,6 +50,30 @@ const Main = () => {
     handleAlertDelete,
     handlePressModalYes
   } = HomeHook();
+
+  const fechaActual = (): string => {
+    const date = new Date();
+    const day = date.getDate();
+    const year = date.getFullYear();
+
+    const months = [
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre'
+    ];
+    const month = months[date.getMonth()];
+
+    return `Día ${day} de ${month} del año ${year}`;
+  };
 
   const SectionHeader = ({title}) => (
     <View
@@ -292,6 +317,28 @@ const Main = () => {
         </View>*/}
 
         <ScrollView contentContainerStyle={{flexGrow: 1, paddingBottom: 90}}>
+          <View
+            style={{
+              height: 60,
+              width: '100%',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+            <View
+              style={{
+                height: '100%',
+                width: '90%',
+                justifyContent: 'center',
+                alignItems: 'flex-start'
+              }}>
+              <Text style={{fontSize: 18, fontWeight: '400', color: 'black'}}>
+                Hola, {user?.name} {user?.lastName}
+              </Text>
+              <Text style={{fontSize: 14, fontWeight: '300', color: 'black'}}>
+                {fechaActual()}
+              </Text>
+            </View>
+          </View>
           <View
             style={{
               height: 60,

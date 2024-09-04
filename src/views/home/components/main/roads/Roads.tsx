@@ -17,7 +17,7 @@ import {roadsStyles} from './styles/roadsStyles';
 import MenuSuperior from '../../../../menuSuperior/MenuSuperior';
 import HomeHook from '../../../hooks/HomeHook';
 import ModalAlertDown from '../profile/ModalAlertDown';
-// import MapView from 'react-native-maps';
+import MapView from 'react-native-maps';
 
 const data = [
   {titulo: 'Nombre de Ruta', texto: 'Ruta centro A'},
@@ -95,28 +95,27 @@ const Roads = () => {
         </View>
 
         <ScrollView contentContainerStyle={{flexGrow: 1, paddingBottom: 430}}>
-        <View
-        style={{
-          height: '50%',
-          width: '100%',
-          justifyContent: 'flex-end',
-          alignItems: 'center'
-        }}>
-        {/* <MapView
-          style={{
-            width: '100%',
-            height: '95%'
-          }}
-        /> */}
-        <Image
-          source={require('../../../../../images/maps.png')}
-          style={{
-            width: '100%',
-            height: '95%'
-          }}
-        />
-      </View>
-      {/* <View
+          <View
+            style={{
+              height: '50%',
+              width: '100%',
+              justifyContent: 'flex-end',
+              alignItems: 'center'
+            }}>
+            <MapView
+              initialRegion={{
+                latitude: 6.25184,
+                longitude: -75.56359,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421
+              }}
+              style={{
+                width: '100%',
+                height: '95%'
+              }}
+            />
+          </View>
+          {/* <View
           style={{
             height: '25%',
             alignItems: 'center',
@@ -163,7 +162,7 @@ const Roads = () => {
           </View>
         </View> */}
 
-<View
+          <View
             style={{
               width: '100%',
               justifyContent: 'center',
@@ -194,22 +193,22 @@ const Roads = () => {
               </TouchableOpacity>
             </View>
           </View>
-        <View
-          style={{
-            height: '5%',
-            width: '100%',
-            justifyContent: 'center',
-            alignItems: 'flex-start',
-            marginTop: 10,
-            paddingLeft: 20,
-            marginBottom: 20
-          }}>
-          <Text style={{fontSize: 20, fontWeight: '500', color: '#396593'}}>
-          Ruta {getCurrentDateFormatted(false)}
-          </Text>
-        </View>
+          <View
+            style={{
+              height: '5%',
+              width: '100%',
+              justifyContent: 'center',
+              alignItems: 'flex-start',
+              marginTop: 10,
+              paddingLeft: 20,
+              marginBottom: 20
+            }}>
+            <Text style={{fontSize: 20, fontWeight: '500', color: '#396593'}}>
+              Ruta {getCurrentDateFormatted(false)}
+            </Text>
+          </View>
 
-        <View
+          <View
             style={{
               flex: 1,
               height: '65%',
@@ -223,8 +222,8 @@ const Roads = () => {
                 width: '90%',
                 backgroundColor: 'white',
                 borderRadius: 15,
-              elevation: 16
-            }}>
+                elevation: 16
+              }}>
               <ScrollView
                 contentContainerStyle={{paddingVertical: 10}}
                 style={{flex: 1}}
@@ -241,43 +240,43 @@ const Roads = () => {
                       marginHorizontal: 10,
                       paddingVertical: 16
                     }}>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'flex-start',
-                    borderRightWidth: 1,
-                    borderRightColor: '#e6e6e6',
-                    paddingLeft: 15
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      fontWeight: '500',
-                      color: '#396593'
-                    }}>
-                    {item.titulo}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'flex-start',
-                    paddingLeft: 20
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      fontWeight: '400',
-                      color: '#6b6b6b'
-                    }}>
-                    {item.texto}
-                  </Text>
-                </View>
-              </View>
-            ))}
-                          </ScrollView>
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'flex-start',
+                        borderRightWidth: 1,
+                        borderRightColor: '#e6e6e6',
+                        paddingLeft: 15
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          fontWeight: '500',
+                          color: '#396593'
+                        }}>
+                        {item.titulo}
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'flex-start',
+                        paddingLeft: 20
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          fontWeight: '400',
+                          color: '#6b6b6b'
+                        }}>
+                        {item.texto}
+                      </Text>
+                    </View>
+                  </View>
+                ))}
+              </ScrollView>
             </View>
           </View>
 
@@ -412,7 +411,7 @@ const Roads = () => {
               style={{width: 25, height: 25, tintColor: '#606060'}}
             />
             <Text style={{color: '#606060'}}>Home</Text>
-               </TouchableOpacity>
+          </TouchableOpacity>
           <TouchableOpacity
             style={{
               height: '100%',

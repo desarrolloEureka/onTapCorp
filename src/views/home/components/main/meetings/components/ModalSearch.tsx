@@ -5,9 +5,16 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 type Props = {
   showConfigSearch: boolean;
   handleConfigSearch: () => void;
+  selectedFilter: string;
+  handleFilterChange: (item: any) => void;
 };
 
-function ModalSearch({showConfigSearch, handleConfigSearch}: Props) {
+function ModalSearch({
+  showConfigSearch,
+  handleConfigSearch,
+  selectedFilter,
+  handleFilterChange
+}: Props) {
   return (
     showConfigSearch && (
       <View
@@ -87,76 +94,7 @@ function ModalSearch({showConfigSearch, handleConfigSearch}: Props) {
                   }}>
                   <View
                     style={{
-                      height: '30%',
-                      width: '100%',
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      marginVertical: 5
-                    }}>
-                    <TouchableOpacity
-                      style={{
-                        height: '100%',
-                        width: '30%',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        borderRadius: 12,
-                        borderWidth: 0,
-                        borderColor: '#606060',
-                        backgroundColor: '#396593',
-                        elevation: 5
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: 'white'
-                        }}>
-                        Estado
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={{
-                        height: '100%',
-                        width: '30%',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        borderRadius: 12,
-                        borderWidth: 1,
-                        borderColor: '#606060',
-                        backgroundColor: 'white',
-                        elevation: 5
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: 'black'
-                        }}>
-                        Cliente
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={{
-                        height: '100%',
-                        width: '30%',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        borderRadius: 12,
-                        borderWidth: 1,
-                        backgroundColor: 'white',
-                        borderColor: '#606060',
-                        elevation: 5
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: 'black'
-                        }}>
-                        Fecha
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View
-                    style={{
-                      height: '30%',
+                      height: '35%',
                       width: '100%',
                       flexDirection: 'row',
                       justifyContent: 'space-around',
@@ -165,39 +103,97 @@ function ModalSearch({showConfigSearch, handleConfigSearch}: Props) {
                     <TouchableOpacity
                       style={{
                         height: '100%',
-                        width: '30%',
+                        width: '40%',
                         justifyContent: 'center',
                         alignItems: 'center',
                         borderRadius: 12,
                         borderWidth: 1,
-                        backgroundColor: 'white',
                         borderColor: '#606060',
+                        backgroundColor:
+                          selectedFilter === 'estado' ? '#396593' : 'white',
                         elevation: 5
-                      }}>
+                      }}
+                      onPress={() => handleFilterChange('estado')}>
                       <Text
                         style={{
                           fontSize: 12,
-                          color: 'black'
+                          color: selectedFilter === 'estado' ? 'white' : 'black'
                         }}>
-                        Otro
+                        Estado
                       </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={{
                         height: '100%',
-                        width: '30%',
+                        width: '40%',
                         justifyContent: 'center',
                         alignItems: 'center',
                         borderRadius: 12,
                         borderWidth: 1,
-                        backgroundColor: 'white',
                         borderColor: '#606060',
+                        backgroundColor:
+                          selectedFilter === 'cliente' ? '#396593' : 'white',
                         elevation: 5
-                      }}>
+                      }}
+                      onPress={() => handleFilterChange('cliente')}>
                       <Text
                         style={{
                           fontSize: 12,
-                          color: 'black'
+                          color:
+                            selectedFilter === 'cliente' ? 'white' : 'black'
+                        }}>
+                        Cliente
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View
+                    style={{
+                      height: '35%',
+                      width: '100%',
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                      marginVertical: 5
+                    }}>
+                    <TouchableOpacity
+                      style={{
+                        height: '100%',
+                        width: '40%',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        borderRadius: 12,
+                        borderWidth: 1,
+                        backgroundColor:
+                          selectedFilter === 'fecha' ? '#396593' : 'white',
+                        borderColor: '#606060',
+                        elevation: 5
+                      }}
+                      onPress={() => handleFilterChange('fecha')}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: selectedFilter === 'fecha' ? 'white' : 'black'
+                        }}>
+                        Fecha
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{
+                        height: '100%',
+                        width: '40%',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        borderRadius: 12,
+                        borderWidth: 1,
+                        backgroundColor:
+                          selectedFilter === 'todos' ? '#396593' : 'white',
+                        borderColor: '#606060',
+                        elevation: 5
+                      }}
+                      onPress={() => handleFilterChange('todos')}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: selectedFilter === 'todos' ? 'white' : 'black'
                         }}>
                         Todos
                       </Text>
@@ -209,7 +205,7 @@ function ModalSearch({showConfigSearch, handleConfigSearch}: Props) {
                       width: '100%',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      marginTop: 22
+                      marginTop: 10
                     }}>
                     <TouchableOpacity
                       style={{
@@ -220,7 +216,8 @@ function ModalSearch({showConfigSearch, handleConfigSearch}: Props) {
                         borderRadius: 20,
                         backgroundColor: '#396593',
                         elevation: 5
-                      }}>
+                      }}
+                      onPress={handleConfigSearch}>
                       <Text
                         style={{
                           fontSize: 12,

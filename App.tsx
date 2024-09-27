@@ -1,8 +1,8 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
-import React from 'react';
-import {RouteStackParamList} from './src/types/navigation';
+import React, {useEffect} from 'react';
+// import {RouteStackParamList} from './src/types/navigation';
 import HomeScreen from './src/views/home/Home';
 import Plantillas from './src/views/home/components/main/home/Plantillas';
 import PreviewTemplate from './src/views/home/components/main/home/PreviewTemplate';
@@ -12,6 +12,7 @@ import ProfileScreen from './src/views/home/components/main/profile/Profile';
 import ProfileProfessionalScreen from './src/views/home/components/main/profile/ProfileProfessional';
 import Roads from './src/views/home/components/main/roads/Roads';
 import ShareQR from './src/views/home/components/main/share/ShareQR';
+import Templates from './src/views/home/components/main/templates/Templates';
 import Login from './src/views/login/Login';
 import OnboardingOne from './src/views/onboardings/OnboardigndOne';
 import OnboardingInicioSesion from './src/views/onboardings/OnboardingInicioSesion';
@@ -25,12 +26,34 @@ import Terminos from './src/views/opcionesMenu/Terminos';
 import RecoveryPassword from './src/views/recovery/components/main/RecoveryPassword';
 import RecoveryPasswordTwo from './src/views/recovery/components/main/RecoveryPasswordTwo';
 
-const Stack = createNativeStackNavigator<RouteStackParamList>();
+import messaging from '@react-native-firebase/messaging';
+import {PermissionsAndroid} from 'react-native';
+
+const Stack = createNativeStackNavigator<any>();
 
 // Crea una instancia de QueryClient
 const queryClient = new QueryClient();
 
 const App = () => {
+  useEffect(() => {
+    const requestUserPermission = async () => {
+      PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+      );
+      const authStatus = await messaging().requestPermission();
+      const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+      if (enabled) {
+        console.log('Authorization status:', authStatus);
+        const token = await messaging().getToken();
+        console.log('Token Notifications =', token);
+      }
+    };
+    requestUserPermission();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
@@ -68,6 +91,7 @@ const App = () => {
           <Stack.Screen name="Roads" component={Roads} />
           <Stack.Screen name="Splash" component={Splash} />
           <Stack.Screen name="ShareQR" component={ShareQR} />
+          <Stack.Screen name="Templates" component={Templates} />
           <Stack.Screen name="Documentos" component={Documentos} />
         </Stack.Navigator>
       </NavigationContainer>

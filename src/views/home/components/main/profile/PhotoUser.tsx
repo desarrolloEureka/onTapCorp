@@ -1,27 +1,30 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useEffect, useState } from 'react';
-import {
-  Alert,
-  Image,
-  SafeAreaView,
-  Text,
-  View
-} from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import React, {useEffect, useState} from 'react';
+import {Alert, Image, SafeAreaView, Text, View} from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {
   ImageLibraryOptions,
   launchImageLibrary,
   MediaType
 } from 'react-native-image-picker';
-import { GetUser, SendDataImage } from '../../../../../reactQuery/users';
-import { UserData } from '../../../../../types/user';
-import { profileStyles } from '../../../styles/profileStyles';
+import {GetUser, GetArea, SendDataImage} from '../../../../../reactQuery/users';
+import {UserData} from '../../../../../types/user';
+import {profileStyles} from '../../../styles/profileStyles';
 
 const PhotoUser = ({name, isProUser}: {name?: string; isProUser: boolean}) => {
   const user = GetUser();
-  const data = user.data as unknown as UserData;
+  const data = user.data;
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedImagePro, setSelectedImagePro] = useState<string | null>(null);
+  const [area, setArea] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchCompanyData = async () => {
+      const data = await GetArea(user.data.selectedArea);
+      setArea(data);
+    };
+    user.data && fetchCompanyData();
+  }, [user.data]);
 
   useEffect(() => {
     // Recuperar la imagen almacenada en AsyncStorage al cargar el componente
@@ -113,43 +116,31 @@ const PhotoUser = ({name, isProUser}: {name?: string; isProUser: boolean}) => {
             <View
               style={{
                 height: '90%',
-                width: '85%',
+                aspectRatio: 1 / 1,
                 backgroundColor: '#030124',
                 alignItems: 'center',
                 justifyContent: 'center',
                 borderRadius: 100
               }}>
-              {!isProUser && selectedImage ? (
+              {data?.ImageProfile ? (
                 <Image
-                  style={{borderRadius: 100, width: '85%', height: '85%'}}
-                  source={{uri: selectedImage}}
-                />
-              ) : isProUser && selectedImagePro ? (
-                <Image
-                  style={{borderRadius: 100, width: '85%', height: '85%'}}
-                  source={{uri: selectedImagePro}}
-                />
-              ) : !isProUser && data?.image ? (
-                <Image
-                  style={{borderRadius: 100, width: '85%', height: '85%'}}
-                  source={{uri: `${data?.image}`}}
-                />
-              ) : isProUser && data?.imagePro ? (
-                <Image
-                  style={{borderRadius: 100, width: '85%', height: '85%'}}
-                  source={{uri: `${data?.imagePro}`}}
+                  style={{borderRadius: 100, aspectRatio: 1 / 1, height: '85%'}}
+                  source={{uri: data?.ImageProfile}}
+                  resizeMode="cover"
                 />
               ) : (
                 <Image
-                  style={{borderRadius: 100, width: '85%', height: '85%'}}
+                  style={{borderRadius: 100, aspectRatio: 1 / 1, height: '85%'}}
                   source={require('./../../../../../images/profilePhoto.png')}
                 />
               )}
             </View>
           </View>
-          <View style={{height: '20%', width: '45%'}}>
+          <View style={{height: '20%'}}>
             <View style={profileStyles.borderTargetName}>
-              <Text style={profileStyles.textName}>Hola {name ?? ''}</Text>
+              <Text style={[profileStyles.textName, {paddingHorizontal: 30}]}>
+                Hola {data.firstName[0]} {data.lastName[0] ?? ''}
+              </Text>
             </View>
           </View>
           <View style={{height: '10%', width: '45%', alignItems: 'center'}}>
@@ -161,7 +152,7 @@ const PhotoUser = ({name, isProUser}: {name?: string; isProUser: boolean}) => {
                 alignItems: 'center'
               }}>
               <Text style={{color: '#396593', fontSize: 15}}>
-                Area Comercial
+                Area {area?.areaName}
               </Text>
             </View>
           </View>

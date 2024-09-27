@@ -11,21 +11,29 @@ import {
   SendInactiveUser,
   SendTemplateSelected
 } from '../../../reactQuery/users';
-import {RouteStackParamList} from '../../../types/navigation';
-import {TemplateData} from '../../../types/user';
 
 const HomeHook = () => {
   const {data} = GetUser();
   const templates = GetAllTemplates();
-  const communications = GetAllCommunications();
+  const circulares = GetAllCommunications('circular', data?.idCompany, '');
+  const eventos = GetAllCommunications('events', data?.idCompany, '');
+  const politicas = GetAllCommunications('policy', data?.idCompany, '');
+  const forms = GetAllCommunications('forms', data?.idCompany, '');
+  const news = GetAllCommunications('news', data?.idCompany, '');
+  const communications = [
+    {title: 'Circulares', items: circulares?.data},
+    {title: 'Eventos', items: eventos?.data},
+    {title: 'Politicas', items: politicas?.data},
+    {title: 'Formularios y solicitudes', items: forms?.data},
+    {title: 'Noticias', items: news?.data}
+  ];
   const queryClient = useQueryClient();
   const {logOut} = LogOut();
   const [isAlertProfileSocial, setIsAlertProfileSocial] = useState(false);
   const [isModalAlertBg, setIsModalAlertBg] = useState(false);
   const [isLoadingSendData, setIsLoadingSendData] = useState(false);
   const [copiedText, setIscopiedText] = useState(false);
-  const navigation =
-    useNavigation<StackNavigationProp<RouteStackParamList, 'Home'>>();
+  const navigation = useNavigation<StackNavigationProp<any, 'Home'>>();
   const handleAlertProfileSocial = (status: boolean) =>
     setIsAlertProfileSocial(!isAlertProfileSocial);
   const handleModalAlertBg = (status: boolean) =>
@@ -41,7 +49,7 @@ const HomeHook = () => {
   const [alertDelte, setAlertDelte] = useState(false);
   const handleAlertDelete = (status: boolean) => setAlertDelte(!alertDelte);
 
-  const handleNavigatePreview = async (template: TemplateData | undefined) => {
+  const handleNavigatePreview = async (template: any | undefined) => {
     // if (data?.profile?.social) {
     // if (template) {
     navigation.navigate('PreviewTemplate');
@@ -131,8 +139,7 @@ const HomeHook = () => {
 
   return {
     templates: templates.data,
-    communicationsStatus: communications.status,
-    communications: communications.data,
+    communications: communications,
     copiedText,
     user: data,
     isModalAlertBg,

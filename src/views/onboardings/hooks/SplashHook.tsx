@@ -7,28 +7,27 @@ const SplashHook = () => {
   const navigation = useNavigation<StackNavigation>();
 
   const checkFirstTime = async () => {
-    navigation.push('OnboardingOne');
-    // try {
-    //   const isFirstTime = await AsyncStorage.getItem('firstTime');
-    //   if (isFirstTime == null) {
-    //     navigation.push('OnboardingOne');
-    //     await AsyncStorage.setItem('firstTime', 'false');
-    //   } else {
-    //     const isUser = await AsyncStorage.getItem('@user');
-    //     if (isUser) {
-    //       const user = JSON.parse(isUser);
-    //       if (user?.isActive) {
-    //         navigation.push('Home');
-    //       } else {
-    //         navigation.push('Login');
-    //       }
-    //     } else {
-    //       navigation.push('Login');
-    //     }
-    //   }
-    // } catch (error) {
-    //   console.error('Error to validate first time session:', error);
-    // }
+    try {
+      const isFirstTime = await AsyncStorage.getItem('firstTime');
+      if (isFirstTime == null) {
+        navigation.push('OnboardingOne');
+        await AsyncStorage.setItem('firstTime', 'false');
+      } else {
+        const isUser = await AsyncStorage.getItem('@user');
+        if (isUser) {
+          const user = JSON.parse(isUser);
+          if (user?.isActive) {
+            navigation.push('Home');
+          } else {
+            navigation.push('Login');
+          }
+        } else {
+          navigation.push('Login');
+        }
+      }
+    } catch (error) {
+      console.error('Error to validate first time session:', error);
+    }
   };
 
   useEffect(() => {

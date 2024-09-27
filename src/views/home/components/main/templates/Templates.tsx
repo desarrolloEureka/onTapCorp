@@ -1,33 +1,31 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {
   FlatList,
   Image,
   ImageBackground,
   SafeAreaView,
   Text,
-  ScrollView,
   TouchableOpacity,
-  View,
-  Linking
+  View
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import CustomAlertBadge from '../../../../componets/customAlertBadge/CustomAlertBadge';
-import MenuSuperior from '../../../menuSuperior/MenuSuperior';
-import HomeHook from '../../hooks/HomeHook';
-import {homeStyles} from '../../styles/homeStyles';
-import CustomCheckbox from './home/CustomCheckbox';
-import CustomSwitch from './home/CustomSwitch';
-import CustomModalAlert from './profile/CustomModalAlert';
-import CustomModalLoading from './profile/CustomModalLoading';
-import ModalAlertDown from './profile/ModalAlertDown';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import CustomAlertBadge from '../../../../../componets/customAlertBadge/CustomAlertBadge';
+import MenuSuperior from '../../../../menuSuperior/MenuSuperior';
+import HomeHook from '../../../hooks/HomeHook';
+import {homeStyles} from '../../../styles/homeStyles';
+import CustomCheckbox from '../home/CustomCheckbox';
+import CustomSwitch from '../home/CustomSwitch';
+import CustomModalAlert from '../profile/CustomModalAlert';
+import CustomModalLoading from '../profile/CustomModalLoading';
+import ModalAlertDown from '../profile/ModalAlertDown';
+import {useNavigation} from '@react-navigation/native';
 
-const Main = () => {
+const Templates = () => {
   const {
     templates,
-    communications,
     copiedText,
     user,
     isModalAlertBg,
@@ -51,139 +49,19 @@ const Main = () => {
     handlePressModalYes
   } = HomeHook();
 
-  const fechaActual = (): string => {
-    const date = new Date();
-    const day = date.getDate();
-    const year = date.getFullYear();
+  const navigation = useNavigation();
 
-    const months = [
-      'Enero',
-      'Febrero',
-      'Marzo',
-      'Abril',
-      'Mayo',
-      'Junio',
-      'Julio',
-      'Agosto',
-      'Septiembre',
-      'Octubre',
-      'Noviembre',
-      'Diciembre'
-    ];
-    const month = months[date.getMonth()];
-
-    return `Día ${day} de ${month} del año ${year}`;
+  const handleBackPress = () => {
+    navigation.goBack();
   };
-
-  const SectionHeader = ({title}: {title: any}) => (
-    <View
-      style={{
-        height: 30,
-        width: '100%',
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-        paddingLeft: 20
-      }}>
-      <View
-        style={{
-          paddingVertical: 5,
-          paddingHorizontal: 15,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: '#396593',
-          borderRadius: 3
-        }}>
-        <Text style={{fontSize: 13, color: 'white'}}>{title}</Text>
-      </View>
-    </View>
-  );
-
-  const SectionItem = ({
-    isActive,
-    isDeleted,
-    title,
-    URL
-  }: {
-    isActive: any;
-    isDeleted: any;
-    title: any;
-    URL: any;
-  }) =>
-    isActive &&
-    !isDeleted && (
-      <TouchableOpacity
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          height: 50,
-          width: '90%',
-          borderBottomWidth: 1,
-          borderBottomColor: '#9b9db3',
-          marginTop: 30,
-          backgroundColor: 'white'
-        }}
-        onPress={() => {
-          Linking.openURL(URL).catch(err =>
-            console.error('Error al abrir la URL:', err)
-          );
-        }}>
-        <View
-          style={{
-            height: '100%',
-            width: '15%',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-          <Ionicons name="document-attach-outline" size={28} color="#396593" />
-        </View>
-        <View
-          style={{
-            height: '100%',
-            width: '85%',
-            alignItems: 'flex-start',
-            justifyContent: 'center'
-          }}>
-          <Text
-            style={{
-              fontSize: 16,
-              color: 'black'
-            }}>
-            {title}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-
-  const Section = ({title, items}: {title: any; items: any}) => (
-    <View
-      style={{
-        paddingVertical: 20,
-        width: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'white',
-        marginBottom: 20
-      }}>
-      <SectionHeader title={title} />
-      {items &&
-        items.map((item: any, index: any) => (
-          <SectionItem
-            isActive={item.isActive}
-            isDeleted={item.isDeleted}
-            title={item.subject}
-            URL={item.url}
-          />
-        ))}
-    </View>
-  );
 
   return (
     <SafeAreaView style={homeStyles.rootContainer}>
       <ImageBackground
         resizeMode="cover"
         style={{height: '100%', width: '100%'}}
-        source={require('../../../../images/background.png')}>
-        {/* <View
+        source={require('../../../../../images/background.png')}>
+        <View
           style={{
             height: 150,
             width: '100%',
@@ -191,27 +69,20 @@ const Main = () => {
             alignItems: 'center'
           }}>
           <View style={{height: '50%', width: '100%', flexDirection: 'row'}}>
-            <View style={{height: '100%', width: '20%', flexDirection: 'row'}}> */}
-        <View
-          style={{
-            height: '8%',
-            width: '100%',
-            flexDirection: 'row'
-          }}>
-          <View
-            style={{
-              height: '100%',
-              width: '50%',
-              justifyContent: 'flex-end',
-              alignItems: 'flex-start'
-            }}>
-            <Image
-              resizeMode="contain"
-              style={{width: '55%', height: '70%'}}
-              source={require('../../../../images/logo_inicio.png')}
-            />
-          </View>
-          {/* <View
+            <View style={{height: '100%', width: '20%', flexDirection: 'row'}}>
+              <TouchableOpacity
+                style={{
+                  height: '95%',
+                  width: '65%',
+                  alignItems: 'flex-end',
+                  justifyContent: 'center',
+                  marginTop: 3
+                }}
+                onPress={handleBackPress}>
+                <MaterialIcons name="arrow-back-ios" size={27} color="black" />
+              </TouchableOpacity>
+            </View>
+            <View
               style={{
                 height: '100%',
                 width: '60%',
@@ -226,7 +97,7 @@ const Main = () => {
                   justifyContent: 'center',
                   alignItems: 'center'
                 }}>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   style={{
                     height: '94%',
                     width: '95%',
@@ -253,33 +124,33 @@ const Main = () => {
                       ¡Copiado!
                     </Text>
                   )}
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
-            </View> */}
-          <View
-            style={{
-              height: '100%',
-              width: '50%',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              flexDirection: 'row'
-            }}>
+            </View>
             <View
               style={{
                 height: '100%',
-                width: '40%',
-                justifyContent: 'center',
-                alignItems: 'center'
+                width: '20%',
+                alignItems: 'flex-end',
+                justifyContent: 'flex-end',
+                flexDirection: 'row'
               }}>
-              <MenuSuperior
-                setAlertLogOut={setAlertLogOut}
-                setAlertDelte={setAlertDelte}
-              />
+              <View
+                style={{
+                  height: '100%',
+                  width: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'flex-end'
+                }}>
+                <MenuSuperior
+                  setAlertLogOut={setAlertLogOut}
+                  setAlertDelte={setAlertDelte}
+                />
+              </View>
             </View>
           </View>
-        </View>
 
-        {/* <View style={{height: '50%', width: '90%', flexDirection: 'row'}}>
+          <View style={{height: '50%', width: '90%', flexDirection: 'row'}}>
             <View
               style={{height: '100%', width: '50%', justifyContent: 'center'}}>
               <View
@@ -292,13 +163,13 @@ const Main = () => {
                   alignItems: 'center'
                 }}>
                 <Text style={homeStyles.buttonText}>
-                  <Icon name="eye" size={19} color="#030124" />{' '}
+                  <FontAwesome name="eye" size={19} color="#030124" />{' '}
                   {user ? user.views : ''}
                 </Text>
               </View>
             </View>
 
-            {/* <View
+            <View
               style={{
                 height: '100%',
                 width: '50%',
@@ -315,7 +186,7 @@ const Main = () => {
                 }}>
                 <View style={homeStyles.switchWrapper}>
                   <Text style={[homeStyles.switchText, {color: '#030124'}]}>
-                    Activar Tarjeta
+                    Ináctivar perfil
                   </Text>
 
                   <CustomSwitch
@@ -324,67 +195,34 @@ const Main = () => {
                   />
 
                   <Text style={[homeStyles.switchText, {color: '#030124'}]}>
-                    OFF | ON
+                    On | Off
                   </Text>
                 </View>
               </View>
             </View>
           </View>
-        </View>*/}
+        </View>
 
-        <ScrollView contentContainerStyle={{flexGrow: 1, paddingBottom: 90}}>
+        <View
+          style={{
+            height: 60,
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
           <View
             style={{
-              height: 60,
+              height: '100%',
               width: '100%',
               justifyContent: 'center',
               alignItems: 'center'
             }}>
-            <View
-              style={{
-                height: '100%',
-                width: '90%',
-                justifyContent: 'center',
-                alignItems: 'flex-start'
-              }}>
-              <Text style={{fontSize: 18, fontWeight: '400', color: 'black'}}>
-                Hola, {user?.firstName[0]} {user?.lastName[0]}
-              </Text>
-              <Text style={{fontSize: 14, fontWeight: '300', color: 'black'}}>
-                {fechaActual()}
-              </Text>
-            </View>
+            <Text style={{fontSize: 22, fontWeight: '500', color: '#396593'}}>
+              Plantillas
+            </Text>
           </View>
-          <View
-            style={{
-              height: 60,
-              width: '100%',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
-            <View
-              style={{
-                height: '100%',
-                width: '100%',
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}>
-              <Text style={{fontSize: 22, fontWeight: '600', color: 'black'}}>
-                Comunicaciones
-              </Text>
-            </View>
-          </View>
+        </View>
 
-          {communications && (
-            <FlatList
-              data={communications}
-              renderItem={({item, index}) => (
-                <Section title={item?.title} items={item?.items} />
-              )}
-            />
-          )}
-        </ScrollView>
-        {/* 
         <View
           style={{
             height: 475,
@@ -401,10 +239,10 @@ const Main = () => {
                 renderItem={({item, index}) => {
                   const i = item.id;
                   const itemData = user?.templateData?.find(
-                    val => val.id === i
+                    (val: any) => val.id === i
                   );
                   const background = user?.templateData?.find(
-                    val => val.id === i && val.background_id
+                    (val: any) => val.id === i && val.background_id
                   );
 
                   return (
@@ -539,7 +377,7 @@ const Main = () => {
               />
             )}
           </View>
-        </View> */}
+        </View>
 
         <View
           style={{
@@ -564,7 +402,7 @@ const Main = () => {
             onPress={() => handleTabPress('Home')}>
             {/* <Ionicons name="home-outline" size={25} color="#396593" /> */}
             <Image
-              source={require('../../../../images/icon.png')}
+              source={require('../../../../../images/icon.png')}
               style={{width: 25, height: 25, tintColor: '#396593'}}
             />
             <Text style={{color: '#396593'}}>Home</Text>
@@ -658,4 +496,4 @@ const Main = () => {
   );
 };
 
-export default Main;
+export default Templates;

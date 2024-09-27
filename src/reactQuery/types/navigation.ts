@@ -4,6 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 export type RouteStackParamList = {
   Home: undefined;
   PreviewTemplate: undefined;
+  Templates: undefined;
   Profile: undefined;
   ProfileProfessional: undefined;
   ChangePassword: undefined;

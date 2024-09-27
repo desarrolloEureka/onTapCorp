@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 import {
   Image,
   ImageBackground,
@@ -6,7 +8,9 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  View
+  View,
+  Platform,
+  PermissionsAndroid
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -16,25 +20,61 @@ import RoadsHook from './hook/RoadsHook';
 import {roadsStyles} from './styles/roadsStyles';
 import MenuSuperior from '../../../../menuSuperior/MenuSuperior';
 import HomeHook from '../../../hooks/HomeHook';
-import ModalAlertDown from '../profile/ModalAlertDown';
-import MapView from 'react-native-maps';
+import MeetingsHook from '../meetings/hook/MeetingsHook';
 
-const data = [
-  {titulo: 'Nombre de Ruta', texto: 'Ruta centro A'},
-  {titulo: 'Zona', texto: 'Zona Centro'},
-  {titulo: 'Jefe Ruta', texto: 'Mario Martinez Núñez'},
-  {titulo: 'Dirección 1', texto: 'Calle 17 #35-6'},
-  {titulo: 'Dirección 2', texto: 'Calle 24 #38-15'},
-  {titulo: 'Dirección 3', texto: 'Calle 27 #35-11'},
-  {titulo: 'Dirección 4', texto: 'Calle 32 #25-76'},
-  {titulo: 'Dirección 5', texto: 'Calle 28 #89-65'},
-  {titulo: 'Dirección 6', texto: 'Calle 10 #55-96'},
-  {titulo: 'Tiempo estimado', texto: '4 Horas'}
-  // Agrega más datos según sea necesario
-];
+import ModalAlertDown from '../profile/ModalAlertDown';
+import MapView, {Marker, Polyline} from 'react-native-maps';
+import MapViewDirections from 'react-native-maps-directions';
+import {GetAllRoutes} from '../../../../../reactQuery/home';
+import {GetUser} from '../../../../../reactQuery/users';
+import Geolocation from '@react-native-community/geolocation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const processRoutes = (data: any, routes: any) => {
+  if (!routes || !data) return [];
+  const filteredRoutes: any[] = [];
+  const daysMap: {[key: string]: string} = {
+    sundayRoute: 'Domingo',
+    mondayRoute: 'Lunes',
+    tuesdayRoute: 'Martes',
+    wednesdayRoute: 'Miércoles',
+    thursdayRoute: 'Jueves',
+    fridayRoute: 'Viernes',
+    saturdayRoute: 'Sábado'
+  };
+  const days = Object.keys(daysMap);
+
+  days.forEach(day => {
+    const routeId = data[day];
+    const routeDetails = routes.find((route: any) => route.uid === routeId);
+
+    filteredRoutes.push({
+      [day]: routeId,
+      dayName: daysMap[day],
+      routeDetails: routeDetails || null
+    });
+  });
+
+  return filteredRoutes;
+};
 
 const Roads = () => {
-  const {handleTabPress, handleBackPress} = RoadsHook();
+  const navigation = useNavigation<StackNavigationProp<any, 'Home'>>();
+  const handleTabPress = (tabName: string) => {
+    if (tabName === 'Profile') {
+      navigation.navigate('Profile');
+    } else if (tabName === 'Meetings') {
+      navigation.navigate('Meetings');
+    } else if (tabName === 'Roads') {
+      navigation.navigate('Roads');
+    } else if (tabName === 'ShareQR') {
+      navigation.navigate('ShareQR');
+    } else {
+      navigation.navigate('Home');
+    }
+  };
+
+  const {handleSendLocation} = MeetingsHook();
   const {
     setAlertLogOut,
     setAlertDelte,
@@ -45,7 +85,51 @@ const Roads = () => {
     alertLogOut
   } = HomeHook();
 
-  const getCurrentDateFormatted = today => {
+  const {data} = GetUser();
+  const routes = GetAllRoutes([
+    data?.mondayRoute,
+    data?.tuesdayRoute,
+    data?.wednesdayRoute,
+    data?.thursdayRoute,
+    data?.fridayRoute,
+    data?.saturdayRoute,
+    data?.sundayRoute
+  ])?.data;
+
+  const filteredRoutes = processRoutes(data, routes);
+  const currentDayIndex = new Date().getDay();
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<any>(null);
+  const routeDetails = selectedOption?.routeDetails;
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+  const [routeStarted, setRouteStarted] = useState(false);
+
+  useEffect(() => {
+    if (filteredRoutes.length > 0 && !selectedOption) {
+      setSelectedOption(filteredRoutes[currentDayIndex]);
+    }
+  }, [filteredRoutes]);
+
+  useEffect(() => {
+    const fetchRouteState = async () => {
+      try {
+        const data = await AsyncStorage.getItem('@route');
+        const data2 = await AsyncStorage.getItem('@startTime2');
+        if (data !== null) {
+          setRouteStarted(JSON.parse(data));
+          setStartTime(JSON.parse(data2));
+        }
+      } catch (error) {
+        console.error('Error al recuperar el estado de la ruta:', error);
+      }
+    };
+
+    fetchRouteState();
+  }, []);
+
+  const getCurrentDateFormatted = (dayName: string) => {
+    const date = new Date();
     const days = [
       'Domingo',
       'Lunes',
@@ -55,7 +139,13 @@ const Roads = () => {
       'Viernes',
       'Sábado'
     ];
-    const months = [
+    const dayIndex = days.indexOf(dayName);
+    const todayIndex = new Date().getDay();
+    const difference = dayIndex - todayIndex;
+    date.setDate(date.getDate() + difference);
+
+    const dayNumber = date.getDate();
+    const monthNames = [
       'Enero',
       'Febrero',
       'Marzo',
@@ -69,17 +159,171 @@ const Roads = () => {
       'Noviembre',
       'Diciembre'
     ];
+    const monthName = monthNames[date.getMonth()];
 
-    const date = new Date();
-    const dayName = days[date.getDay()];
-    const dayNumber = date.getDate();
-    const monthName = months[date.getMonth()];
-
-    if (today) {
-      return `${dayName}`;
-    }
-    return `${dayName} ${dayNumber} de ${monthName}`;
+    return `Ruta ${dayName} ${dayNumber} de ${monthName}`;
   };
+
+  const handleSelect = (option: any) => {
+    setSelectedOption(option);
+    setIsOpen(false);
+  };
+
+  const data2 = [
+    {titulo: 'Nombre de Ruta', texto: routeDetails?.routeName || 'N/A'},
+    {titulo: 'Zona', texto: routeDetails?.zoneName || 'N/A'},
+    {titulo: 'Jefe Ruta', texto: routeDetails?.routeManager || 'N/A'},
+    {
+      titulo: 'Tiempo estimado',
+      texto: `${routeDetails?.estimatedHours} Horas ${routeDetails?.estimatedMinutes} Minutos`
+    }
+  ];
+
+  if (routeDetails?.addresses) {
+    routeDetails.addresses.forEach((direccion: any, index: any) => {
+      data2.push({titulo: `Dirección ${index + 1}`, texto: direccion});
+    });
+  }
+
+  const requestLocationPermission = async () => {
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Permiso de ubicación',
+          message: 'La aplicación necesita acceso a su ubicación.',
+          buttonNeutral: 'Preguntar después',
+          buttonNegative: 'Cancelar',
+          buttonPositive: 'Aceptar'
+        }
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    }
+    return true;
+  };
+
+  const handlePressStartRoute = async () => {
+    if (routeStarted) {
+      console.log('La ruta ya ha comenzado. No se puede iniciar de nuevo.');
+      return;
+    }
+
+    const currentTime = new Date().toISOString();
+    setStartTime(currentTime);
+    await AsyncStorage.setItem('@startTime2', JSON.stringify(currentTime));
+
+    const hasLocationPermission = await requestLocationPermission();
+    if (!hasLocationPermission) {
+      console.log('Permiso de ubicación denegado');
+      return;
+    }
+
+    Geolocation.getCurrentPosition(
+      async position => {
+        const {latitude, longitude} = position.coords;
+        await AsyncStorage.setItem('@route', JSON.stringify(true));
+        setRouteStarted(true);
+        console.log(latitude, longitude, currentTime);
+        await handleSendLocation(
+          latitude.toString(),
+          longitude.toString(),
+          'startRoute',
+          currentTime
+        );
+      },
+      error => {
+        console.log('Error obteniendo la ubicación:', error.message);
+      },
+      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000}
+    );
+  };
+
+  const handlePressEndRoute = async () => {
+    if (!routeStarted) {
+      console.log('La ruta no ha comenzado. No se puede finalizar.');
+      return;
+    }
+    const currentTime = new Date().toISOString();
+    setEndTime(currentTime);
+
+    const hasLocationPermission = await requestLocationPermission();
+    if (!hasLocationPermission) {
+      console.log('Permiso de ubicación denegado');
+      return;
+    }
+
+    Geolocation.getCurrentPosition(
+      async position => {
+        const {latitude, longitude} = position.coords;
+        await AsyncStorage.setItem('@route', JSON.stringify(false));
+        setRouteStarted(false);
+        await handleSendLocation(
+          latitude.toString(),
+          longitude.toString(),
+          'endRoute',
+          currentTime
+        );
+        console.log(latitude, longitude, currentTime);
+      },
+      error => {
+        console.log('Error obteniendo la ubicación:', error.message);
+      },
+      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000}
+    );
+  };
+
+  const displayStartTime = () => {
+    if (startTime) {
+      return new Date(startTime)
+        .toLocaleString()
+        .replace(/^\d{1,2}\/\d{1,2}\/\d{4},\s*/, '');
+    }
+  };
+
+  const displayEndTime = () => {
+    if (endTime) {
+      return new Date(endTime)
+        .toLocaleString()
+        .replace(/^\d{1,2}\/\d{1,2}\/\d{4},\s*/, '');
+    }
+  };
+
+  const calculateDuration = () => {
+    if (startTime && endTime) {
+      const start = new Date(startTime);
+      const end = new Date(endTime);
+      const duration = end.getTime() - start.getTime();
+
+      const hours = Math.floor(
+        (duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      );
+      const minutes = Math.ceil((duration % (1000 * 60 * 60)) / (1000 * 60));
+
+      return `${hours} hora${hours !== 1 ? 's' : ''} y ${minutes} minuto${
+        minutes !== 1 ? 's' : ''
+      }`;
+    }
+    return '0 horas y 0 minutos';
+  };
+
+  const origin = {
+    latitude: routeDetails?.geolocations[0]?.coords?.lat,
+    longitude: routeDetails?.geolocations[0]?.coords?.lng
+  };
+  const destination = {
+    latitude:
+      routeDetails?.geolocations[routeDetails.geolocations.length - 1]?.coords
+        ?.lat,
+    longitude:
+      routeDetails?.geolocations[routeDetails.geolocations.length - 1]?.coords
+        ?.lng
+  };
+  const waypoints = routeDetails?.geolocations
+    ?.slice(1, -1)
+    .map((loc: any) => ({
+      latitude: loc.coords.lat,
+      longitude: loc.coords.lng
+    }));
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#E9E9E9'}}>
@@ -102,18 +346,42 @@ const Roads = () => {
               justifyContent: 'flex-end',
               alignItems: 'center'
             }}>
-            <MapView
-              initialRegion={{
-                latitude: 6.25184,
-                longitude: -75.56359,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421
-              }}
-              style={{
-                width: '100%',
-                height: '95%'
-              }}
-            />
+            {routeDetails && (
+              <MapView
+                initialRegion={{
+                  latitude: routeDetails?.geolocations[0]?.coords?.lat,
+                  longitude: routeDetails?.geolocations[0]?.coords?.lng,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421
+                }}
+                style={{
+                  width: '100%',
+                  height: '95%'
+                }}>
+                {routeDetails.geolocations.map((location: any, index: any) => (
+                  <Marker
+                    key={index}
+                    coordinate={{
+                      latitude: location.coords.lat,
+                      longitude: location.coords.lng
+                    }}
+                    title={location.address}
+                    pinColor="blue"
+                  />
+                ))}
+                <MapViewDirections
+                  origin={origin}
+                  destination={destination}
+                  waypoints={waypoints}
+                  apikey="AIzaSyBwlZ54JrUtje068KLc8he3W58QLGN-5g8" // Reemplaza con tu clave de API
+                  strokeWidth={4}
+                  strokeColor="blue"
+                  onError={errorMessage => {
+                    console.error(errorMessage);
+                  }}
+                />
+              </MapView>
+            )}
           </View>
           {/* <View
           style={{
@@ -166,11 +434,11 @@ const Roads = () => {
             style={{
               width: '100%',
               justifyContent: 'center',
-              alignItems: 'center'
+              alignItems: 'center',
+              marginTop: 20
             }}>
             <View
               style={{
-                height: 90,
                 width: '85%',
                 justifyContent: 'center',
                 alignItems: 'flex-start'
@@ -178,19 +446,54 @@ const Roads = () => {
               <TouchableOpacity
                 style={{
                   backgroundColor: '#396593',
-                  height: 40,
-                  width: '50%',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  elevation: 5,
+                  padding: 10,
                   borderRadius: 20,
-                  flexDirection: 'row'
-                }}>
-                <Text style={{color: 'white', fontSize: 16, paddingRight: 50}}>
-                  {getCurrentDateFormatted(true)}
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  width: '50%'
+                }}
+                onPress={() => setIsOpen(prev => !prev)}>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontSize: 16,
+                    paddingLeft: 10,
+                    paddingRight: 40
+                  }}>
+                  {selectedOption ? selectedOption?.dayName : 'Seleccionar'}
                 </Text>
-                <Icon2 name="chevron-thin-down" size={20} color="white" />
+                <Icon2
+                  name={isOpen ? 'chevron-thin-up' : 'chevron-thin-down'}
+                  size={20}
+                  color="white"
+                />
               </TouchableOpacity>
+              {isOpen && (
+                <View
+                  style={{
+                    backgroundColor: '#fff',
+                    borderRadius: 15,
+                    elevation: 10,
+                    marginTop: 3
+                  }}>
+                  {filteredRoutes &&
+                    filteredRoutes.map((option: any) => (
+                      <TouchableOpacity
+                        onPress={() => handleSelect(option)}
+                        style={{padding: 10}}>
+                        <Text
+                          style={{
+                            color: 'black',
+                            paddingLeft: 10,
+                            paddingRight: 40
+                          }}>
+                          {option?.dayName}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                </View>
+              )}
             </View>
           </View>
           <View
@@ -204,7 +507,9 @@ const Roads = () => {
               marginBottom: 20
             }}>
             <Text style={{fontSize: 20, fontWeight: '500', color: '#396593'}}>
-              Ruta {getCurrentDateFormatted(false)}
+              {selectedOption
+                ? getCurrentDateFormatted(selectedOption.dayName)
+                : getCurrentDateFormatted('Hoy')}
             </Text>
           </View>
 
@@ -229,13 +534,12 @@ const Roads = () => {
                 style={{flex: 1}}
                 horizontal={false}
                 nestedScrollEnabled={true}>
-                {data.map((item, index) => (
+                {data2.map((item, index) => (
                   <View
-                    key={index}
                     style={{
                       flex: 1,
                       flexDirection: 'row',
-                      borderBottomWidth: data.length > index + 1 ? 1 : 0,
+                      borderBottomWidth: data2.length > index + 1 ? 1 : 0,
                       borderBottomColor: '#e6e6e6',
                       marginHorizontal: 10,
                       paddingVertical: 16
@@ -296,10 +600,12 @@ const Roads = () => {
                   flexDirection: 'row',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  backgroundColor: '#888888',
+                  backgroundColor: !routeStarted ? '#030124' : '#888888',
                   height: 40,
                   width: 150
-                }}>
+                }}
+                onPress={!routeStarted ? handlePressStartRoute : undefined}
+                disabled={routeStarted}>
                 <View
                   style={{
                     flex: 1,
@@ -326,7 +632,9 @@ const Roads = () => {
                   alignItems: 'flex-start',
                   paddingHorizontal: 15
                 }}>
-                <Text style={{color: 'black', fontSize: 13}}>10:00 am</Text>
+                <Text style={{color: 'black', fontSize: 13}}>
+                  {displayStartTime()}
+                </Text>
               </View>
             </View>
             <View
@@ -339,10 +647,11 @@ const Roads = () => {
                   flexDirection: 'row',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  backgroundColor: '#030124',
+                  backgroundColor: routeStarted ? '#030124' : '#888888',
                   height: 40,
                   width: 150
-                }}>
+                }}
+                onPress={routeStarted ? handlePressEndRoute : undefined}>
                 <View
                   style={{
                     flex: 1,
@@ -369,7 +678,9 @@ const Roads = () => {
                   alignItems: 'flex-start',
                   paddingHorizontal: 15
                 }}>
-                <Text style={{color: 'black', fontSize: 13}}>12:30 am</Text>
+                <Text style={{color: 'black', fontSize: 13}}>
+                  {displayEndTime()}
+                </Text>
               </View>
             </View>
             <View
@@ -380,7 +691,7 @@ const Roads = () => {
                 width: '100%'
               }}>
               <Text style={{color: '#030124', fontSize: 14}}>
-                Tiempo tomado: 4 hora y 30 minutos
+                Tiempo tomado: {calculateDuration()}
               </Text>
             </View>
           </View>

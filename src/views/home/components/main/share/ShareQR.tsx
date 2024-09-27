@@ -1,5 +1,12 @@
 import React from 'react';
-import { ImageBackground, SafeAreaView, Text,Image, TouchableOpacity, View } from 'react-native';
+import {
+  ImageBackground,
+  SafeAreaView,
+  Text,
+  Image,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import QRCodeStyled from 'react-native-qrcode-styled';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -271,23 +278,23 @@ const ShareQR = () => {
               <Feather name="share" size={25} color="#396593" />
               <Text style={{color: '#396593'}}>Compartir</Text>
             </TouchableOpacity>
-            </View>
+          </View>
 
-<ModalAlertDown
-  isModalAlert={alertLogOut}
-  handleModalAlert={handleAlertLogOut}
-  handlePressModalYes={handlePressModalYes}
-  description={'¿Estás seguro de que deseas cerrar sesión?'}
-  isDelete={false}
-/>
+          <ModalAlertDown
+            isModalAlert={alertLogOut}
+            handleModalAlert={handleAlertLogOut}
+            handlePressModalYes={handlePressModalYes}
+            description={'¿Estás seguro de que deseas cerrar sesión?'}
+            isDelete={false}
+          />
 
-<ModalAlertDown
-  isModalAlert={alertDelte}
-  handleModalAlert={handleAlertDelete}
-  handlePressModalYes={handlePressModalYes}
-  description={'¿Estás seguro de que deseas eliminar tu cuenta?'}
-  isDelete={true}
-/>
+          <ModalAlertDown
+            isModalAlert={alertDelte}
+            handleModalAlert={handleAlertDelete}
+            handlePressModalYes={handlePressModalYes}
+            description={'¿Estás seguro de que deseas eliminar tu cuenta?'}
+            isDelete={true}
+          />
         </ImageBackground>
       </SafeAreaView>
     )

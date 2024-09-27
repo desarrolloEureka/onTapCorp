@@ -2,27 +2,51 @@ import React from 'react';
 import {View, Text, TouchableOpacity, FlatList} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const data = [
-  {id: '1', label: 'Cliente', text: 'Felipe Macias'},
-  {id: '2', label: 'Correo', text: 'felipem@gmail.com'},
-  {id: '3', label: 'Fecha', text: '2/05/2024'},
-  {id: '4', label: 'Estado', text: 'Llamar'},
-  {id: '5', label: 'Hora Inicio', text: '10:00 am'},
-  {id: '6', label: 'Hora Fin', text: '11:30 am'},
-  {id: '7', label: 'Duración Reunión', text: '1 Hora y 30 Minutos'},
-  {
-    id: '8',
-    label: 'Observación',
-    text: 'Cliente comenta estar interesado, sin embargo no puede tener respuesta final antes del 30 de febrero, por lo cual solicita un mayor plazo'
-  }
-];
+const formatDataForModal = (data: any) => {
+  if (!data) return []; // Si no hay datos, retornar un arreglo vacío
+
+  const startTime = new Date(data.meetingStart.timestamp);
+  const endTime = new Date(data.meetingEnd.timestamp);
+  const duration = new Date(endTime - startTime); // Calcular duración
+
+  const hours = duration.getUTCHours();
+  const minutes = duration.getUTCMinutes();
+  const durationText = `${hours} Hora${
+    hours !== 1 ? 's' : ''
+  } y ${minutes} Minuto${minutes !== 1 ? 's' : ''}`;
+
+  return [
+    {id: '1', label: 'Cliente', text: data.companyNameToVisit},
+    {id: '2', label: 'Correo', text: data.email},
+    {id: '3', label: 'Fecha', text: data.timestamp.slice(0, 10)},
+    {id: '4', label: 'Estado', text: data.meetingStatusName},
+    {
+      id: '5',
+      label: 'Hora Inicio',
+      text: startTime.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit'
+      })
+    },
+    {
+      id: '6',
+      label: 'Hora Fin',
+      text: endTime.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
+    },
+    {id: '7', label: 'Duración Reunión', text: durationText},
+    {id: '8', label: 'Observación', text: data.observations}
+  ];
+};
 
 type Props = {
   show: boolean;
-  handleClose: () => void;
+  data: any;
+  handleClose: (item: any) => void;
 };
 
-const ModalDetail = ({show, handleClose}: Props) => {
+const ModalDetail = ({show, data, handleClose}: Props) => {
+  const formattedData = formatDataForModal(data);
+
   return (
     show && (
       <View
@@ -93,7 +117,7 @@ const ModalDetail = ({show, handleClose}: Props) => {
                       alignItems: 'flex-end',
                       justifyContent: 'center'
                     }}
-                    onPress={handleClose}>
+                    onPress={() => handleClose(null)}>
                     <Ionicons name="close" size={25} color="#9C9C9C" />
                   </TouchableOpacity>
                 </View>
@@ -106,7 +130,7 @@ const ModalDetail = ({show, handleClose}: Props) => {
                     paddingHorizontal: 20
                   }}>
                   <FlatList
-                    data={data}
+                    data={formattedData}
                     renderItem={({item}) => {
                       return (
                         <View
@@ -123,19 +147,19 @@ const ModalDetail = ({show, handleClose}: Props) => {
                               color: '#396593',
                               paddingBottom: 3
                             }}>
-                            {item.label}
+                            {item?.label}
                           </Text>
                           <Text
                             style={{
                               fontSize: 13,
                               color: 'black'
                             }}>
-                            {item.text}
+                            {item?.text}
                           </Text>
                         </View>
                       );
                     }}
-                    keyExtractor={item => item.id}
+                    keyExtractor={item => item?.id}
                     style={{
                       height: '100%',
                       width: '100%',

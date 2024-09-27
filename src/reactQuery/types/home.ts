@@ -17,10 +17,13 @@ export interface Templates {
 }
 
 export interface Communications {
-  uid: any;
-  title: string;
+  idCompany: string;
   isActive: boolean;
-  items: any;
+  isDeleted: boolean;
+  subject: string;
+  timestamp: string;
+  uid: string;
+  url: string;
 }
 
 export interface BackgroundImages {

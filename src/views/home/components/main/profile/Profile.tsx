@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   ImageBackground,
   Keyboard,
@@ -13,26 +13,32 @@ import {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View
+  View,
+  PermissionsAndroid,
+  Linking,
+  Switch
 } from 'react-native';
-import {GetUser} from '../../../../../reactQuery/users';
-import {RouteStackParamList} from '../../../../../types/navigation';
-import {SocialDataForm} from '../../../../../types/profile';
+import {GetUser, GetCompany, GetArea} from '../../../../../reactQuery/users';
 import {profileStyles} from '../../../styles/profileStyles';
 import CustomModalAlert from './CustomModalAlert';
 import CustomModalLoading from './CustomModalLoading';
 import CustomSwitchGeneral from './CustomSwitchGeneral';
+import CustomSwitchIndividual from './CustomSwitchIndividual';
 import CustomSwitch from '../home/CustomSwitch';
 import FormAddDataUser from './FormAddDataUser';
 import FormDataUser from './FormDataUser';
 import ProfileHook from './hooks/ProfileHook';
+import MeetingsHook from '../meetings/hook/MeetingsHook';
 import PhotoUser from './PhotoUser';
+import CustomAlertBadge from '../../../../../componets/customAlertBadge/CustomAlertBadge';
 // Iconos
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 // import Icon from 'react-native-vector-icons/MaterialIcons';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
+import Geolocation from '@react-native-community/geolocation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile = () => {
   const {
@@ -51,8 +57,7 @@ const Profile = () => {
     isDataSuccess,
     setIsDataError,
     setIsDataSuccess,
-    handleSwitchAll,
-    switchValue,
+
     isLoadingSendData,
     status,
     isEmailPhoneRight,
@@ -71,24 +76,167 @@ const Profile = () => {
     itemUrlKey,
     itemUrlSelected,
     handleModalIcons,
-    isModalIcons
+    isModalIcons,
+    alertSwitchOff,
+    handleAlertSwitch,
+    areaDataUrls
   } = ProfileHook({
     isProUser: false
   });
+  const {handleSendLocation} = MeetingsHook();
+  console.log('areaDataUrls', areaDataUrls);
 
   const [isModalAlertNavigation, setIsModalAlertNavigation] = useState(false);
-
-  const navigation =
-    useNavigation<StackNavigationProp<RouteStackParamList, 'Home'>>();
+  const [isStarted, setIsStarted] = useState(false);
+  const [timestamps, setTimestamps] = useState<
+    {
+      inicio_jornada?: string;
+      final_jornada?: string;
+      location?: {latitude: number; longitude: number};
+    }[]
+  >([]);
 
   const userData = GetUser();
+  const [company, setCompany] = useState<any>(null);
+  const [area, setArea] = useState<any>(null);
 
-  const handleDataSet = (data: SocialDataForm) => {
-    setDataForm(data);
+  useEffect(() => {
+    const fetchCompanyData = async () => {
+      const data = await GetCompany(userData?.data?.idCompany);
+      setCompany(data);
+    };
+
+    const fetchAreaData = async () => {
+      const data = await GetArea(userData?.data?.selectedArea);
+      setArea(data);
+    };
+    user.data && fetchCompanyData();
+
+    userData.data && fetchCompanyData();
+    userData.data && fetchAreaData();
+  }, [userData.data]);
+
+  useEffect(() => {
+    const fetchDayState = async () => {
+      try {
+        const data = await AsyncStorage.getItem('@profile');
+        if (data !== null) {
+          setIsStarted(JSON.parse(data));
+        }
+      } catch (error) {
+        console.error('Error al recuperar el estado de la ruta:', error);
+      }
+    };
+
+    fetchDayState();
+  }, []);
+
+  const transformData = (Data: any, switchh: boolean): any => {
+    const DataUrls: any = {urls: []};
+
+    Object.keys(Data).forEach(key => {
+      const urlMatch = key.match(/urlLink(\d*)/);
+
+      if (urlMatch) {
+        const index = urlMatch[1] === '' ? '' : urlMatch[1]; // Obtener el índice
+        const url = Data[key];
+        const nameKey = `urlName${index}`; // Construir el nombre correspondiente
+
+        if (nameKey in Data) {
+          const [nameOrIcon, checked] = Data[nameKey];
+          if (switchh) {
+            DataUrls.urls.push({
+              url,
+              name: nameOrIcon, // Puedes ajustar esto si necesitas diferenciar entre nombre e ícono
+              checked,
+              isActiveSwitch: false
+            });
+          } else {
+            DataUrls.urls.push({
+              url,
+              name: nameOrIcon, // Puedes ajustar esto si necesitas diferenciar entre nombre e ícono
+              checked
+            });
+          }
+        }
+      }
+    });
+
+    return DataUrls;
+  };
+  const companyDataUrls = company ? transformData(company, false) : {urls: []};
+
+  if (company) {
+    companyDataUrls.urls.push({
+      url: company.webSite[0],
+      name: company.tradename[1] ? company.tradename[0] : '',
+      checked: company.webSite[1]
+    });
+  }
+
+  const navigation = useNavigation<StackNavigationProp<any, 'Home'>>();
+
+  const requestLocationPermission = async () => {
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Permiso de ubicación',
+          message: 'La aplicación necesita acceso a su ubicación.',
+          buttonNeutral: 'Preguntar después',
+          buttonNegative: 'Cancelar',
+          buttonPositive: 'Aceptar'
+        }
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    }
+    return true;
   };
 
-  const handleBackPress = () => {
-    navigation.goBack();
+  const toggleJornada = async () => {
+    const currentTime = new Date().toISOString();
+    const hasLocationPermission = await requestLocationPermission();
+    if (!hasLocationPermission) {
+      console.log('Permiso de ubicación denegado');
+      return;
+    }
+
+    Geolocation.getCurrentPosition(
+      async position => {
+        const {latitude, longitude} = position.coords;
+        if (!isStarted) {
+          setTimestamps(prev => [
+            ...prev,
+            {inicio_jornada: currentTime, location: {latitude, longitude}}
+          ]);
+          await handleSendLocation(
+            latitude.toString(),
+            longitude.toString(),
+            'startDay',
+            currentTime
+          );
+          await AsyncStorage.setItem('@profile', JSON.stringify(true));
+        } else {
+          setTimestamps(prev => [
+            ...prev,
+            {final_jornada: currentTime, location: {latitude, longitude}}
+          ]);
+          await handleSendLocation(
+            latitude.toString(),
+            longitude.toString(),
+            'endDay',
+            currentTime
+          );
+          await AsyncStorage.setItem('@profile', JSON.stringify(false));
+        }
+
+        setIsStarted(!isStarted);
+      },
+      error => {
+        console.log('Error obteniendo la ubicación:', error.message);
+      },
+      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000}
+    );
   };
 
   const handleTabPress = (tabName: string) => {
@@ -124,9 +272,10 @@ const Profile = () => {
                   style={{
                     height: 70,
                     width: '100%',
-                    flexDirection: 'row'
+                    flexDirection: 'row',
+                    marginTop: 30
                   }}>
-                  <View
+                  {/* <View
                     style={{
                       height: '100%',
                       width: '27%',
@@ -160,11 +309,11 @@ const Profile = () => {
                         Vista previa perfil
                       </Text>
                     </TouchableOpacity>
-                  </View>
+                  </View> */}
                   <View
                     style={{
                       height: '100%',
-                      width: '46%',
+                      width: '100%',
                       justifyContent: 'center',
                       alignItems: 'center',
                       marginTop: 15
@@ -175,9 +324,10 @@ const Profile = () => {
                         fontWeight: 'bold',
                         color: '#396593'
                       }}>
-                      Iniciar Jornada
+                      {isStarted ? 'Finalizar Jornada' : 'Iniciar Jornada'}
                     </Text>
                     <TouchableOpacity
+                      onPress={toggleJornada}
                       style={{
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -187,11 +337,15 @@ const Profile = () => {
                         style={{
                           padding: 7,
                           borderRadius: 50,
-                          backgroundColor: 'white',
+                          backgroundColor: isStarted ? '#030124' : 'white',
                           alignItems: 'center',
                           justifyContent: 'center'
                         }}>
-                        <Icon2 name="power-standby" size={30} color="#396593" />
+                        <Icon2
+                          name="power-standby"
+                          size={30}
+                          color={isStarted ? 'white' : '#030124'}
+                        />
                       </View>
                     </TouchableOpacity>
                   </View>
@@ -245,7 +399,9 @@ const Profile = () => {
                             color: '#030124'
                           }}>
                           <Icon name="eye" size={22} color="#030124" />{' '}
-                          {user ? user.views : ''}
+                          {userData?.data
+                            ? userData?.data?.views.toString()
+                            : ''}
                         </Text>
                       </View>
                     </View>
@@ -298,11 +454,7 @@ const Profile = () => {
                 </View>
 
                 <PhotoUser
-                  name={
-                    user.profile && user.profile.social
-                      ? user.profile.social?.name?.text || ''
-                      : ''
-                  }
+                  name={user && user?.name ? user?.name || '' : ''}
                   isProUser={false}
                 />
 
@@ -316,11 +468,19 @@ const Profile = () => {
                     marginBottom: 10
                   }}>
                   <CustomSwitchGeneral
-                    name="all_true"
-                    handleSwitch={(e: any) => handleSwitchAll(e)}
-                    checked={switchValue}
+                    uid={user?.uid}
+                    selectedArea={user?.selectedArea}
                   />
                 </View>
+                <View
+                  style={{
+                    height: 5,
+                    width: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginTop: 9,
+                    marginBottom: 10
+                  }}></View>
 
                 <View style={{backgroundColor: 'white'}}>
                   <View
@@ -340,8 +500,9 @@ const Profile = () => {
                       <View
                         style={{
                           height: '65%',
-                          width: '30%',
+                          width: '34%',
                           justifyContent: 'center',
+                          alignItems: 'center',
                           backgroundColor: '#396593',
                           borderRadius: 5
                         }}>
@@ -411,14 +572,18 @@ const Profile = () => {
                               alignItems: 'center',
                               justifyContent: 'center'
                             }}>
-                            <TextInput
-                              keyboardType={'default'}
-                              style={profileStyles.inputBox}
-                              placeholderTextColor="#000000"
-                              underlineColorAndroid="transparent"
-                              maxLength={undefined}
-                              onChangeText={(text: any) => {}}
-                            />
+                            <Text
+                              style={{
+                                height: '50%',
+                                width: '95%',
+                                fontSize: 15,
+                                color: 'black',
+                                marginBottom: -5
+                                //paddingLeft: 1,
+                              }}>
+                              {userData?.data?.firstName[0]}{' '}
+                              {userData?.data?.lastName[0]}
+                            </Text>
                           </View>
                         </View>
                       </View>
@@ -486,14 +651,365 @@ const Profile = () => {
                               alignItems: 'center',
                               justifyContent: 'center'
                             }}>
-                            <TextInput
-                              keyboardType={'default'}
-                              style={profileStyles.inputBox}
-                              placeholderTextColor="#000000"
-                              underlineColorAndroid="transparent"
-                              maxLength={undefined}
-                              onChangeText={(text: any) => {}}
+                            <Text
+                              style={{
+                                height: '50%',
+                                width: '95%',
+                                fontSize: 15,
+                                color: 'black',
+                                marginBottom: -5
+                                //paddingLeft: 1,
+                              }}>
+                              {userData?.data?.position[0]}
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    height: '1%',
+                    width: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}></View>
+                <View style={{backgroundColor: 'white'}}>
+                  <View
+                    style={{
+                      height: 60,
+                      width: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginBottom: 15
+                    }}>
+                    <View
+                      style={{
+                        height: '100%',
+                        width: '96%',
+                        justifyContent: 'center'
+                      }}>
+                      <View
+                        style={{
+                          height: '65%',
+                          width: '34%',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          backgroundColor: '#396593',
+                          borderRadius: 5
+                        }}>
+                        <Text style={{color: 'white'}}> Datos Empresa</Text>
+                      </View>
+                    </View>
+                  </View>
+
+                  <View
+                    style={{
+                      height: 100,
+                      justifyContent: 'flex-start',
+                      flexDirection: 'row'
+                    }}>
+                    <View
+                      style={{
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        height: '90%',
+                        width: '85%'
+                      }}>
+                      <View
+                        style={{
+                          flexDirection: 'column',
+                          alignItems: 'flex-start',
+                          height: '100%',
+                          width: '100%',
+                          paddingLeft: 10
+                        }}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            height: '20%',
+                            width: '90%'
+                          }}>
+                          <Text style={profileStyles.label}>
+                            Nombre comercial
+                          </Text>
+                        </View>
+
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            height: '55%',
+                            width: '90%',
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#9b9db3'
+                          }}>
+                          <View
+                            style={{
+                              height: '100%',
+                              width: '15%',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}>
+                            <Ionicons
+                              name="person-outline"
+                              size={28}
+                              color="#396593"
                             />
+                          </View>
+
+                          <View
+                            style={{
+                              height: '100%',
+                              width: '85%',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}>
+                            <Text
+                              style={{
+                                height: '50%',
+                                width: '95%',
+                                fontSize: 15,
+                                color: 'black',
+                                marginBottom: -5
+                                //paddingLeft: 1,
+                              }}>
+                              {company?.tradename[0]}
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+
+                  <View
+                    style={{
+                      height: 100,
+                      justifyContent: 'flex-start',
+                      flexDirection: 'row'
+                    }}>
+                    <View
+                      style={{
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        height: '90%',
+                        width: '85%'
+                      }}>
+                      <View
+                        style={{
+                          flexDirection: 'column',
+                          alignItems: 'flex-start',
+                          height: '100%',
+                          width: '100%',
+                          paddingLeft: 10
+                        }}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            height: '20%',
+                            width: '90%'
+                          }}>
+                          <Text style={profileStyles.label}>NIT</Text>
+                        </View>
+
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            height: '55%',
+                            width: '90%',
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#9b9db3'
+                          }}>
+                          <View
+                            style={{
+                              height: '100%',
+                              width: '15%',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}>
+                            <Ionicons
+                              name="document-attach-outline"
+                              size={28}
+                              color="#396593"
+                            />
+                          </View>
+
+                          <View
+                            style={{
+                              height: '100%',
+                              width: '85%',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}>
+                            <Text
+                              style={{
+                                height: '50%',
+                                width: '95%',
+                                fontSize: 15,
+                                color: 'black',
+                                marginBottom: -5
+                                //paddingLeft: 1,
+                              }}>
+                              {company?.id[0]}
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+
+                  <View
+                    style={{
+                      height: 100,
+                      justifyContent: 'flex-start',
+                      flexDirection: 'row'
+                    }}>
+                    <View
+                      style={{
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        height: '90%',
+                        width: '85%'
+                      }}>
+                      <View
+                        style={{
+                          flexDirection: 'column',
+                          alignItems: 'flex-start',
+                          height: '100%',
+                          width: '100%',
+                          paddingLeft: 10
+                        }}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            height: '20%',
+                            width: '90%'
+                          }}>
+                          <Text style={profileStyles.label}>
+                            Dirección principal
+                          </Text>
+                        </View>
+
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            height: '55%',
+                            width: '90%',
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#9b9db3'
+                          }}>
+                          <View
+                            style={{
+                              height: '100%',
+                              width: '15%',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}>
+                            <Ionicons
+                              name="bag-outline"
+                              size={28}
+                              color="#396593"
+                            />
+                          </View>
+
+                          <View
+                            style={{
+                              height: '100%',
+                              width: '85%',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}>
+                            <Text
+                              style={{
+                                height: '50%',
+                                width: '95%',
+                                fontSize: 15,
+                                color: 'black',
+                                marginBottom: -5
+                                //paddingLeft: 1,
+                              }}>
+                              {company?.address[0]}
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+
+                  <View
+                    style={{
+                      height: 100,
+                      justifyContent: 'flex-start',
+                      flexDirection: 'row'
+                    }}>
+                    <View
+                      style={{
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        height: '90%',
+                        width: '85%'
+                      }}>
+                      <View
+                        style={{
+                          flexDirection: 'column',
+                          alignItems: 'flex-start',
+                          height: '100%',
+                          width: '100%',
+                          paddingLeft: 10
+                        }}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            height: '20%',
+                            width: '90%'
+                          }}>
+                          <Text style={profileStyles.label}>Teléfono</Text>
+                        </View>
+
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            height: '55%',
+                            width: '90%',
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#9b9db3'
+                          }}>
+                          <View
+                            style={{
+                              height: '100%',
+                              width: '15%',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}>
+                            <Feather name="phone" size={28} color="#396593" />
+                          </View>
+
+                          <View
+                            style={{
+                              height: '100%',
+                              width: '85%',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}>
+                            <Text
+                              style={{
+                                height: '50%',
+                                width: '95%',
+                                fontSize: 15,
+                                color: 'black',
+                                marginBottom: -5
+                                //paddingLeft: 1,
+                              }}>
+                              {company?.phone[0]}
+                            </Text>
                           </View>
                         </View>
                       </View>
@@ -508,17 +1024,178 @@ const Profile = () => {
                     justifyContent: 'center'
                   }}></View>
 
-                <FormDataUser
-                  isProUser={false}
-                  dataForm={dataForm}
-                  handleDataSet={e => handleDataSet(e)}
-                  data={data}
-                  handleData={handleData}
-                  user={user}
-                  handleSwitch={handleSwitch}
+                <View style={{backgroundColor: 'white'}}>
+                  <View
+                    style={{
+                      height: 60,
+                      width: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginBottom: 15
+                    }}>
+                    <View
+                      style={{
+                        height: '100%',
+                        width: '96%',
+                        justifyContent: 'center'
+                      }}>
+                      <View
+                        style={{
+                          height: '65%',
+                          width: '34%',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          backgroundColor: '#396593',
+                          borderRadius: 5
+                        }}>
+                        <Text style={{color: 'white'}}> Urls Empresa</Text>
+                      </View>
+                    </View>
+                  </View>
+
+                  <ScrollView
+                    style={{maxHeight: 300}} // Ajusta la altura máxima según lo necesites
+                    showsVerticalScrollIndicator={true}
+                    nestedScrollEnabled={true}>
+                    {companyDataUrls.urls.map((item: any, index: any) => (
+                      <View
+                        style={{
+                          height: 100,
+                          justifyContent: 'flex-start',
+                          flexDirection: 'row'
+                        }}>
+                        <View
+                          style={{
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            height: '90%',
+                            width: '85%'
+                          }}>
+                          <View
+                            style={{
+                              flexDirection: 'column',
+                              alignItems: 'flex-start',
+                              height: '100%',
+                              width: '100%',
+                              paddingLeft: 10
+                            }}>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                height: '20%',
+                                width: '90%'
+                              }}>
+                              <Text style={profileStyles.label}>
+                                {item.name}
+                              </Text>
+                            </View>
+
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                height: '55%',
+                                width: '90%',
+                                borderBottomWidth: 1,
+                                borderBottomColor: '#9b9db3'
+                              }}>
+                              <View
+                                style={{
+                                  height: '100%',
+                                  width: '15%',
+                                  alignItems: 'center',
+                                  justifyContent: 'center'
+                                }}>
+                                <Ionicons
+                                  name="document-attach-outline"
+                                  size={28}
+                                  color="#396593"
+                                />
+                              </View>
+                              <TouchableOpacity
+                                style={{
+                                  height: '100%',
+                                  width: '85%',
+                                  alignItems: 'center',
+                                  justifyContent: 'center'
+                                }}
+                                onPress={() => Linking.openURL(item.url)}>
+                                <Text
+                                  style={{
+                                    height: '50%',
+                                    width: '95%',
+                                    fontSize: 15,
+                                    color: 'black',
+                                    marginBottom: -5
+                                    //paddingLeft: 1,
+                                  }}>
+                                  {item.url}
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        </View>
+                      </View>
+                    ))}
+                  </ScrollView>
+                </View>
+
+                <View
+                  style={{
+                    height: '1%',
+                    width: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
                 />
 
-                <FormAddDataUser
+                <View style={{backgroundColor: 'white'}}>
+                  <View
+                    style={{
+                      height: 60,
+                      width: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginBottom: 15
+                    }}>
+                    <View
+                      style={{
+                        height: '100%',
+                        width: '96%',
+                        justifyContent: 'center'
+                      }}>
+                      <View
+                        style={{
+                          height: '65%',
+                          width: '38%',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          backgroundColor: '#396593',
+                          borderRadius: 5
+                        }}>
+                        <Text style={{color: 'white'}}>
+                          Area {area?.areaName}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+
+                  <ScrollView
+                    style={{maxHeight: 300}} // Ajusta la altura máxima según lo necesites
+                    showsVerticalScrollIndicator={true}
+                    nestedScrollEnabled={true}>
+                    {areaDataUrls.map((item: any, index: any) => (
+                      <CustomSwitchIndividual
+                        uid={user?.uid}
+                        selectedArea={user?.selectedArea}
+                        item={item}
+                      />
+                    ))}
+                  </ScrollView>
+                </View>
+
+                {/* <FormAddDataUser
                   isProUser={false}
                   dataForm={dataForm}
                   handleDataSet={e => handleDataSet(e)}
@@ -541,7 +1218,7 @@ const Profile = () => {
                   handleModalIcons={handleModalIcons}
                   isModalIcons={isModalIcons}
                   handleDeleteData={handleDeleteData}
-                />
+                /> */}
 
                 <View
                   style={{
@@ -647,6 +1324,11 @@ const Profile = () => {
               <Text style={{color: '#606060'}}>Compartir</Text>
             </TouchableOpacity>
           </View>
+
+          <CustomAlertBadge
+            isOpen={alertSwitchOff}
+            handleAlertSwitch={handleAlertSwitch}
+          />
         </ImageBackground>
       </SafeAreaView>
     )

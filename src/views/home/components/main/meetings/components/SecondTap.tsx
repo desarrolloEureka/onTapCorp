@@ -5,19 +5,12 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {meetingsStyles} from '../styles/meetingsStyles';
 
-export interface Cliente {
-  id: string;
-  fecha: string;
-  nombre: string;
-  estado: string;
-}
-
 type Props = {
   handleConfigSearch: () => void;
-  handleShowDetail: () => void;
+  handleShowDetail: (item: any) => void;
   setSearchText: (text: string) => void;
   searchText: string;
-  data: Cliente[];
+  data: any;
 };
 
 export default function SecondTap({
@@ -100,7 +93,7 @@ export default function SecondTap({
               </View>
             </View>
           )}
-          renderItem={({item}: {item: Cliente}) => {
+          renderItem={({item}: {item: any}) => {
             return (
               <View style={meetingsStyles.item}>
                 <View
@@ -109,7 +102,9 @@ export default function SecondTap({
                     justifyContent: 'center',
                     alignItems: 'flex-start'
                   }}>
-                  <Text style={meetingsStyles.text}>{item.fecha}</Text>
+                  <Text style={meetingsStyles.text}>
+                    {item?.timestamp.slice(0, 10)}
+                  </Text>
                 </View>
                 <View
                   style={{
@@ -117,7 +112,9 @@ export default function SecondTap({
                     justifyContent: 'center',
                     alignItems: 'flex-start'
                   }}>
-                  <Text style={meetingsStyles.text}>{item.nombre}</Text>
+                  <Text style={meetingsStyles.text}>
+                    {item?.companyNameToVisit}
+                  </Text>
                 </View>
                 <View
                   style={{
@@ -125,7 +122,9 @@ export default function SecondTap({
                     justifyContent: 'center',
                     alignItems: 'flex-start'
                   }}>
-                  <Text style={meetingsStyles.text}>{item.estado}</Text>
+                  <Text style={meetingsStyles.text}>
+                    {item?.meetingStatusName}
+                  </Text>
                 </View>
                 <View
                   style={{
@@ -135,7 +134,7 @@ export default function SecondTap({
                   }}>
                   <TouchableOpacity
                     style={meetingsStyles.detailContainer}
-                    onPress={handleShowDetail}>
+                    onPress={() => handleShowDetail(item)}>
                     <Icon name="remove-red-eye" size={20} color="#396593" />
                     <Text style={meetingsStyles.verText}>Detalle</Text>
                   </TouchableOpacity>
@@ -145,20 +144,6 @@ export default function SecondTap({
           }}
           keyExtractor={item => item.id}
         />
-        <View
-          style={{
-            flexDirection: 'row',
-            paddingBottom: 10,
-            justifyContent: 'flex-end'
-          }}>
-          <TouchableOpacity>
-            <Icon name="arrow-back-ios" size={20} color="#606060" />
-          </TouchableOpacity>
-          <Text style={{color: '#606060'}}>Pag 3/3</Text>
-          <TouchableOpacity>
-            <Icon name="arrow-forward-ios" size={20} color="#606060" />
-          </TouchableOpacity>
-        </View>
       </View>
     </>
   );

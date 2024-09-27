@@ -36,7 +36,7 @@ export const meetingsStyles = StyleSheet.create({
     marginHorizontal: 10,
     borderRadius: 20,
     marginTop: 30,
-    height: 350,
+    maxHeight: 500,
     elevation: 15
   },
   item: {
@@ -45,7 +45,8 @@ export const meetingsStyles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
-    paddingVertical: 10
+    paddingTop: 5,
+    paddingBottom: 15
   },
   text: {
     fontSize: 13

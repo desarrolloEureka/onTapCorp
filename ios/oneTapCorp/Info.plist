@@ -33,6 +33,8 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Necesitamos tu ubicación para registrar la jornada.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>In order to add a profile photo, you need to grant photo reading permissions</string>
 	<key>UIAppFonts</key>

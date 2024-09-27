@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Linking,
   Modal,
@@ -8,7 +8,7 @@ import {
   View
 } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -17,7 +17,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import { StackNavigation } from '../../types/navigation';
+// import {StackNavigation} from '../../types/navigation';
 
 const MenuSuperior = ({
   setAlertLogOut,
@@ -27,7 +27,7 @@ const MenuSuperior = ({
   setAlertDelte: (e: boolean) => void;
 }) => {
   const [isModalVisible, setModalVisible] = useState(false);
-  const navigation = useNavigation<StackNavigation>();
+  const navigation = useNavigation<any>();
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -51,16 +51,16 @@ const MenuSuperior = ({
     } else if (item.id === 10) {
       Linking.openURL('https://onetap.com.co/preguntas-frecuentes/');
     } else if (item.id === 5) {
-      navigation.navigate('Documentos');
+      navigation.navigate('Templates');
     } else if (item.id === 6) {
       navigation.navigate('AcercaDe');
     } else if (item.id === 7) {
       Linking.openURL(
-        'https://drive.google.com/file/d/1ple9F3bJ7acszQTHKRWNJ9TGU065TZHr/view'
+        'https://drive.google.com/file/d/1Pep9caUKKKFliEeLbAEwWlOCCROUy670/view'
       ); // CAMBIAR A URL DONDE ESTA EL ARCHIVO DE Políticas de Privacidad
     } else if (item.id === 9) {
       Linking.openURL(
-        'https://drive.google.com/file/d/1Rtiph9Tx0Po1eiWZqKdOy1-3kBHCSnaN/view'
+        'https://drive.google.com/file/d/1PSeTFOOG34BRrsoRGfcpQG72AurIc4ll/view'
       ); // CAMBIAR A URL DONDE ESTA EL ARCHIVO DE Términos y Condiciones
     } else if (item.id === 11) {
       navigation.navigate('ChangePassword');
@@ -74,6 +74,7 @@ const MenuSuperior = ({
   const renderModalContent = () => {
     const items = [
       // {id: 5, name: 'Documentos', icon: 'newspaper'},
+      {id: 5, name: 'Plantillas', icon: 'newspaper'},
       {id: 6, name: 'Acerca De', icon: 'information-outline'},
       {id: 7, name: 'Políticas de Privacidad', icon: 'lock'},
       {id: 9, name: 'Términos y Condiciones', icon: 'file-contract'},
@@ -93,7 +94,7 @@ const MenuSuperior = ({
         }}>
         <View
           style={{
-            height: '9%',
+            height: '7%',
             width: '90%',
             alignItems: 'flex-end',
             borderTopLeftRadius: 13,
@@ -111,7 +112,7 @@ const MenuSuperior = ({
             }}
             onPress={toggleModal}>
             <AntDesign name={'close'} size={30} color="#396593" />
-            </TouchableOpacity>
+          </TouchableOpacity>
         </View>
         <View
           style={{
@@ -124,36 +125,36 @@ const MenuSuperior = ({
           <View
             style={{
               width: '90%',
-              height: '42.5%',            
-            backgroundColor: 'white'
-          }}>
-          {items.map(item => (
-            <TouchableOpacity
-              key={item.id}
-              onPress={() => handleItemPress(item)}
-              style={styles.item}>
-              <View style={{height: '100%', width: '7%'}}></View>
-              <View
-                style={{height: '100%', width: '90%', flexDirection: 'row'}}>
-                {item.icon === 'shopping-cart' ? (
+              paddingBottom: 25,
+              backgroundColor: 'white'
+            }}>
+            {items.map(item => (
+              <TouchableOpacity
+                key={item.id}
+                onPress={() => handleItemPress(item)}
+                style={styles.item}>
+                <View style={{height: '100%', width: '7%'}}></View>
+                <View
+                  style={{height: '100%', width: '90%', flexDirection: 'row'}}>
+                  {item.icon === 'shopping-cart' ? (
                     <Feather name={item.icon} size={26} color="black" />
                   ) : null}
-                {item.icon === 'restore' ||
-                item.icon === 'storefront-outline' ||
-                item.icon === 'information-outline' ||
-                item.icon === 'chat-question-outline' ? (
-                  <MaterialCommunityIcons
-                    name={item.icon}
-                    size={26}
-                    color="black"
-                  />
-                ) : null}
-                {item.icon === 'file-present' ||
-                item.icon === 'password' ||
-                item.icon === 'logout' ? (
-                  <MaterialIcons name={item.icon} size={26} color="black" />
-                ) : null}
-                {item.icon === 'deleteuser' ? (
+                  {item.icon === 'restore' ||
+                  item.icon === 'storefront-outline' ||
+                  item.icon === 'information-outline' ||
+                  item.icon === 'chat-question-outline' ? (
+                    <MaterialCommunityIcons
+                      name={item.icon}
+                      size={26}
+                      color="black"
+                    />
+                  ) : null}
+                  {item.icon === 'file-present' ||
+                  item.icon === 'password' ||
+                  item.icon === 'logout' ? (
+                    <MaterialIcons name={item.icon} size={26} color="black" />
+                  ) : null}
+                  {item.icon === 'deleteuser' ? (
                     <AntDesign name={item.icon} size={26} color="black" />
                   ) : null}
                   {item.icon === 'lock' ? (

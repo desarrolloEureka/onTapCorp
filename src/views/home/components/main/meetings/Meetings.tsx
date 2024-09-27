@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import SecondTap from './components/SecondTap';
 import ModalDetail from './components/ModalDetail';
 import ModalSearch from './components/ModalSearch';
@@ -21,12 +20,59 @@ import FirstTap from './components/FirstTap';
 import MenuSuperior from '../../../../menuSuperior/MenuSuperior';
 import HomeHook from '../../../hooks/HomeHook';
 import ModalAlertDown from '../profile/ModalAlertDown';
+import {
+  GetAllCommunications,
+  GetAllMeetings
+} from '../../../../../reactQuery/home';
+import {GetUser} from '../../../../../reactQuery/users';
 
-const data = [
-  {id: '1', fecha: '01/05/2024', nombre: 'Cliente A', estado: 'Llamar'},
-  {id: '2', fecha: '02/05/2024', nombre: 'Cliente B', estado: 'Concretado'},
-  {id: '3', fecha: '03/05/2024', nombre: 'Cliente C', estado: 'Llamar'}
-];
+const processMeetings = (
+  meetingStatus: any,
+  meetings: any,
+  selectedFilter: any,
+  searchText: any
+) => {
+  if (!meetingStatus || !meetings) return [];
+
+  // Crear un objeto para facilitar la búsqueda de nombres por uid
+  const meetingStatusMap = meetingStatus.reduce((acc: any, status: any) => {
+    acc[status.uid] = status.name;
+    return acc;
+  }, {});
+
+  // Reemplazar meetingStatusId por name y ordenar
+  const updatedMeetings = meetings.map((meeting: any) => ({
+    ...meeting,
+    meetingStatusName:
+      meetingStatusMap[meeting.meetingStatusId] || meeting.meetingStatusId
+  }));
+
+  // Ordenar los meetings
+  const sortedMeetings = [...updatedMeetings].sort((a, b) => {
+    switch (selectedFilter) {
+      case 'fecha':
+        return new Date(b.timestamp) - new Date(a.timestamp);
+      case 'estado':
+        return a.meetingStatusName.localeCompare(b.meetingStatusName);
+      case 'cliente':
+        return a.companyNameToVisit.localeCompare(b.companyNameToVisit);
+      case 'todos':
+      default:
+        return 0; // Sin orden
+    }
+  });
+
+  // Filtrar los resultados según el searchText
+  return sortedMeetings.filter(meeting => {
+    if (searchText === '') return true; // No filtrar si searchText está vacío
+    const lowerCaseSearchText = searchText.toLowerCase();
+    return (
+      meeting.timestamp.toLowerCase().includes(lowerCaseSearchText) || // Filtrar por fecha
+      meeting.companyNameToVisit.toLowerCase().includes(lowerCaseSearchText) || // Filtrar por cliente
+      meeting.meetingStatusName.toLowerCase().includes(lowerCaseSearchText) // Filtrar por estado
+    );
+  });
+};
 
 const Meetings = () => {
   const {
@@ -39,9 +85,13 @@ const Meetings = () => {
     setSearchText,
     handleConfigSearch,
     showConfigSearch,
+    handleFilterChange,
+    selectedFilter,
     handleShowDetail,
-    showModalDetail
+    showModalDetail,
+    selectedMeeting
   } = MeetingsHook();
+
   const {
     setAlertLogOut,
     setAlertDelte,
@@ -51,6 +101,21 @@ const Meetings = () => {
     alertDelte,
     alertLogOut
   } = HomeHook();
+
+  const {data} = GetUser();
+  const meetingStatus = GetAllCommunications(
+    'meetingStatus',
+    data?.idCompany,
+    activeTab
+  )?.data;
+  const meetings = GetAllMeetings('meetings', data?.uid, activeTab)?.data;
+
+  const filteredMeetings = processMeetings(
+    meetingStatus,
+    meetings,
+    selectedFilter,
+    searchText
+  );
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#E9E9E9'}}>
@@ -69,13 +134,13 @@ const Meetings = () => {
 
         <View style={meetingsStyles.tabContent}>
           {activeTab === 'tab1' ? (
-            <FirstTap />
+            <FirstTap meetingStatus={meetingStatus} />
           ) : (
             <SecondTap
               handleConfigSearch={handleConfigSearch}
               setSearchText={setSearchText}
               searchText={searchText}
-              data={data}
+              data={filteredMeetings}
               handleShowDetail={handleShowDetail}
             />
           )}
@@ -84,9 +149,15 @@ const Meetings = () => {
         <ModalSearch
           showConfigSearch={showConfigSearch}
           handleConfigSearch={handleConfigSearch}
+          handleFilterChange={handleFilterChange}
+          selectedFilter={selectedFilter}
         />
 
-        <ModalDetail show={showModalDetail} handleClose={handleShowDetail} />
+        <ModalDetail
+          show={showModalDetail}
+          data={selectedMeeting}
+          handleClose={handleShowDetail}
+        />
 
         <View
           style={{

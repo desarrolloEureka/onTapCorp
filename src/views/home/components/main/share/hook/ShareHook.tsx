@@ -59,9 +59,10 @@ function ShareHook() {
 
   useEffect(() => {
     if (data && data.preview) {
+      console.log('data.preview', data.preview);
       const url = data?.preview;
       const nuevaURL =
-        url && url.replace('localhost:3000', 'on-tap-tawny.vercel.app');
+        url && url.replace('/localhost:3000', 'on-tap-tawny.vercel.app');
       setUrlGlobal(nuevaURL);
     }
   }, []);

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {
   DataFormSorted,
   DataFormValues,
@@ -7,11 +7,19 @@ import {
   handleDataProps,
   handleDataNetworksProps,
   NetworksSubIndexDataForm,
-  SocialDataForm,
+  SocialDataForm
 } from '../../../../../../types/profile';
-import { profile } from '../../../../../../initialData/profileInitialData';
-import { GetUser, SendDataUserProfile } from '../../../../../../reactQuery/users';
-import { validateEmail, validatePhoneNumber } from '../../../../../../globals/validateData';
+import {profile} from '../../../../../../initialData/profileInitialData';
+import {
+  GetUser,
+  SendDataUserProfile,
+  GetArea
+} from '../../../../../../reactQuery/users';
+import {
+  validateEmail,
+  validatePhoneNumber
+} from '../../../../../../globals/validateData';
+import firestore from '@react-native-firebase/firestore';
 
 const ProfileHook = ({
   handleDataSet,
@@ -20,7 +28,7 @@ const ProfileHook = ({
   handleDataSet?: (e: SocialDataForm) => void;
   isProUser: boolean;
 }) => {
-  const { data, error } = GetUser();
+  const {data, error} = GetUser();
   const [dataForm, setDataForm] = useState<SocialDataForm>(profile.social);
   const [objectDataSort, setObjectDataSort] = useState<[string, any][]>([]);
   const [allChecked, setAllChecked] = useState(false);
@@ -36,7 +44,7 @@ const ProfileHook = ({
 
   /* Delete items */
   const [itemDelete, setItemDelete] = useState<
-    { index: string; subindex: string } | {}
+    {index: string; subindex: string} | {}
   >();
 
   const [isDataSuccess, setIsDataSuccess] = useState(false);
@@ -49,15 +57,111 @@ const ProfileHook = ({
 
   /* Propios */
   const [isLoadingSendData, setIsLoadingSendData] = useState(false);
-  const [switchValue, setSwitchValue] = useState(false);
+
+  const [area, setArea] = useState<any>(null);
+  const [areaDataUrls, setAreaDataUrls] = useState<any>([]);
+
+  const [alertSwitchOff, setAlertSwitchOff] = useState(false);
+
+  const validLabel = useCallback((key: string) => {
+    let label = '';
+    switch (key) {
+      case 'name':
+        label = 'Nombre comercial';
+        break;
+      case 'nit':
+        label = 'NIT';
+        break;
+      case 'phone':
+        label = 'Teléfono';
+        break;
+      case 'address':
+        label = 'Dirección principal';
+        break;
+    }
+    return label;
+  }, []);
+
+  useEffect(() => {
+    const data = Object.entries(dataForm as DataFormSorted).sort(
+      (a: any, b: any) => {
+        const aa = a[1].length ? a[1][0].order : a[1].order;
+        const bb = b[1].length ? b[1][0].order : b[1].order;
+        return aa - bb;
+      }
+    );
+    setObjectDataSort(data);
+  }, [dataForm, isProUser]);
+
+  useEffect(() => {
+    setFlag(true);
+    setTimeout(() => {
+      setFlag(false);
+    }, 1000);
+  }, [dataForm]);
+
+  useEffect(() => {
+    let myDataForm = null;
+    if (data?.profile) {
+      myDataForm = data.profile.social ?? profile.social;
+    } else {
+      myDataForm = profile.social;
+    }
+    myDataForm && setDataForm(myDataForm);
+  }, [data, isProUser]);
+
+  useEffect(() => {
+    if (dataForm?.name?.label == '') {
+      const dataFormClone = {...dataForm};
+      const items = Object.entries(dataFormClone);
+      const newData = items.map(value => {
+        if (value[0] == 'phones') {
+          const data = value[1] as DataFormValues[];
+          return checkedItems(data, value[0], false, 'Telefono');
+        } else if (value[0] == 'emails') {
+          const data = value[1] as DataFormValues[];
+          return checkedItems(data, value[0], false, 'Correo');
+        } else if (value[0] == 'urls') {
+          const data = value[1] as UrlDataFormValues[];
+          return checkedItems(data, value[0], false, 'urls');
+        } else {
+          const data = value[1] as DataFormValues;
+          const label = validLabel(value[0]);
+          return checkedItem(data, value[0], false, label);
+        }
+      });
+      const dataFormChecked = Object.fromEntries(newData);
+      handleDataSet && handleDataSet(dataFormChecked);
+    }
+  }, [dataForm, handleDataSet, validLabel]);
+
+  useEffect(() => {
+    if (allChecked && dataForm) {
+      const dataFormClone = {...dataForm};
+      handleDataSet && handleDataSet(dataFormClone);
+      setAllChecked(false);
+    }
+  }, [allChecked, dataForm, handleDataSet]);
+
+  useEffect(() => {
+    const unsubscribe = firestore()
+      .collection('workAreas')
+      .doc(data?.selectedArea)
+      .onSnapshot((doc: any) => {
+        const updatedData = doc.data();
+        setArea(updatedData);
+        setAreaDataUrls(transformData(updatedData, data?.uid)); // Actualiza los datos visibles en la interfaz
+      });
+
+    return () => unsubscribe(); // Para limpiar el listener cuando el componente se desmonte
+  }, [data?.selectedArea]);
 
   const handleSendProfile = async (isProUser: boolean) => {};
 
-  const [alertSwitchOff, setAlertSwitchOff] = useState(false);
   const handleAlertSwitch = (status: boolean) =>
     setAlertSwitchOff(!alertSwitchOff);
 
-  const handleModalAlert = (itemDelete: { index: string; subindex: string }) => {
+  const handleModalAlert = (itemDelete: {index: string; subindex: string}) => {
     if (!isModalAlert) {
       setItemDelete(itemDelete);
     } else {
@@ -93,9 +197,8 @@ const ProfileHook = ({
     subindex?: number;
   }) => {
     const isChecked = checked;
-    const dataFormClone = { ...dataForm };
+    const dataFormClone = {...dataForm};
     const index = name as keyof typeof dataFormClone;
-
   };
 
   const fillFields = (
@@ -104,7 +207,7 @@ const ProfileHook = ({
     text: string,
     subindexUrl?: NetworksSubIndexDataForm
   ) => {
-    const dataFormClone = { ...dataForm };
+    const dataFormClone = {...dataForm};
 
     setDataForm(dataFormClone);
     setIsDataLoad(true);
@@ -114,9 +217,9 @@ const ProfileHook = ({
     name,
     text,
     subindex,
-    key,
+    key
   }: handleDataNetworksProps) => {
-    const dataFormClone = { ...dataForm };
+    const dataFormClone = {...dataForm};
     const index = name as keyof typeof dataFormClone;
     key != undefined && subindex && fillFields(index, key, text, subindex);
     setTimeout(() => {
@@ -129,9 +232,9 @@ const ProfileHook = ({
     text,
     subindex,
     key,
-    currentDataRef,
+    currentDataRef
   }: handleDataProps) => {
-    const dataFormClone = { ...dataForm };
+    const dataFormClone = {...dataForm};
     const index = name as keyof typeof dataFormClone;
     /* if (
       index == 'name' ||
@@ -173,7 +276,7 @@ const ProfileHook = ({
       itemDelete && 'subindex' in itemDelete
         ? itemDelete['subindex']
         : undefined;
-    const dataFormClone = { ...dataForm };
+    const dataFormClone = {...dataForm};
     const dataAux: any = dataFormClone[index as keyof typeof dataForm];
     if (
       dataAux?.length > 1 &&
@@ -193,7 +296,7 @@ const ProfileHook = ({
   };
 
   const handleAddData = (index: string) => {
-    const dataFormClone = { ...dataForm };
+    const dataFormClone = {...dataForm};
     /*  if (index == 'phones' || index == 'emails' || index == 'urls') {
        const count = dataFormClone?.[index]?.length;
        if (index === 'phones') {
@@ -295,7 +398,7 @@ const ProfileHook = ({
 
   const handleModalAlertLimit = () => {
     setIsModalAlertLimit(false);
-  }
+  };
 
   const checkedItems = (
     data: DataFormValues[],
@@ -303,7 +406,7 @@ const ProfileHook = ({
     checked?: boolean,
     label?: string
   ) => {
-    data.map((el) => {
+    data.map(el => {
       el.checked = checked;
       el.label = label ?? el.label;
     });
@@ -321,132 +424,42 @@ const ProfileHook = ({
     return [value, data];
   };
 
-  const validLabel = useCallback(
-    (key: string) => {
-      let label = '';
-      switch (key) {
-        case 'name':
-          label = 'Nombre comercial';
-          break;
-        case 'nit':
-          label = 'NIT';
-          break;
-        case 'phone':
-          label = 'Teléfono';
-          break;
-        case 'address':
-          label = 'Dirección principal';
-          break;
-      }
-      return label;
-    }, []);
+  const transformData = (Data: any, uidUser: any): any => {
+    const DataUrls: any = [];
+    Object.keys(Data).forEach(key => {
+      const urlMatch = key.match(/urlLink(\d*)/);
+      if (urlMatch) {
+        const index = urlMatch[1] === '' ? '' : urlMatch[1];
+        const url = Data[key];
+        const nameKey = `urlName${index}`;
+        if (nameKey in Data) {
+          const [nameOrIcon, isActive, userObjects] = Data[nameKey];
 
-  const handleSwitchAll = (val: any) => {
-    setSwitchValue(!switchValue);
-    const isChecked = val?.checked;
-    const dataFormClone = { ...dataForm };
-    const items = Object.entries(dataFormClone);
-
-    const newData = items.map((value) => {
-      if (value[0] == 'phones' || value[0] == 'emails') {
-        const data = value[1] as DataFormValues[];
-        return checkedItems(data, value[0], !isChecked);
-      } else if (value[0] == 'urls') {
-        const data = value[1] as UrlDataFormValues[];
-        return checkedItems(data, value[0], !isChecked);
-      } else {
-        const data = value[1] as DataFormValues;
-        return checkedItem(data, value[0], !isChecked);
-      }
-    });
-
-    const dataFormChecked = Object.fromEntries(newData);
-    handleDataSet && handleDataSet(dataFormChecked);
-    setAllChecked(true);
-  };
-
-  useEffect(() => {
-    const data = Object.entries(dataForm as DataFormSorted).sort((a, b) => {
-      const aa = a[1].length ? a[1][0].order : a[1].order;
-      const bb = b[1].length ? b[1][0].order : b[1].order;
-      return aa - bb;
-    });
-    setObjectDataSort(data);
-  }, [dataForm, isProUser]);
-
-  useEffect(() => {
-    setFlag(true);
-    setTimeout(() => {
-      setFlag(false);
-    }, 1000);
-  }, [dataForm]);
-
-  useEffect(() => {
-    let myDataForm = null;
-    if (data?.profile) {
-      myDataForm = data.profile.social ?? profile.social;
-    } else {
-      myDataForm = profile.social;
-    }
-    myDataForm && setDataForm(myDataForm);
-  }, [data, isProUser]);
-
-
-
-  useEffect(() => {
-    if (dataForm?.name?.label == '') {
-      const dataFormClone = { ...dataForm };
-      const items = Object.entries(dataFormClone);
-      const newData = items.map((value) => {
-        if (value[0] == 'phones') {
-          const data = value[1] as DataFormValues[];
-          return checkedItems(
-            data,
-            value[0],
-            false,
-            "Telefono"
-          );
-        } else if (value[0] == 'emails') {
-          const data = value[1] as DataFormValues[];
-          return checkedItems(
-            data,
-            value[0],
-            false,
-            "Correo"
-          );
-        } else if (value[0] == 'urls') {
-          const data = value[1] as UrlDataFormValues[];
-          return checkedItems(
-            data,
-            value[0],
-            false,
-            "urls"
-          );
-        } else {
-          const data = value[1] as DataFormValues;
-          const label = validLabel(value[0]);
-          return checkedItem(data, value[0], false, label);
+          if (isActive) {
+            Object.keys(userObjects || {}).forEach(userKey => {
+              const userInfo = userObjects[userKey];
+              if (userInfo.uid === uidUser) {
+                DataUrls.push({
+                  url,
+                  name: nameOrIcon,
+                  checked: isActive, // Puedes ajustar esto según tu lógica
+                  isActiveSwitch: userInfo.isActive, // Agregar isActive del usuario
+                  nameKey
+                });
+              }
+            });
+          }
         }
-      });
-      const dataFormChecked = Object.fromEntries(newData);
-      handleDataSet && handleDataSet(dataFormChecked);
-    }
-  }, [dataForm, handleDataSet, validLabel]);
-
-  useEffect(() => {
-    if (allChecked && dataForm) {
-      const dataFormClone = { ...dataForm };
-      handleDataSet && handleDataSet(dataFormClone);
-      setAllChecked(false);
-    }
-  }, [allChecked, dataForm, handleDataSet]);
+      }
+    });
+    return DataUrls;
+  };
 
   return {
     handleSwitch,
     handleData,
     handleDataNetworks,
     handleAddData,
-    handleSwitchAll,
     data: objectDataSort,
     handleDeleteData,
     handleModalAux,
@@ -469,8 +482,7 @@ const ProfileHook = ({
     handleSendProfile,
     setIsModalAlert,
     handleSuccessDelete,
-    switchValue,
-    setSwitchValue,
+    areaDataUrls,
     isLoadingSendData,
     setIsLoadingSendData,
     isModalIcons,
@@ -484,7 +496,8 @@ const ProfileHook = ({
     noDeleted,
     handleModalAlertLimit,
     setAlertSwitchOff,
-    handleAlertSwitch
+    handleAlertSwitch,
+    alertSwitchOff
   };
 };
 

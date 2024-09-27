@@ -1,13 +1,13 @@
 'use client';
 import React from 'react';
-import { SafeAreaView } from 'react-native';
+import {SafeAreaView} from 'react-native';
 import {
   DataFormValues,
   SocialDataForm,
   handleDataNetworksProps,
-  handleDataProps,
+  handleDataProps
 } from '../../../../../types/profile';
-import { UserData } from '../../../../../types/user';
+import {UserData} from '../../../../../types/user';
 import ItemFormUrl from './ItemFormUrl';
 
 const FormAddDataUser = ({
@@ -26,7 +26,7 @@ const FormAddDataUser = ({
   itemUrlSelected,
   handleModalIcons,
   isModalIcons,
-  handleDeleteData,
+  handleDeleteData
 }: {
   isDetailOpen: boolean;
   itemDetail: number;
@@ -35,7 +35,7 @@ const FormAddDataUser = ({
   handleDataSet: (e: SocialDataForm) => void;
   handleModalAlert: ({
     index,
-    subindex,
+    subindex
   }: {
     index: string;
     subindex: string;
@@ -46,7 +46,7 @@ const FormAddDataUser = ({
     text,
     subindex,
     key,
-    currentDataRef,
+    currentDataRef
   }: handleDataProps) => void;
   user: UserData;
   handleSwitch: (e: any) => void;
@@ -57,7 +57,7 @@ const FormAddDataUser = ({
     name,
     text,
     subindex,
-    key,
+    key
   }: handleDataNetworksProps) => void;
   setModalIcons: (e: any) => void;
   itemUrlKey: number;
@@ -66,29 +66,26 @@ const FormAddDataUser = ({
   isModalIcons: boolean;
   handleDeleteData: () => void;
 }) => {
-
   return (
     <SafeAreaView>
       {data.map((value, key) => {
         const index = value[0] as keyof typeof dataForm;
         const validation =
-          value[0] == 'urlsCompany' ||
-          value[0] == 'urlsCommercial';
-        const labelArray: | DataFormValues[] = validation ? value[1] : null;
+          value[0] == 'urlsCompany' || value[0] == 'urlsCommercial';
+        const labelArray: DataFormValues[] = validation ? value[1] : null;
 
-
-        console.log("labelArray ", labelArray);
+        console.log('labelArray ', labelArray);
         if (labelArray) {
           return value[0] == 'urlsCompany' || value[0] == 'urlsCommercial' ? (
             <ItemFormUrl
               key={key}
               dataForm={dataForm}
-              handleDataSet={(e) => handleDataSet(e)}
+              handleDataSet={e => handleDataSet(e)}
               index={index}
               labelArray={labelArray}
               value={value}
-              handleModalAlert={({ index, subindex }) =>
-                handleModalAlert({ index, subindex })
+              handleModalAlert={({index, subindex}) =>
+                handleModalAlert({index, subindex})
               }
               isProUser={isProUser}
               handleData={handleData}
@@ -103,9 +100,7 @@ const FormAddDataUser = ({
               isModalIcons={isModalIcons}
               handleDeleteData={handleDeleteData}
             />
-
           ) : null;
-
         }
       })}
     </SafeAreaView>

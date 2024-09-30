@@ -62,11 +62,45 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
   useEffect(() => {
     const fetchMeetingState = async () => {
       try {
-        const data = await AsyncStorage.getItem('@meeting');
-        const data2 = await AsyncStorage.getItem('@startTime');
-        if (data !== null) {
-          setMeetingStarted(JSON.parse(data));
-          setStartTime(JSON.parse(data2));
+        const startTime = await AsyncStorage.getItem('@startTime');
+        const endTime = await AsyncStorage.getItem('@endTime');
+        const meeting = await AsyncStorage.getItem('@meeting');
+        const meetingEndInfo = await AsyncStorage.getItem('@meetingEndInfo');
+        const meetingStartInfo = await AsyncStorage.getItem(
+          '@meetingStartInfo'
+        );
+
+        if (meeting !== null) {
+          setMeetingStarted(JSON.parse(meeting));
+        }
+
+        if (startTime !== null) {
+          setStartTime(JSON.parse(startTime));
+        }
+
+        if (endTime !== null) {
+          setEndTime(JSON.parse(endTime));
+        }
+
+        if (meetingStartInfo !== null) {
+          const {
+            companyNameToVisit,
+            subject,
+            contactName,
+            email,
+            meetingStart,
+            documentId
+          } = JSON.parse(meetingStartInfo);
+          setCompanyNameToVisit(companyNameToVisit);
+          setSubject(subject);
+          setContactName(contactName);
+          setEmail(email);
+          setMeetingStart(meetingStart);
+          setDocumentId(documentId);
+        }
+        if (meetingEndInfo !== null) {
+          const {meetingEnd} = JSON.parse(meetingEndInfo);
+          setMeetingEnd(meetingEnd);
         }
       } catch (error) {
         console.error('Error al recuperar el estado de la ruta:', error);
@@ -87,8 +121,6 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
     }
     const currentTime = new Date().toISOString();
     setStartTime(currentTime);
-    await AsyncStorage.setItem('@startTime', JSON.stringify(currentTime));
-
     const hasLocationPermission = await requestLocationPermission();
     if (!hasLocationPermission) {
       console.log('Permiso de ubicación denegado');
@@ -104,8 +136,6 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
           timestamp: currentTime
         });
         setMeetingStarted(true);
-        await AsyncStorage.setItem('@meeting', JSON.stringify(true));
-
         const dataInitial = {
           companyNameToVisit,
           subject,
@@ -127,6 +157,26 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
           );
           if (documentId) {
             setDocumentId(documentId);
+            await AsyncStorage.setItem(
+              '@startTime',
+              JSON.stringify(currentTime)
+            );
+            await AsyncStorage.setItem('@meeting', JSON.stringify(true));
+            await AsyncStorage.setItem(
+              '@meetingStartInfo',
+              JSON.stringify({
+                companyNameToVisit,
+                subject,
+                contactName,
+                email,
+                meetingStart: {
+                  latitude,
+                  longitude,
+                  timestamp: currentTime
+                },
+                documentId
+              })
+            );
           } else {
             console.log('No se pudo obtener el ID del documento');
           }
@@ -164,8 +214,6 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
           timestamp: currentTime
         });
         setMeetingStarted(false);
-        await AsyncStorage.setItem('@meeting', JSON.stringify(false));
-
         const dataUpdate = {
           meetingEnd: {
             latitude,
@@ -180,6 +228,18 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
             longitude.toString(),
             'endMeeting',
             currentTime
+          );
+          await AsyncStorage.setItem('@endTime', JSON.stringify(currentTime));
+          await AsyncStorage.setItem('@meeting', JSON.stringify(false));
+          await AsyncStorage.setItem(
+            '@meetingEndInfo',
+            JSON.stringify({
+              meetingEnd: {
+                latitude,
+                longitude,
+                timestamp: currentTime
+              }
+            })
           );
         } catch (error) {
           console.log('Error al enviar la información inicial:', error);
@@ -202,7 +262,6 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
       meetingStatusId,
       observations
     };
-
     try {
       await handleSendUpdateInfo(documentId, dataUpdate, true);
     } catch (error) {
@@ -236,7 +295,7 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
     if (startTime) {
       return new Date(startTime)
         .toLocaleString()
-        .replace(/^\d{1,2}\/\d{1,2}\/\d{4},\s*/, '');
+        .replace(/^\d{1,2}\/\d{1,2}\/\d{0},\s*/, '');
     }
   };
 
@@ -244,7 +303,7 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
     if (endTime) {
       return new Date(endTime)
         .toLocaleString()
-        .replace(/^\d{1,2}\/\d{1,2}\/\d{4},\s*/, '');
+        .replace(/^\d{1,2}\/\d{1,2}\/\d{0},\s*/, '');
     }
   };
 
@@ -286,6 +345,15 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
       setEndTime('');
       setMeetingStarted(false);
       setDocumentId('');
+      const resetAsyncStorage = async () => {
+        await AsyncStorage.setItem('@startTime', JSON.stringify(null));
+        await AsyncStorage.setItem('@endTime', JSON.stringify(null));
+        await AsyncStorage.setItem('@meeting', JSON.stringify(null));
+        await AsyncStorage.setItem('@meetingStartInfo', JSON.stringify(null));
+        await AsyncStorage.setItem('@meetingEndInfo', JSON.stringify(null));
+      };
+
+      resetAsyncStorage();
     }
   }, [isDataSuccess]);
 
@@ -724,7 +792,7 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
           ) : (
             <TouchableOpacity
               style={{
-                backgroundColor: '#396593',
+                backgroundColor: isFormValid2() ? '#396593' : '#808080',
                 height: 40,
                 width: '50%',
                 justifyContent: 'center',

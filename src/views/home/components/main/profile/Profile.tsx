@@ -79,12 +79,12 @@ const Profile = () => {
     isModalIcons,
     alertSwitchOff,
     handleAlertSwitch,
-    areaDataUrls
+    areaDataUrls,
+    views
   } = ProfileHook({
     isProUser: false
   });
   const {handleSendLocation} = MeetingsHook();
-  console.log('areaDataUrls', areaDataUrls);
 
   const [isModalAlertNavigation, setIsModalAlertNavigation] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
@@ -96,25 +96,24 @@ const Profile = () => {
     }[]
   >([]);
 
-  const userData = GetUser();
   const [company, setCompany] = useState<any>(null);
   const [area, setArea] = useState<any>(null);
 
   useEffect(() => {
     const fetchCompanyData = async () => {
-      const data = await GetCompany(userData?.data?.idCompany);
+      const data = await GetCompany(user?.idCompany);
       setCompany(data);
     };
 
     const fetchAreaData = async () => {
-      const data = await GetArea(userData?.data?.selectedArea);
+      const data = await GetArea(user?.selectedArea);
       setArea(data);
     };
     user.data && fetchCompanyData();
 
-    userData.data && fetchCompanyData();
-    userData.data && fetchAreaData();
-  }, [userData.data]);
+    user && fetchCompanyData();
+    user && fetchAreaData();
+  }, [user]);
 
   useEffect(() => {
     const fetchDayState = async () => {
@@ -399,9 +398,7 @@ const Profile = () => {
                             color: '#030124'
                           }}>
                           <Icon name="eye" size={22} color="#030124" />{' '}
-                          {userData?.data
-                            ? userData?.data?.views.toString()
-                            : ''}
+                          {views ? views.toString() : ''}
                         </Text>
                       </View>
                     </View>
@@ -581,8 +578,7 @@ const Profile = () => {
                                 marginBottom: -5
                                 //paddingLeft: 1,
                               }}>
-                              {userData?.data?.firstName[0]}{' '}
-                              {userData?.data?.lastName[0]}
+                              {user?.firstName[0]} {user?.lastName[0]}
                             </Text>
                           </View>
                         </View>
@@ -660,7 +656,7 @@ const Profile = () => {
                                 marginBottom: -5
                                 //paddingLeft: 1,
                               }}>
-                              {userData?.data?.position[0]}
+                              {user?.position[0]}
                             </Text>
                           </View>
                         </View>

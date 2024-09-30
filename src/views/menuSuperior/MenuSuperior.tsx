@@ -57,11 +57,11 @@ const MenuSuperior = ({
     } else if (item.id === 7) {
       Linking.openURL(
         'https://drive.google.com/file/d/1Pep9caUKKKFliEeLbAEwWlOCCROUy670/view'
-      ); // CAMBIAR A URL DONDE ESTA EL ARCHIVO DE Políticas de Privacidad
+      );
     } else if (item.id === 9) {
       Linking.openURL(
         'https://drive.google.com/file/d/1PSeTFOOG34BRrsoRGfcpQG72AurIc4ll/view'
-      ); // CAMBIAR A URL DONDE ESTA EL ARCHIVO DE Términos y Condiciones
+      ); 
     } else if (item.id === 11) {
       navigation.navigate('ChangePassword');
     } else if (item.id === 12) {

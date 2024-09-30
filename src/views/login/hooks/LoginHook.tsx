@@ -28,7 +28,7 @@ const LoginHook = () => {
   const handleGoTerms = () => {
     Linking.openURL(
       'https://drive.google.com/file/d/1PSeTFOOG34BRrsoRGfcpQG72AurIc4ll/view'
-    ); // CAMBIAR A URL DONDE ESTA EL ARCHIVO DE Términos y Condiciones
+    ); 
   };
 
   const handleBackPress = () => {

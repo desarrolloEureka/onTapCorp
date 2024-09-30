@@ -60,6 +60,7 @@ const ProfileHook = ({
 
   const [area, setArea] = useState<any>(null);
   const [areaDataUrls, setAreaDataUrls] = useState<any>([]);
+  const [views, setViews] = useState<number>();
 
   const [alertSwitchOff, setAlertSwitchOff] = useState(false);
 
@@ -155,6 +156,18 @@ const ProfileHook = ({
 
     return () => unsubscribe(); // Para limpiar el listener cuando el componente se desmonte
   }, [data?.selectedArea]);
+
+  useEffect(() => {
+    const unsubscribe = firestore()
+      .collection('users')
+      .doc(data?.uid)
+      .onSnapshot((doc: any) => {
+        const updatedData = doc.data();
+        setViews(updatedData?.views);
+      });
+
+    return () => unsubscribe(); // Para limpiar el listener cuando el componente se desmonte
+  }, [data?.views]);
 
   const handleSendProfile = async (isProUser: boolean) => {};
 
@@ -497,7 +510,8 @@ const ProfileHook = ({
     handleModalAlertLimit,
     setAlertSwitchOff,
     handleAlertSwitch,
-    alertSwitchOff
+    alertSwitchOff,
+    views
   };
 };
 

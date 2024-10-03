@@ -14,6 +14,14 @@ import {
   updatePreView
 } from '../firebase/user';
 import {dataBase} from '../firebase/firebaseConfig';
+import {
+  doc,
+  getDoc,
+  addDoc,
+  updateDoc,
+  collection,
+  setDoc
+} from 'firebase/firestore';
 
 // import {ProfessionalDataForm, SocialDataForm} from '../types/profile';
 // import {TemplateData, UserData} from '../types/user';
@@ -25,7 +33,6 @@ import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 // import {RouteStackParamList} from '../types/navigation';
-import {doc, getDoc, addDoc, updateDoc, collection} from 'firebase/firestore';
 
 const navigation = useNavigation<StackNavigationProp<any, 'Home'>>();
 
@@ -120,7 +127,7 @@ const SendDataImage = async (
   let imageDataKey = isProUser ? 'imagePro' : 'image';
   await updateUserData(userId, {[imageDataKey]: base64String});
   const updatedUser = await getUserByIdFireStore(userId);
-  if (updatedUser.exists) {
+  if (updatedUser.exists()) {
     const userData = (await updatedUser.data()) as any;
     const getUser = await reBuildUserData(userData);
     await AsyncStorage.setItem('@user', JSON.stringify(getUser));
@@ -143,7 +150,7 @@ const SendSwitchProfile = async (userId: string, switchState: boolean) => {
     preview: 'https://backoffice.onetap.com.co/es/views/cardView?uid=' + userId
   });
   const updatedUser = await getUserByIdFireStore(userId);
-  if (updatedUser.exists) {
+  if (updatedUser.exists()) {
     const userData = (await updatedUser.data()) as any;
     const getUser = await reBuildUserData(userData);
     await AsyncStorage.setItem('@user', JSON.stringify(getUser));
@@ -151,18 +158,24 @@ const SendSwitchProfile = async (userId: string, switchState: boolean) => {
 };
 
 const SendSwitchActivateCard = async (userId: string, switchState: boolean) => {
-  const userDocument = firestore().collection('users').doc(userId);
-  await userDocument.update({switch_activateCard: switchState});
-  const updatedUser = await getUserByIdFireStore(userId);
-  if (updatedUser.exists) {
-    const userData = (await updatedUser.data()) as any;
-    const getUser = await reBuildUserData(userData);
-    await AsyncStorage.setItem('@user', JSON.stringify(getUser));
+  const userDocumentRef = doc(dataBase, 'users', userId);
+  try {
+    await updateDoc(userDocumentRef, {switch_activateCard: switchState});
+    const updatedUser = await getUserByIdFireStore(userId);
+    if (updatedUser.exists()) {
+      const userData = await updatedUser.data();
+      const getUser = await reBuildUserData(userData);
+      await AsyncStorage.setItem('@user', JSON.stringify(getUser));
+    }
+  } catch (error) {
+    console.error('Error al enviar el estado del interruptor:', error);
+    throw error; // Opcional: lanzar el error para manejarlo en otro lugar
   }
 };
 
 const UpdatePassword = async (password: string) => {
   const res = await updatePasswordFirebase(password);
+  console.log('res', res);
   return res;
 };
 
@@ -185,15 +198,19 @@ const SendTemplateSelected = async (
   queryClient: any
 ) => {
   const templateData = data;
-  const userDocument = firestore().collection('users').doc(userId);
-  //await userDocument.set({ templateData }, { merge: true });
-  await userDocument.set({templateData: data}, {merge: true}); // Sobrescribe el array templateData con los nuevos datos
-  const updatedUser = await getUserByIdFireStore(userId);
-  if (updatedUser.exists) {
-    const userData = (await updatedUser.data()) as any;
-    const getUser = await reBuildUserData(userData);
-    await AsyncStorage.setItem('@user', JSON.stringify(getUser));
-    await queryClient.setQueryData(['user'], () => getUser);
+  const userDocument = doc(dataBase, 'users', userId);
+  try {
+    await setDoc(userDocument, {templateData}, {merge: true});
+    const updatedUser = await getUserByIdFireStore(userId);
+    if (updatedUser.exists()) {
+      const userData = (await updatedUser.data()) as any;
+      const getUser = await reBuildUserData(userData);
+      await AsyncStorage.setItem('@user', JSON.stringify(getUser));
+      await queryClient.setQueryData(['user'], () => getUser);
+    }
+  } catch (error) {
+    console.error('Error al enviar la plantilla seleccionada:', error);
+    throw error; // Opcional: lanzar el error para manejarlo en otro lugar
   }
 };
 
@@ -209,7 +226,7 @@ const SendDataUserProfile = async (
   return await updateDataUserProfile(userId, data, isProUser)
     .then(async response => {
       const updatedUser = await getUserByIdFireStore(userId);
-      if (updatedUser.exists) {
+      if (updatedUser.exists()) {
         const userData = (await updatedUser.data()) as any;
         const getUser = await reBuildUserData(userData);
         await AsyncStorage.setItem('@user', JSON.stringify(getUser));
@@ -231,7 +248,7 @@ const GetUserById = (userUid: string) => {
     queryKey: ['user'],
     queryFn: async () => {
       const updatedUser = await getUserByIdFireStore(userUid);
-      if (updatedUser.exists) {
+      if (updatedUser.exists()) {
         const userData = (await updatedUser.data()) as any;
         const getUser = await reBuildUserData(userData);
         await AsyncStorage.setItem('@user', JSON.stringify(getUser));
@@ -246,8 +263,8 @@ const GetUserById = (userUid: string) => {
 
 const SendInactiveUser = async (userId: string) => {
   try {
-    const userDocument = firestore().collection('users').doc(userId);
-    await userDocument.update({isActive: false});
+    const userDocument = doc(dataBase, 'users', userId);
+    await updateDoc(userDocument, {isActive: false});
     return true; // Otra forma de indicar que la actualización fue exitosa
   } catch (error) {
     console.error('Error al actualizar el usuario:', error);
@@ -263,7 +280,7 @@ const GetUser = (refetch?: boolean) =>
       if (userLogged) {
         const user = (await JSON.parse(userLogged)) as any;
         const updatedUser = await getUserByIdFireStore(user.uid);
-        if (updatedUser.exists) {
+        if (updatedUser.exists()) {
           const userData = (await updatedUser.data()) as any;
           const getUser = await reBuildUserData(userData);
           await AsyncStorage.setItem('@user', JSON.stringify(getUser));
@@ -440,15 +457,11 @@ const SendDataAllSwitch = async (
   selectedArea: string,
   switchState: boolean
 ) => {
-  const workAreaDocument = firestore()
-    .collection('workAreas')
-    .doc(selectedArea);
-
+  const workAreaDocument = doc(dataBase, 'workAreas', selectedArea);
   try {
-    // Obtén el documento para acceder a los userObjects
-    const doc = await workAreaDocument.get();
-    if (doc.exists) {
-      const data = doc.data();
+    const docSnapshot = await getDoc(workAreaDocument);
+    if (docSnapshot.exists()) {
+      const data = docSnapshot.data();
       // Itera sobre todas las propiedades del documento
       for (const key in data) {
         // Busca los campos que sigan la estructura de urlName, urlName2, etc.
@@ -468,7 +481,7 @@ const SendDataAllSwitch = async (
             };
 
             // Actualiza el array en Firestore
-            await workAreaDocument.update({
+            await updateDoc(workAreaDocument, {
               [key]: updatedArray
             });
 
@@ -493,13 +506,11 @@ const SendDataIndividualSwitch = async (
   switchState: boolean,
   item: any
 ) => {
-  const workAreaDocument = firestore()
-    .collection('workAreas')
-    .doc(selectedArea);
+  const workAreaDocument = doc(dataBase, 'workAreas', selectedArea);
   try {
     // Obtén el documento para acceder a los userObjects
-    const doc = await workAreaDocument.get();
-    if (doc.exists) {
+    const doc = await getDoc(workAreaDocument);
+    if (doc.exists()) {
       const data = doc.data();
 
       // Accede a los userObjects usando el nameKey
@@ -517,7 +528,7 @@ const SendDataIndividualSwitch = async (
           [userId]: user // Actualiza solo el usuario específico
         };
 
-        await workAreaDocument.update({
+        await updateDoc(workAreaDocument, {
           [urlNameKey]: updatedUrlName
         });
 

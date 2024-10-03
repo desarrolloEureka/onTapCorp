@@ -207,23 +207,15 @@ const Roads = () => {
       console.log('La ruta ya ha comenzado. No se puede iniciar de nuevo.');
       return;
     }
-
-    const currentTime = new Date().toISOString();
-    setStartTime(currentTime);
-    await AsyncStorage.setItem('@startTime2', JSON.stringify(currentTime));
-
     const hasLocationPermission = await requestLocationPermission();
     if (!hasLocationPermission) {
       console.log('Permiso de ubicación denegado');
       return;
     }
-
+    const currentTime = new Date().toISOString();
     Geolocation.getCurrentPosition(
       async position => {
         const {latitude, longitude} = position.coords;
-        await AsyncStorage.setItem('@route', JSON.stringify(true));
-        setRouteStarted(true);
-        console.log(latitude, longitude, currentTime);
         await handleSendLocation(
           latitude.toString(),
           longitude.toString(),
@@ -236,6 +228,10 @@ const Roads = () => {
       },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000}
     );
+    setRouteStarted(true);
+    setStartTime(currentTime);
+    await AsyncStorage.setItem('@route', JSON.stringify(true));
+    await AsyncStorage.setItem('@startTime2', JSON.stringify(currentTime));
   };
 
   const handlePressEndRoute = async () => {
@@ -243,33 +239,31 @@ const Roads = () => {
       console.log('La ruta no ha comenzado. No se puede finalizar.');
       return;
     }
-    const currentTime = new Date().toISOString();
-    setEndTime(currentTime);
-
     const hasLocationPermission = await requestLocationPermission();
     if (!hasLocationPermission) {
       console.log('Permiso de ubicación denegado');
       return;
     }
-
+    const currentTime = new Date().toISOString();
     Geolocation.getCurrentPosition(
       async position => {
         const {latitude, longitude} = position.coords;
-        await AsyncStorage.setItem('@route', JSON.stringify(false));
-        setRouteStarted(false);
         await handleSendLocation(
           latitude.toString(),
           longitude.toString(),
           'endRoute',
           currentTime
         );
-        console.log(latitude, longitude, currentTime);
       },
       error => {
         console.log('Error obteniendo la ubicación:', error.message);
       },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000}
     );
+    setEndTime(currentTime);
+    setRouteStarted(false);
+    await AsyncStorage.setItem('@route', JSON.stringify(false));
+    await AsyncStorage.setItem('@startTime2', JSON.stringify(''));
   };
 
   const displayStartTime = () => {
@@ -459,7 +453,8 @@ const Roads = () => {
                     color: 'white',
                     fontSize: 16,
                     paddingLeft: 10,
-                    paddingRight: 40
+                    paddingRight: 40,
+                    fontWeight: 'normal'
                   }}>
                   {selectedOption ? selectedOption?.dayName : 'Seleccionar'}
                 </Text>
@@ -486,7 +481,8 @@ const Roads = () => {
                           style={{
                             color: 'black',
                             paddingLeft: 10,
-                            paddingRight: 40
+                            paddingRight: 40,
+                            fontWeight: 'normal'
                           }}>
                           {option?.dayName}
                         </Text>
@@ -620,8 +616,13 @@ const Roads = () => {
                     justifyContent: 'center',
                     alignItems: 'flex-start'
                   }}>
-                  <Text style={{color: 'white', fontSize: 11}}>
-                    Iniciar ruta
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontSize: 15,
+                      fontWeight: 'normal'
+                    }}>
+                    Iniciar
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -632,7 +633,8 @@ const Roads = () => {
                   alignItems: 'flex-start',
                   paddingHorizontal: 15
                 }}>
-                <Text style={{color: 'black', fontSize: 13}}>
+                <Text
+                  style={{color: 'black', fontSize: 15, fontWeight: 'normal'}}>
                   {displayStartTime()}
                 </Text>
               </View>
@@ -651,7 +653,8 @@ const Roads = () => {
                   height: 40,
                   width: 150
                 }}
-                onPress={routeStarted ? handlePressEndRoute : undefined}>
+                onPress={routeStarted ? handlePressEndRoute : undefined}
+                disabled={!routeStarted}>
                 <View
                   style={{
                     flex: 1,
@@ -666,8 +669,13 @@ const Roads = () => {
                     justifyContent: 'center',
                     alignItems: 'flex-start'
                   }}>
-                  <Text style={{color: 'white', fontSize: 11}}>
-                    Finalizar ruta
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontSize: 15,
+                      fontWeight: 'normal'
+                    }}>
+                    Finalizar
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -678,7 +686,8 @@ const Roads = () => {
                   alignItems: 'flex-start',
                   paddingHorizontal: 15
                 }}>
-                <Text style={{color: 'black', fontSize: 13}}>
+                <Text
+                  style={{color: 'black', fontSize: 15, fontWeight: 'normal'}}>
                   {displayEndTime()}
                 </Text>
               </View>
@@ -690,7 +699,8 @@ const Roads = () => {
                 height: 80,
                 width: '100%'
               }}>
-              <Text style={{color: '#030124', fontSize: 14}}>
+              <Text
+                style={{color: '#030124', fontSize: 14, fontWeight: 'normal'}}>
                 Tiempo tomado: {calculateDuration()}
               </Text>
             </View>
@@ -721,7 +731,7 @@ const Roads = () => {
               source={require('../../../../../images/icon.png')}
               style={{width: 25, height: 25, tintColor: '#606060'}}
             />
-            <Text style={{color: '#606060'}}>Home</Text>
+            <Text style={{color: '#606060', fontWeight: 'normal'}}>Home</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -732,7 +742,9 @@ const Roads = () => {
             }}
             onPress={() => handleTabPress('Profile')}>
             <Ionicons name="person-outline" size={25} color="#606060" />
-            <Text style={{color: '#606060'}}>Empleado</Text>
+            <Text style={{color: '#606060', fontWeight: 'normal'}}>
+              Empleado
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -743,7 +755,9 @@ const Roads = () => {
             }}
             onPress={() => handleTabPress('Meetings')}>
             <Ionicons name="calendar-outline" size={25} color="#606060" />
-            <Text style={{color: '#606060'}}>Reuniones</Text>
+            <Text style={{color: '#606060', fontWeight: 'normal'}}>
+              Reuniones
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -756,7 +770,7 @@ const Roads = () => {
             }}
             onPress={() => handleTabPress('Roads')}>
             <Ionicons name="car-outline" size={30} color="#396593" />
-            <Text style={{color: '#396593'}}>Rutas</Text>
+            <Text style={{color: '#396593', fontWeight: 'normal'}}>Rutas</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -767,7 +781,9 @@ const Roads = () => {
             }}
             onPress={() => handleTabPress('ShareQR')}>
             <Feather name="share" size={25} color="#606060" />
-            <Text style={{color: '#606060'}}>Compartir</Text>
+            <Text style={{color: '#606060', fontWeight: 'normal'}}>
+              Compartir
+            </Text>
           </TouchableOpacity>
         </View>
 

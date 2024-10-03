@@ -11,18 +11,14 @@ import {
   Linking
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import CustomAlertBadge from '../../../../componets/customAlertBadge/CustomAlertBadge';
+// import CustomAlertBadge from '../../../../componets/customAlertBadge/CustomAlertBadge';
 import MenuSuperior from '../../../menuSuperior/MenuSuperior';
 import HomeHook from '../../hooks/HomeHook';
 import {homeStyles} from '../../styles/homeStyles';
-import CustomCheckbox from './home/CustomCheckbox';
-import CustomSwitch from './home/CustomSwitch';
 import CustomModalAlert from './profile/CustomModalAlert';
 import CustomModalLoading from './profile/CustomModalLoading';
 import ModalAlertDown from './profile/ModalAlertDown';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Main = () => {
   const {
@@ -93,7 +89,9 @@ const Main = () => {
           backgroundColor: '#396593',
           borderRadius: 3
         }}>
-        <Text style={{fontSize: 13, color: 'white'}}>{title}</Text>
+        <Text style={{fontSize: 13, color: 'white', fontWeight: 'normal'}}>
+          {title}
+        </Text>
       </View>
     </View>
   );
@@ -146,7 +144,8 @@ const Main = () => {
           <Text
             style={{
               fontSize: 16,
-              color: 'black'
+              color: 'black',
+              fontWeight: 'normal'
             }}>
             {title}
           </Text>
@@ -183,15 +182,6 @@ const Main = () => {
         resizeMode="cover"
         style={{height: '100%', width: '100%'}}
         source={require('../../../../images/background.png')}>
-        {/* <View
-          style={{
-            height: 150,
-            width: '100%',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-          <View style={{height: '50%', width: '100%', flexDirection: 'row'}}>
-            <View style={{height: '100%', width: '20%', flexDirection: 'row'}}> */}
         <View
           style={{
             height: '8%',
@@ -202,60 +192,33 @@ const Main = () => {
             style={{
               height: '100%',
               width: '50%',
-              justifyContent: 'flex-end',
-              alignItems: 'flex-start'
+              alignItems: 'flex-end',
+              justifyContent: 'flex-end'
             }}>
-            <Image
-              resizeMode="contain"
-              style={{width: '55%', height: '70%'}}
-              source={require('../../../../images/logo_inicio.png')}
-            />
-          </View>
-          {/* <View
+            <View
               style={{
-                height: '100%',
-                width: '60%',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'row'
+                width: '90%',
+                justifyContent: 'flex-end',
+                alignItems: 'flex-start'
               }}>
               <View
                 style={{
-                  height: '100%',
-                  width: '40%',
-                  justifyContent: 'center',
-                  alignItems: 'center'
+                  height: '90%',
+                  width: '28%',
+                  justifyContent: 'flex-end',
+                  alignItems: 'flex-end'
                 }}>
-                <TouchableOpacity
+                <Image
+                  resizeMode="contain"
                   style={{
-                    height: '94%',
-                    width: '95%',
-                    justifyContent: 'center',
-                    alignItems: 'center'
+                    width: '100%',
+                    height: '100%'
                   }}
-                  onPress={copyToClipboard}>
-                  <Text
-                    style={{
-                      fontSize: 11,
-                      fontWeight: 'bold',
-                      color: '#396593'
-                    }}>
-                    Copiar URL
-                  </Text>
-                  <Feather name="copy" size={23} color="#396593" />
-                  {copiedText === true && (
-                    <Text
-                      style={{
-                        fontSize: 11,
-                        fontWeight: 'bold',
-                        color: '#030124'
-                      }}>
-                      ¡Copiado!
-                    </Text>
-                  )}
-                </TouchableOpacity>
+                  source={require('../../../../images/logo_inicio.png')}
+                />
               </View>
-            </View> */}
+            </View>
+          </View>
           <View
             style={{
               height: '100%',
@@ -347,7 +310,7 @@ const Main = () => {
                 justifyContent: 'center',
                 alignItems: 'flex-start'
               }}>
-              <Text style={{fontSize: 18, fontWeight: '400', color: 'black'}}>
+              <Text style={{fontSize: 18, fontWeight: '500', color: 'black'}}>
                 Hola, {user?.firstName[0]} {user?.lastName[0]}
               </Text>
               <Text style={{fontSize: 14, fontWeight: '300', color: 'black'}}>
@@ -567,7 +530,7 @@ const Main = () => {
               source={require('../../../../images/icon.png')}
               style={{width: 25, height: 25, tintColor: '#396593'}}
             />
-            <Text style={{color: '#396593'}}>Home</Text>
+            <Text style={{color: '#396593', fontWeight: 'normal'}}>Home</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -578,7 +541,9 @@ const Main = () => {
             }}
             onPress={() => handleTabPress('Profile')}>
             <Ionicons name="person-outline" size={25} color="#606060" />
-            <Text style={{color: '#606060'}}>Empleado</Text>
+            <Text style={{color: '#606060', fontWeight: 'normal'}}>
+              Empleado
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -589,7 +554,9 @@ const Main = () => {
             }}
             onPress={() => handleTabPress('Meetings')}>
             <Ionicons name="calendar-outline" size={25} color="#606060" />
-            <Text style={{color: '#606060'}}>Reuniones</Text>
+            <Text style={{color: '#606060', fontWeight: 'normal'}}>
+              Reuniones
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -600,7 +567,7 @@ const Main = () => {
             }}
             onPress={() => handleTabPress('Roads')}>
             <Ionicons name="car-outline" size={30} color="#606060" />
-            <Text style={{color: '#606060'}}>Rutas</Text>
+            <Text style={{color: '#606060', fontWeight: 'normal'}}>Rutas</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -611,7 +578,9 @@ const Main = () => {
             }}
             onPress={() => handleTabPress('ShareQR')}>
             <Feather name="share" size={25} color="#606060" />
-            <Text style={{color: '#606060'}}>Compartir</Text>
+            <Text style={{color: '#606060', fontWeight: 'normal'}}>
+              Compartir
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -633,10 +602,10 @@ const Main = () => {
 
         <CustomModalLoading isLoadingSendData={isLoadingSendData} />
 
-        <CustomAlertBadge
+        {/* <CustomAlertBadge
           isOpen={alertSwitchOff}
           handleAlertSwitch={handleAlertSwitch}
-        />
+        /> */}
 
         <ModalAlertDown
           isModalAlert={alertLogOut}

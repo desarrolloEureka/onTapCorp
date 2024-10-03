@@ -117,6 +117,7 @@ function ModalSearch({
                       <Text
                         style={{
                           fontSize: 12,
+                          fontWeight: 'normal',
                           color: selectedFilter === 'estado' ? 'white' : 'black'
                         }}>
                         Estado
@@ -139,6 +140,7 @@ function ModalSearch({
                       <Text
                         style={{
                           fontSize: 12,
+                          fontWeight: 'normal',
                           color:
                             selectedFilter === 'cliente' ? 'white' : 'black'
                         }}>
@@ -171,6 +173,7 @@ function ModalSearch({
                       <Text
                         style={{
                           fontSize: 12,
+                          fontWeight: 'normal',
                           color: selectedFilter === 'fecha' ? 'white' : 'black'
                         }}>
                         Fecha
@@ -193,6 +196,7 @@ function ModalSearch({
                       <Text
                         style={{
                           fontSize: 12,
+                          fontWeight: 'normal',
                           color: selectedFilter === 'todos' ? 'white' : 'black'
                         }}>
                         Todos
@@ -221,6 +225,7 @@ function ModalSearch({
                       <Text
                         style={{
                           fontSize: 12,
+                          fontWeight: 'normal',
                           color: 'white'
                         }}>
                         Buscar

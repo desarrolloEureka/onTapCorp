@@ -37,7 +37,10 @@ const OnboardingOne = () => {
                 alignItems: 'center'
               }}
               onPress={handlePressOmit}>
-              <Text style={{fontSize: 15, color: 'white'}}>Omitir</Text>
+              <Text
+                style={{fontSize: 15, fontWeight: 'normal', color: 'white'}}>
+                Omitir
+              </Text>
             </TouchableOpacity>
           </View>
           <View
@@ -53,7 +56,12 @@ const OnboardingOne = () => {
                 justifyContent: 'flex-start'
               }}>
               <Text
-                style={{fontSize: 15, color: 'white', textAlign: 'justify'}}>
+                style={{
+                  fontSize: 15,
+                  fontWeight: 'normal',
+                  color: 'white',
+                  textAlign: 'justify'
+                }}>
                 Dile adiós a las tarjetas de presentación en papel y dale la
                 bienvenida a One Tap, la tarjeta de presentación digital que
                 está revolucionando la forma en que compartes tu información.
@@ -76,7 +84,10 @@ const OnboardingOne = () => {
                   alignItems: 'center'
                 }}
                 onPress={handleNextPress}>
-                <Text style={{color: 'black', fontSize: 16}}>Siguiente</Text>
+                <Text
+                  style={{color: 'black', fontWeight: 'normal', fontSize: 16}}>
+                  Siguiente
+                </Text>
               </TouchableOpacity>
             </View>
           </View>

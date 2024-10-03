@@ -10,16 +10,9 @@ import {
   SocialDataForm
 } from '../../../../../../types/profile';
 import {profile} from '../../../../../../initialData/profileInitialData';
-import {
-  GetUser,
-  SendDataUserProfile,
-  GetArea
-} from '../../../../../../reactQuery/users';
-import {
-  validateEmail,
-  validatePhoneNumber
-} from '../../../../../../globals/validateData';
-import firestore from '@react-native-firebase/firestore';
+import {GetUser} from '../../../../../../reactQuery/users';
+import {doc, onSnapshot} from 'firebase/firestore';
+import {dataBase} from '../../../../../../firebase/firebaseConfig';
 
 const ProfileHook = ({
   handleDataSet,
@@ -145,26 +138,21 @@ const ProfileHook = ({
   }, [allChecked, dataForm, handleDataSet]);
 
   useEffect(() => {
-    const unsubscribe = firestore()
-      .collection('workAreas')
-      .doc(data?.selectedArea)
-      .onSnapshot((doc: any) => {
-        const updatedData = doc.data();
-        setArea(updatedData);
-        setAreaDataUrls(transformData(updatedData, data?.uid)); // Actualiza los datos visibles en la interfaz
-      });
-
-    return () => unsubscribe(); // Para limpiar el listener cuando el componente se desmonte
+    const areaDocRef = doc(dataBase, 'workAreas', data?.selectedArea); // Referencia al documento 'workAreas'
+    const unsubscribe = onSnapshot(areaDocRef, doc => {
+      const updatedData = doc.data();
+      setArea(updatedData);
+      setAreaDataUrls(transformData(updatedData, data?.uid)); // Actualiza los datos visibles en la interfaz
+    });
   }, [data?.selectedArea]);
 
   useEffect(() => {
-    const unsubscribe = firestore()
-      .collection('users')
-      .doc(data?.uid)
-      .onSnapshot((doc: any) => {
-        const updatedData = doc.data();
-        setViews(updatedData?.views);
-      });
+    const userDocRef = doc(dataBase, 'users', data?.uid); // Referencia al documento 'users'
+
+    const unsubscribe = onSnapshot(userDocRef, doc => {
+      const updatedData = doc.data();
+      setViews(updatedData?.views);
+    });
 
     return () => unsubscribe(); // Para limpiar el listener cuando el componente se desmonte
   }, [data?.views]);

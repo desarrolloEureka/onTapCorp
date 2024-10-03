@@ -119,14 +119,13 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
       console.log('Formulario inválido');
       return;
     }
-    const currentTime = new Date().toISOString();
-    setStartTime(currentTime);
     const hasLocationPermission = await requestLocationPermission();
     if (!hasLocationPermission) {
       console.log('Permiso de ubicación denegado');
       return;
     }
 
+    const currentTime = new Date().toISOString();
     Geolocation.getCurrentPosition(
       async position => {
         const {latitude, longitude} = position.coords;
@@ -135,7 +134,6 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
           longitude,
           timestamp: currentTime
         });
-        setMeetingStarted(true);
         const dataInitial = {
           companyNameToVisit,
           subject,
@@ -157,11 +155,6 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
           );
           if (documentId) {
             setDocumentId(documentId);
-            await AsyncStorage.setItem(
-              '@startTime',
-              JSON.stringify(currentTime)
-            );
-            await AsyncStorage.setItem('@meeting', JSON.stringify(true));
             await AsyncStorage.setItem(
               '@meetingStartInfo',
               JSON.stringify({
@@ -189,6 +182,10 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
       },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000}
     );
+    setStartTime(currentTime);
+    setMeetingStarted(true);
+    await AsyncStorage.setItem('@startTime', JSON.stringify(currentTime));
+    await AsyncStorage.setItem('@meeting', JSON.stringify(true));
   };
 
   const handlePressEndMeeting = async () => {
@@ -196,8 +193,6 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
       console.log('La reunión no ha comenzado. No se puede finalizar.');
       return;
     }
-    const currentTime = new Date().toISOString();
-    setEndTime(currentTime);
 
     const hasLocationPermission = await requestLocationPermission();
     if (!hasLocationPermission) {
@@ -205,6 +200,7 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
       return;
     }
 
+    const currentTime = new Date().toISOString();
     Geolocation.getCurrentPosition(
       async position => {
         const {latitude, longitude} = position.coords;
@@ -213,7 +209,6 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
           longitude,
           timestamp: currentTime
         });
-        setMeetingStarted(false);
         const dataUpdate = {
           meetingEnd: {
             latitude,
@@ -229,8 +224,6 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
             'endMeeting',
             currentTime
           );
-          await AsyncStorage.setItem('@endTime', JSON.stringify(currentTime));
-          await AsyncStorage.setItem('@meeting', JSON.stringify(false));
           await AsyncStorage.setItem(
             '@meetingEndInfo',
             JSON.stringify({
@@ -250,6 +243,10 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
       },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000}
     );
+    setEndTime(currentTime);
+    setMeetingStarted(false);
+    await AsyncStorage.setItem('@endTime', JSON.stringify(currentTime));
+    await AsyncStorage.setItem('@meeting', JSON.stringify(false));
   };
 
   const handlePressSave = async () => {
@@ -295,7 +292,7 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
     if (startTime) {
       return new Date(startTime)
         .toLocaleString()
-        .replace(/^\d{1,2}\/\d{1,2}\/\d{0},\s*/, '');
+        .replace(/^\d{1,2}\/\d{1,2}\/\d{4},\s*/, '');
     }
   };
 
@@ -303,7 +300,7 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
     if (endTime) {
       return new Date(endTime)
         .toLocaleString()
-        .replace(/^\d{1,2}\/\d{1,2}\/\d{0},\s*/, '');
+        .replace(/^\d{1,2}\/\d{1,2}\/\d{4},\s*/, '');
     }
   };
 
@@ -394,7 +391,7 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
               }}>
               <Text style={meetingsStyles.label}>Fecha</Text>
             </View>
-            <Text style={{color: 'black', fontSize: 13}}>
+            <Text style={{color: 'black', fontSize: 13, fontWeight: 'normal'}}>
               {new Date().toISOString().slice(0, 10)}
             </Text>
           </View>
@@ -608,12 +605,13 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: isFormValid() ? '#030124' : '#888888',
+              backgroundColor:
+                isFormValid() && !meetingStarted ? '#030124' : '#888888',
               height: 40,
               width: 150
             }}
             onPress={isFormValid() ? handlePressStartMeeting : undefined}
-            disabled={!isFormValid()}>
+            disabled={!isFormValid() || meetingStarted}>
             <View
               style={{
                 flex: 1,
@@ -628,7 +626,8 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
                 justifyContent: 'center',
                 alignItems: 'flex-start'
               }}>
-              <Text style={{color: 'white', fontSize: 11}}>
+              <Text
+                style={{color: 'white', fontSize: 11, fontWeight: 'normal'}}>
                 Iniciar Reunión
               </Text>
             </View>
@@ -640,7 +639,7 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
               alignItems: 'flex-start',
               paddingHorizontal: 15
             }}>
-            <Text style={{color: 'black', fontSize: 13}}>
+            <Text style={{color: 'black', fontSize: 15, fontWeight: 'normal'}}>
               {displayStartTime()}
             </Text>
           </View>
@@ -655,11 +654,17 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: '#030124',
+              backgroundColor:
+                isFormValid() && meetingStarted ? '#030124' : '#888888',
               height: 40,
               width: 150
             }}
-            onPress={handlePressEndMeeting}>
+            onPress={
+              isFormValid() && meetingStarted
+                ? handlePressEndMeeting
+                : undefined
+            }
+            disabled={!isFormValid() || !meetingStarted}>
             <View
               style={{
                 flex: 1,
@@ -674,7 +679,8 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
                 justifyContent: 'center',
                 alignItems: 'flex-start'
               }}>
-              <Text style={{color: 'white', fontSize: 11}}>
+              <Text
+                style={{color: 'white', fontSize: 11, fontWeight: 'normal'}}>
                 Finalizar Reunión
               </Text>
             </View>
@@ -686,7 +692,7 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
               alignItems: 'flex-start',
               paddingHorizontal: 15
             }}>
-            <Text style={{color: 'black', fontSize: 13}}>
+            <Text style={{color: 'black', fontSize: 15, fontWeight: 'normal'}}>
               {displayEndTime()}
             </Text>
           </View>
@@ -698,7 +704,7 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
             height: 80,
             width: '100%'
           }}>
-          <Text style={{color: '#030124', fontSize: 14}}>
+          <Text style={{color: '#030124', fontSize: 14, fontWeight: 'normal'}}>
             Tiempo total reunión: {calculateDuration()}
           </Text>
         </View>
@@ -750,6 +756,8 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
               width: '90%'
             }}>
             <TextInput
+              placeholderTextColor="#a0a0a0"
+              underlineColorAndroid="transparent"
               selectionColor={'#396593'}
               cursorColor={'#396593'}
               multiline={true}
@@ -759,7 +767,9 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
                 height: 230,
                 textAlignVertical: 'top',
                 fontSize: 16,
-                padding: 10
+                padding: 10,
+                fontWeight: 'normal',
+                color: 'black'
               }}
               value={observations}
               onChangeText={(text: any) => {
@@ -801,7 +811,10 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
                 borderRadius: 20
               }}
               onPress={isFormValid2() ? handlePressSave : undefined}>
-              <Text style={{color: 'white', fontSize: 16}}>Guardar</Text>
+              <Text
+                style={{color: 'white', fontSize: 16, fontWeight: 'normal'}}>
+                Guardar
+              </Text>
             </TouchableOpacity>
           )}
         </View>

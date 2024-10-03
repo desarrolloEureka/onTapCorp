@@ -38,7 +38,10 @@ const OnboardingTwo = () => {
                 alignItems: 'center'
               }}
               onPress={handlePressOmit}>
-              <Text style={{fontSize: 15, color: 'white'}}>Omitir</Text>
+              <Text
+                style={{fontSize: 15, fontWeight: 'normal', color: 'white'}}>
+                Omitir
+              </Text>
             </TouchableOpacity>
           </View>
           <View style={{height: '25%', width: '100%', alignItems: 'center'}}>
@@ -49,7 +52,12 @@ const OnboardingTwo = () => {
                 justifyContent: 'flex-start'
               }}>
               <Text
-                style={{fontSize: 13, color: 'white', textAlign: 'justify'}}>
+                style={{
+                  fontSize: 13,
+                  fontWeight: 'normal',
+                  color: 'white',
+                  textAlign: 'justify'
+                }}>
                 Tu información siempre al día. {'\n'}Nunca más te preocupes por
                 tener tu información desactualizada. Con One Tap, mantén tus
                 datos siempre al día, puedes modificarlos en cualquier momento,
@@ -76,7 +84,10 @@ const OnboardingTwo = () => {
                   alignItems: 'center'
                 }}
                 onPress={handleNextPress}>
-                <Text style={{color: 'black', fontSize: 16}}>Siguiente</Text>
+                <Text
+                  style={{color: 'black', fontWeight: 'normal', fontSize: 16}}>
+                  Siguiente
+                </Text>
               </TouchableOpacity>
             </View>
           </View>

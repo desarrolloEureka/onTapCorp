@@ -48,7 +48,8 @@ const OnboardingThree = () => {
                 justifyContent: 'flex-start',
                 paddingTop: 2
               }}>
-              <Text style={{fontSize: 16, color: 'white'}}>
+              <Text
+                style={{fontSize: 16, fontWeight: 'normal', color: 'white'}}>
                 Elige, comparte y conecta. Tu información, tu modo, tu control.
               </Text>
             </View>
@@ -70,7 +71,10 @@ const OnboardingThree = () => {
                   alignItems: 'center'
                 }}
                 onPress={handleNextPress}>
-                <Text style={{color: 'black', fontSize: 16}}>Ingresar</Text>
+                <Text
+                  style={{color: 'black', fontWeight: 'normal', fontSize: 16}}>
+                  Ingresar
+                </Text>
               </TouchableOpacity>
             </View>
           </View>

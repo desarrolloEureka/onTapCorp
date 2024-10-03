@@ -21,10 +21,12 @@ export const meetingsStyles = StyleSheet.create({
   },
   tabText: {
     fontSize: 16,
-    color: '#606060'
+    color: '#606060',
+    fontWeight: 'normal'
   },
   tabTextSelected: {
-    color: '#396593'
+    color: '#396593',
+    fontWeight: 'normal'
   },
   tabContent: {
     flex: 1
@@ -49,7 +51,9 @@ export const meetingsStyles = StyleSheet.create({
     paddingBottom: 15
   },
   text: {
-    fontSize: 13
+    fontSize: 13,
+    fontWeight: 'normal',
+    color: 'black'
   },
   detailContainer: {
     justifyContent: 'center',
@@ -57,7 +61,9 @@ export const meetingsStyles = StyleSheet.create({
   },
   verText: {
     // marginLeft: 5,
-    fontSize: 10
+    fontSize: 10,
+    fontWeight: 'normal',
+    color: 'black'
   },
   header: {
     flex: 1,
@@ -74,7 +80,10 @@ export const meetingsStyles = StyleSheet.create({
     flex: 1,
     height: 40,
     borderRadius: 20,
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
+    fontSize: 16,
+    fontWeight: 'normal',
+    color: 'black'
   },
   searchButton: {
     marginLeft: 10,
@@ -110,13 +119,15 @@ export const meetingsStyles = StyleSheet.create({
     width: '95%',
     fontSize: 15,
     color: 'black',
-    marginBottom: -5
+    marginBottom: -5,
+    fontWeight: 'normal'
     //paddingLeft: 1,
   },
   label: {
     color: '#396593',
     fontSize: 14,
-    marginTop: 0
+    marginTop: 0,
+    fontWeight: 'normal'
     //marginRight: 170,
   }
 });

@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 
 export const homeStyles = StyleSheet.create({
   head: {
@@ -6,7 +6,7 @@ export const homeStyles = StyleSheet.create({
     width: '100%'
   },
   rootContainer: {
-    flex: 1,
+    flex: 1
   },
   body: {
     height: 400
@@ -14,15 +14,15 @@ export const homeStyles = StyleSheet.create({
   titleBody: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#396593',
+    color: '#396593'
   },
   columnContainer: {
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   mainContainer: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-start'
     // Otros estilos según sea necesario
   },
   tab: {
@@ -30,7 +30,7 @@ export const homeStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    marginTop: 15,
+    marginTop: 15
   },
 
   buttonContainer: {
@@ -40,16 +40,16 @@ export const homeStyles = StyleSheet.create({
     right: 0,
     bottom: 0,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   scrollViewContainer: {
     flexGrow: 1,
     justifyContent: 'center',
     marginRight: 10,
-    marginLeft: 10,
+    marginLeft: 10
   },
   icon: {
-    backgroundColor: 'transparent',
+    backgroundColor: 'transparent'
   },
   iconContainer: {
     position: 'absolute',
@@ -58,27 +58,26 @@ export const homeStyles = StyleSheet.create({
     right: 0,
     bottom: 0,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   imageRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
     marginRight: 10,
-    marginLeft: 10,
+    marginLeft: 10
   },
   tabContainer: {
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   tabSeparator: {
     borderBottomWidth: 1,
     borderBottomColor: '#030124', // Puedes ajustar el color de la línea según tus preferencias
     marginVertical: 5, // Puedes ajustar el espacio vertical según tus preferencias
-    width: '100%', // O ajusta el ancho según sea necesario
+    width: '100%' // O ajusta el ancho según sea necesario
   },
-
 
   switchContainer: {
     position: 'absolute',
@@ -89,17 +88,16 @@ export const homeStyles = StyleSheet.create({
     alignItems: 'center', // Centra verticalmente los elementos
     justifyContent: 'space-between', // Espacio uniforme entre los elementos
     paddingHorizontal: 10,
-    marginTop: 10,
+    marginTop: 10
   },
   switchWrapper: {
     marginVertical: 10,
-    alignItems: 'center',
+    alignItems: 'center'
   },
   switchWrapper1: {
     backgroundColor: '#e74c3c', // Cambia el color de fondo según tus preferencias
     borderRadius: 20,
-    padding: 20,
-
+    padding: 20
   },
   switchWrapper2: {
     backgroundColor: '#3498db', // Cambia el color de fondo según tus preferencias
@@ -107,18 +105,18 @@ export const homeStyles = StyleSheet.create({
     padding: 10
   },
   switch: {
-    transform: [{ scale: 1.5 }]
+    transform: [{scale: 1.5}]
   },
   switchText: {
     fontSize: 11,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   button: {
     borderRadius: 10, // Radio para hacer el botón redondeado
     paddingVertical: 10, // Ajusta el espaciado vertical según tus necesidades
     paddingHorizontal: 30, // Ajusta el espaciado horizontal según tus necesidades
     alignItems: 'center', // Alinea el contenido al centro
-    marginTop: 85,
+    marginTop: 85
   },
 
   buttonText: {
@@ -136,7 +134,7 @@ export const homeStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    marginHorizontal: 20,
+    marginHorizontal: 20
   },
   imageContainer: {
     width: 172,
@@ -147,7 +145,7 @@ export const homeStyles = StyleSheet.create({
     marginTop: 300,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 5,
+    marginRight: 5
   },
   image: {
     width: '100%',
@@ -158,16 +156,15 @@ export const homeStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10
-
   },
   buttonT: {
-    height: "45%",
-    width: "40%",
+    height: '45%',
+    width: '40%',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   buttonTextT: {
-    fontSize: 12,
+    fontSize: 12
   },
   navbar: {
     flexDirection: 'row',
@@ -177,18 +174,18 @@ export const homeStyles = StyleSheet.create({
     height: 80,
     position: 'absolute',
     bottom: 0,
-    width: '100%',
+    width: '100%'
   },
   tabnav: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   text: {
-    color: 'white',
+    color: 'white'
   },
   selectedText: {
     color: 'blue', // Puedes ajustar el color seleccionado según tus preferencias
-    fontWeight: 'bold',
-  },
+    fontWeight: 'bold'
+  }
 });

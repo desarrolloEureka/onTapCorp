@@ -28,11 +28,15 @@ const LoginHook = () => {
   const handleGoTerms = () => {
     Linking.openURL(
       'https://drive.google.com/file/d/1PSeTFOOG34BRrsoRGfcpQG72AurIc4ll/view'
-    ); 
+    );
   };
 
   const handleBackPress = () => {
     navigation.goBack();
+  };
+
+  const handleBackPress2 = () => {
+    navigation.navigate('OnboardingInicioSesion');
   };
 
   const handleLogin = async () => {
@@ -49,14 +53,14 @@ const LoginHook = () => {
         }
         if (resultUser && resultUser.user) {
           const docSnap = await getUserByIdFireStore(resultUser.user.uid);
-          if (docSnap.exists) {
+          if (docSnap.exists()) {
             const user = docSnap.data() as UserData;
             if (user?.isActive) {
               await AsyncStorage.setItem('@user', JSON.stringify(user));
               navigation.navigate('Home');
             } else {
               Alert.alert(
-                'Alerta',
+                '',
                 'Actualmente la cuenta no se encuentra activa, comunicarse con el administrador'
               );
             }
@@ -129,6 +133,7 @@ const LoginHook = () => {
     handleForgotPassword,
     handleGoTerms,
     handleBackPress,
+    handleBackPress2,
     handleLogin
   };
 };

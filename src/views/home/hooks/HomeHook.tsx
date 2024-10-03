@@ -106,11 +106,11 @@ const HomeHook = () => {
       if (type === true) {
         const resUpdate = await SendInactiveUser(data?.uid);
         if (resUpdate === true) {
-          Alert.alert('Alerta', 'Se eliminó correctamente la cuenta');
+          Alert.alert('', 'Se eliminó correctamente la cuenta');
           logOut();
         } else {
           Alert.alert(
-            'Error',
+            '',
             'Ocurrió un error y no fue posible eliminar la cuenta. Por favor, inténtalo de nuevo.'
           );
         }

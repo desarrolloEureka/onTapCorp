@@ -91,7 +91,8 @@ const CustomSwitchIndividual = ({
                   height: '50%',
                   width: '95%',
                   fontSize: 15,
-                  color: 'black'
+                  color: 'black',
+                  fontWeight: 'normal'
                 }}>
                 {item.url}
               </Text>
@@ -122,7 +123,9 @@ const CustomSwitchIndividual = ({
                 : [{scaleX: 1}, {scaleY: 1}]
           }}
         />
-        <Text style={[{color: '#030124', fontSize: 13}]}>off/on</Text>
+        <Text style={[{color: '#030124', fontSize: 13, fontWeight: 'normal'}]}>
+          off/on
+        </Text>
       </View>
     </View>
   );

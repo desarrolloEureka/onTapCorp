@@ -63,7 +63,7 @@ const PhotoUser = ({name, isProUser}: {name?: string; isProUser: boolean}) => {
 
       if (result.didCancel || result.errorMessage) {
         Alert.alert(
-          'Error',
+          '',
           'El usuario canceló la selección o hubo un error. Inténtalo de nuevo'
         );
         return;
@@ -86,13 +86,13 @@ const PhotoUser = ({name, isProUser}: {name?: string; isProUser: boolean}) => {
         );
       } else {
         Alert.alert(
-          'Error',
+          '',
           'La selección de imagen no es válida. Inténtalo de nuevo.'
         );
       }
     } catch (error: any) {
       console.error('Error al abrir la galería:', error.message);
-      Alert.alert('Error', 'Error al abrir la galería. Inténtalo de nuevo.');
+      Alert.alert('', 'Error al abrir la galería. Inténtalo de nuevo.');
     }
   };
 
@@ -151,7 +151,8 @@ const PhotoUser = ({name, isProUser}: {name?: string; isProUser: boolean}) => {
                 justifyContent: 'flex-end',
                 alignItems: 'center'
               }}>
-              <Text style={{color: '#396593', fontSize: 15}}>
+              <Text
+                style={{color: '#396593', fontSize: 15, fontWeight: 'normal'}}>
                 Area {area?.areaName}
               </Text>
             </View>

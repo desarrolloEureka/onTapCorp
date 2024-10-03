@@ -9,7 +9,7 @@ import {
   View
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CustomAlertBadge from '../../../../../componets/customAlertBadge/CustomAlertBadge';
@@ -155,15 +155,23 @@ const Templates = () => {
               style={{height: '100%', width: '50%', justifyContent: 'center'}}>
               <View
                 style={{
-                  backgroundColor: 'white',
                   height: '55%',
                   width: '58%',
-                  borderRadius: 10,
                   justifyContent: 'center',
-                  alignItems: 'center'
+                  alignItems: 'center',
+                  flexDirection: 'row'
                 }}>
-                <Text style={homeStyles.buttonText}>
-                  <FontAwesome name="eye" size={19} color="#030124" />{' '}
+                <MaterialCommunityIcons name="eye" size={30} color="#030124" />
+                <Text
+                  style={{
+                    fontFamily: 'Ubuntu',
+                    fontSize: 20,
+                    fontWeight: '700',
+                    letterSpacing: 0.03,
+                    textAlign: 'left',
+                    color: '#030124',
+                    marginLeft: 10
+                  }}>
                   {user ? user.views : ''}
                 </Text>
               </View>
@@ -289,7 +297,12 @@ const Templates = () => {
                                 size={15}
                                 color="#030124"
                               />
-                              <Text style={{fontSize: 10, color: '#030124'}}>
+                              <Text
+                                style={{
+                                  fontSize: 10,
+                                  color: '#030124',
+                                  fontWeight: 'normal'
+                                }}>
                                 Vista{'\n'}Previa
                               </Text>
                             </TouchableOpacity>
@@ -304,7 +317,7 @@ const Templates = () => {
                             <View
                               style={{
                                 height: '100%',
-                                width: '60%',
+                                width: '65%',
                                 justifyContent: 'center',
                                 alignItems: 'center'
                               }}>
@@ -321,7 +334,12 @@ const Templates = () => {
                                   }
                                 />
                               )}
-                              <Text style={{fontSize: 9, color: '#030124'}}>
+                              <Text
+                                style={{
+                                  fontSize: 9,
+                                  color: '#030124',
+                                  fontWeight: 'normal'
+                                }}>
                                 Seleccionar {'\n'} plantilla
                               </Text>
                             </View>
@@ -366,7 +384,11 @@ const Templates = () => {
                                 alignItems: 'center'
                               }}>
                               <Text
-                                style={{fontSize: 10, color: 'white'}}></Text>
+                                style={{
+                                  fontSize: 10,
+                                  color: 'white',
+                                  fontWeight: 'normal'
+                                }}></Text>
                             </View>
                           </View>
                         </View>
@@ -405,7 +427,7 @@ const Templates = () => {
               source={require('../../../../../images/icon.png')}
               style={{width: 25, height: 25, tintColor: '#396593'}}
             />
-            <Text style={{color: '#396593'}}>Home</Text>
+            <Text style={{color: '#396593', fontWeight: 'normal'}}>Home</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -416,7 +438,9 @@ const Templates = () => {
             }}
             onPress={() => handleTabPress('Profile')}>
             <Ionicons name="person-outline" size={25} color="#606060" />
-            <Text style={{color: '#606060'}}>Empleado</Text>
+            <Text style={{color: '#606060', fontWeight: 'normal'}}>
+              Empleado
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -427,7 +451,9 @@ const Templates = () => {
             }}
             onPress={() => handleTabPress('Meetings')}>
             <Ionicons name="calendar-outline" size={25} color="#606060" />
-            <Text style={{color: '#606060'}}>Reuniones</Text>
+            <Text style={{color: '#606060', fontWeight: 'normal'}}>
+              Reuniones
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -438,7 +464,7 @@ const Templates = () => {
             }}
             onPress={() => handleTabPress('Roads')}>
             <Ionicons name="car-outline" size={30} color="#606060" />
-            <Text style={{color: '#606060'}}>Rutas</Text>
+            <Text style={{color: '#606060', fontWeight: 'normal'}}>Rutas</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -449,7 +475,9 @@ const Templates = () => {
             }}
             onPress={() => handleTabPress('ShareQR')}>
             <Feather name="share" size={25} color="#606060" />
-            <Text style={{color: '#606060'}}>Compartir</Text>
+            <Text style={{color: '#606060', fontWeight: 'normal'}}>
+              Compartir
+            </Text>
           </TouchableOpacity>
         </View>
 

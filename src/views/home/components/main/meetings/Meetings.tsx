@@ -183,7 +183,7 @@ const Meetings = () => {
               source={require('../../../../../images/icon.png')}
               style={{width: 25, height: 25, tintColor: '#606060'}}
             />
-            <Text style={{color: '#606060'}}>Home</Text>
+            <Text style={{color: '#606060', fontWeight: 'normal'}}>Home</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -194,7 +194,9 @@ const Meetings = () => {
             }}
             onPress={() => handleTabPress('Profile')}>
             <Ionicons name="person-outline" size={25} color="#606060" />
-            <Text style={{color: '#606060'}}>Empleado</Text>
+            <Text style={{color: '#606060', fontWeight: 'normal'}}>
+              Empleado
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -207,7 +209,9 @@ const Meetings = () => {
             }}
             onPress={() => handleTabPress('Meetings')}>
             <Ionicons name="calendar-outline" size={25} color="#396593" />
-            <Text style={{color: '#396593'}}>Reuniones</Text>
+            <Text style={{color: '#396593', fontWeight: 'normal'}}>
+              Reuniones
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -218,7 +222,7 @@ const Meetings = () => {
             }}
             onPress={() => handleTabPress('Roads')}>
             <Ionicons name="car-outline" size={30} color="#606060" />
-            <Text style={{color: '#606060'}}>Rutas</Text>
+            <Text style={{color: '#606060', fontWeight: 'normal'}}>Rutas</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -229,7 +233,9 @@ const Meetings = () => {
             }}
             onPress={() => handleTabPress('ShareQR')}>
             <Feather name="share" size={25} color="#606060" />
-            <Text style={{color: '#606060'}}>Compartir</Text>
+            <Text style={{color: '#606060', fontWeight: 'normal'}}>
+              Compartir
+            </Text>
           </TouchableOpacity>
         </View>
         <ModalAlertDown

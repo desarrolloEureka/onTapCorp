@@ -61,7 +61,7 @@ const MenuSuperior = ({
     } else if (item.id === 9) {
       Linking.openURL(
         'https://drive.google.com/file/d/1PSeTFOOG34BRrsoRGfcpQG72AurIc4ll/view'
-      ); 
+      );
     } else if (item.id === 11) {
       navigation.navigate('ChangePassword');
     } else if (item.id === 12) {
@@ -133,46 +133,71 @@ const MenuSuperior = ({
                 key={item.id}
                 onPress={() => handleItemPress(item)}
                 style={styles.item}>
-                <View style={{height: '100%', width: '7%'}}></View>
+                <View style={{height: '100%', width: '7%'}} />
                 <View
-                  style={{height: '100%', width: '90%', flexDirection: 'row'}}>
-                  {item.icon === 'shopping-cart' ? (
-                    <Feather name={item.icon} size={26} color="black" />
-                  ) : null}
-                  {item.icon === 'restore' ||
-                  item.icon === 'storefront-outline' ||
-                  item.icon === 'information-outline' ||
-                  item.icon === 'chat-question-outline' ? (
-                    <MaterialCommunityIcons
-                      name={item.icon}
-                      size={26}
-                      color="black"
-                    />
-                  ) : null}
-                  {item.icon === 'file-present' ||
-                  item.icon === 'password' ||
-                  item.icon === 'logout' ? (
-                    <MaterialIcons name={item.icon} size={26} color="black" />
-                  ) : null}
-                  {item.icon === 'deleteuser' ? (
-                    <AntDesign name={item.icon} size={26} color="black" />
-                  ) : null}
-                  {item.icon === 'lock' ? (
-                    <SimpleLineIcons name={item.icon} size={25} color="black" />
-                  ) : null}
-                  {item.icon === 'file-contract' ? (
-                    <FontAwesome5 name={item.icon} size={24} color="black" />
-                  ) : null}
-                  {item.icon === 'shopping-basket-remove' ? (
-                    <Fontisto name={item.icon} size={24} color="black" />
-                  ) : null}
-                  {item.icon === 'newspaper' ? (
-                    <Ionicons name={item.icon} size={24} color="black" />
-                  ) : null}
-                  <Text style={{color: 'black', paddingLeft: 12, fontSize: 16}}>
-                    {' '}
-                    {item.name}
-                  </Text>
+                  style={{
+                    height: '100%',
+                    width: '90%',
+                    flexDirection: 'row'
+                  }}>
+                  <View
+                    style={{
+                      height: '100%',
+                      width: '15%'
+                    }}>
+                    {item.icon === 'shopping-cart' ? (
+                      <Feather name={item.icon} size={26} color="black" />
+                    ) : null}
+                    {item.icon === 'restore' ||
+                    item.icon === 'storefront-outline' ||
+                    item.icon === 'information-outline' ||
+                    item.icon === 'chat-question-outline' ? (
+                      <MaterialCommunityIcons
+                        name={item.icon}
+                        size={26}
+                        color="black"
+                      />
+                    ) : null}
+                    {item.icon === 'file-present' ||
+                    item.icon === 'password' ||
+                    item.icon === 'logout' ? (
+                      <MaterialIcons name={item.icon} size={26} color="black" />
+                    ) : null}
+                    {item.icon === 'deleteuser' ? (
+                      <AntDesign name={item.icon} size={26} color="black" />
+                    ) : null}
+                    {item.icon === 'lock' ? (
+                      <SimpleLineIcons
+                        name={item.icon}
+                        size={25}
+                        color="black"
+                      />
+                    ) : null}
+                    {item.icon === 'file-contract' ? (
+                      <FontAwesome5 name={item.icon} size={24} color="black" />
+                    ) : null}
+                    {item.icon === 'shopping-basket-remove' ? (
+                      <Fontisto name={item.icon} size={24} color="black" />
+                    ) : null}
+                    {item.icon === 'newspaper' ? (
+                      <Ionicons name={item.icon} size={24} color="black" />
+                    ) : null}
+                  </View>
+                  <View
+                    style={{
+                      height: '100%',
+                      width: '85%'
+                    }}>
+                    <Text
+                      style={{
+                        color: 'black',
+                        fontSize: 16,
+                        fontWeight: 'normal',
+                        textAlign: 'left'
+                      }}>
+                      {item.name}
+                    </Text>
+                  </View>
                 </View>
               </TouchableOpacity>
             ))}

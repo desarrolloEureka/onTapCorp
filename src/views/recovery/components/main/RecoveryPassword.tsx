@@ -29,12 +29,12 @@ const RecoveryPassword = () => {
       navigation.navigate('RecoveryPasswordTwo');
     } else if (res === 'user_not_found') {
       Alert.alert(
-        'Error',
+        '',
         'El correo electrónico no está registrado. Por favor, verifica y vuelve a intentarlo.'
       );
     } else if (res === 'send_email_failed') {
       Alert.alert(
-        'Error',
+        '',
         'Hubo un problema al intentar enviar el correo de restablecimiento. Por favor, inténtalo de nuevo.'
       );
     }

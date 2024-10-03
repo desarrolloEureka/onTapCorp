@@ -201,7 +201,9 @@ const ShareQR = () => {
                   justifyContent: 'flex-start',
                   alignItems: 'center'
                 }}>
-                <Text style={{color: 'black'}}>¡Copiado!</Text>
+                <Text style={{color: 'black', fontWeight: 'normal'}}>
+                  ¡Copiado!
+                </Text>
               </View>
             )}
           </View>
@@ -230,7 +232,7 @@ const ShareQR = () => {
                 source={require('../../../../../images/icon.png')}
                 style={{width: 25, height: 25, tintColor: '#606060'}}
               />
-              <Text style={{color: '#606060'}}>Home</Text>
+              <Text style={{color: '#606060', fontWeight: 'normal'}}>Home</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
@@ -241,7 +243,9 @@ const ShareQR = () => {
               }}
               onPress={() => handleTabPress('Profile')}>
               <Ionicons name="person-outline" size={25} color="#606060" />
-              <Text style={{color: '#606060'}}>Empleado</Text>
+              <Text style={{color: '#606060', fontWeight: 'normal'}}>
+                Empleado
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
@@ -252,7 +256,9 @@ const ShareQR = () => {
               }}
               onPress={() => handleTabPress('Meetings')}>
               <Ionicons name="calendar-outline" size={25} color="#606060" />
-              <Text style={{color: '#606060'}}>Reuniones</Text>
+              <Text style={{color: '#606060', fontWeight: 'normal'}}>
+                Reuniones
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
@@ -263,7 +269,9 @@ const ShareQR = () => {
               }}
               onPress={() => handleTabPress('Roads')}>
               <Ionicons name="car-outline" size={30} color="#606060" />
-              <Text style={{color: '#606060'}}>Rutas</Text>
+              <Text style={{color: '#606060', fontWeight: 'normal'}}>
+                Rutas
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
@@ -276,7 +284,9 @@ const ShareQR = () => {
               }}
               onPress={() => handleTabPress('ShareQR')}>
               <Feather name="share" size={25} color="#396593" />
-              <Text style={{color: '#396593'}}>Compartir</Text>
+              <Text style={{color: '#396593', fontWeight: 'normal'}}>
+                Compartir
+              </Text>
             </TouchableOpacity>
           </View>
 

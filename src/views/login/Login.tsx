@@ -26,6 +26,7 @@ const Login = () => {
     handleForgotPassword,
     handleGoTerms,
     handleBackPress,
+    handleBackPress2,
     handleLogin
   } = LoginHook();
 
@@ -43,7 +44,7 @@ const Login = () => {
               justifyContent: 'center',
               paddingLeft: 5
             }}
-            onPress={handleBackPress}>
+            onPress={handleBackPress2}>
             <Icon name="arrow-back-ios" size={27} color="black" />
           </TouchableOpacity>
         </View>
@@ -110,7 +111,8 @@ const Login = () => {
                         color: 'red',
                         marginTop: 3,
                         marginRight: 70,
-                        marginBottom: 12
+                        marginBottom: 12,
+                        fontWeight: 'normal'
                       }}>
                       {errorForm?.errorMessage}*
                     </Text>
@@ -176,7 +178,8 @@ const Login = () => {
                         color: 'red',
                         marginTop: 3,
                         marginRight: 70,
-                        marginBottom: 12
+                        marginBottom: 12,
+                        fontWeight: 'normal'
                       }}>
                       {errorForm?.errorMessage}*
                     </Text>
@@ -204,7 +207,8 @@ const Login = () => {
                         color: 'red',
                         marginTop: 0,
                         marginRight: 30,
-                        marginBottom: 4
+                        marginBottom: 4,
+                        fontWeight: 'normal'
                       }}>
                       {errorForm?.errorMessage}*
                     </Text>
@@ -227,7 +231,9 @@ const Login = () => {
                     justifyContent: 'center'
                   }}
                   onPress={handleForgotPassword}>
-                  <Text style={{color: 'black'}}>Recuperar Contraseña</Text>
+                  <Text style={{color: 'black', fontWeight: 'normal'}}>
+                    Recuperar Contraseña
+                  </Text>
                 </TouchableOpacity>
               </View>
               {/* <View
@@ -344,6 +350,8 @@ const styles = StyleSheet.create({
     height: 52,
     fontSize: 16,
     color: '#030124',
+    fontFamily: 'Open Sans',
+    fontWeight: '300',
     paddingLeft: 10
   },
   eyeIcon: {

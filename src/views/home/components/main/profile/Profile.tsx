@@ -35,8 +35,7 @@ import CustomAlertBadge from '../../../../../componets/customAlertBadge/CustomAl
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 // import Icon from 'react-native-vector-icons/MaterialIcons';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Geolocation from '@react-native-community/geolocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -199,43 +198,30 @@ const Profile = () => {
       console.log('Permiso de ubicación denegado');
       return;
     }
-
     Geolocation.getCurrentPosition(
       async position => {
         const {latitude, longitude} = position.coords;
-        if (!isStarted) {
-          setTimestamps(prev => [
-            ...prev,
-            {inicio_jornada: currentTime, location: {latitude, longitude}}
-          ]);
-          await handleSendLocation(
-            latitude.toString(),
-            longitude.toString(),
-            'startDay',
-            currentTime
-          );
-          await AsyncStorage.setItem('@profile', JSON.stringify(true));
-        } else {
-          setTimestamps(prev => [
-            ...prev,
-            {final_jornada: currentTime, location: {latitude, longitude}}
-          ]);
-          await handleSendLocation(
-            latitude.toString(),
-            longitude.toString(),
-            'endDay',
-            currentTime
-          );
-          await AsyncStorage.setItem('@profile', JSON.stringify(false));
-        }
-
-        setIsStarted(!isStarted);
+        setTimestamps(prev => [
+          ...prev,
+          {
+            [isStarted ? 'final_jornada' : 'inicio_jornada']: currentTime,
+            location: {latitude, longitude}
+          }
+        ]);
+        await handleSendLocation(
+          latitude.toString(),
+          longitude.toString(),
+          isStarted ? 'endDay' : 'startDay',
+          currentTime
+        );
       },
       error => {
         console.log('Error obteniendo la ubicación:', error.message);
       },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000}
     );
+    await AsyncStorage.setItem('@profile', JSON.stringify(!isStarted));
+    setIsStarted(!isStarted);
   };
 
   const handleTabPress = (tabName: string) => {
@@ -269,192 +255,110 @@ const Profile = () => {
                 contentContainerStyle={profileStyles.scrollViewContainer}>
                 <View
                   style={{
-                    height: 70,
+                    height: 90,
                     width: '100%',
                     flexDirection: 'row',
-                    marginTop: 30
+                    marginTop: 30,
+                    alignItems: 'flex-end'
                   }}>
-                  {/* <View
-                    style={{
-                      height: '100%',
-                      width: '27%',
-                      justifyContent: 'center'
-                    }}>
-                    <TouchableOpacity
-                      style={{
-                        height: '70%',
-                        width: '100%',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                      }}>
-                      <Text
-                        style={{
-                          fontFamily: 'Ubuntu',
-                          fontSize: 18,
-                          fontWeight: '700',
-                          lineHeight: 28,
-                          letterSpacing: 0.03,
-                          textAlign: 'left',
-                          color: '#030124'
-                        }}>
-                        <Icon name="eye" size={22} color="#030124" />
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 11,
-                          fontWeight: 'bold',
-                          color: '#030124'
-                        }}>
-                        Vista previa perfil
-                      </Text>
-                    </TouchableOpacity>
-                  </View> */}
                   <View
                     style={{
                       height: '100%',
-                      width: '100%',
+                      width: '33%',
                       justifyContent: 'center',
-                      alignItems: 'center',
-                      marginTop: 15
+                      alignItems: 'center'
                     }}>
-                    <Text
-                      style={{
-                        fontSize: 11,
-                        fontWeight: 'bold',
-                        color: '#396593'
-                      }}>
-                      {isStarted ? 'Finalizar Jornada' : 'Iniciar Jornada'}
-                    </Text>
                     <TouchableOpacity
                       onPress={toggleJornada}
                       style={{
                         alignItems: 'center',
-                        justifyContent: 'center',
-                        marginTop: 5
+                        justifyContent: 'center'
                       }}>
                       <View
                         style={{
-                          padding: 7,
+                          padding: 3,
                           borderRadius: 50,
                           backgroundColor: isStarted ? '#030124' : 'white',
                           alignItems: 'center',
                           justifyContent: 'center'
                         }}>
-                        <Icon2
+                        <MaterialCommunityIcons
                           name="power-standby"
-                          size={30}
+                          size={25}
                           color={isStarted ? 'white' : '#030124'}
                         />
                       </View>
                     </TouchableOpacity>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        fontWeight: 'bold',
+                        color: '#396593',
+                        textAlign: 'center'
+                      }}>
+                      {isStarted ? 'Finalizar\nJornada' : 'Iniciar\nJornada'}
+                    </Text>
                   </View>
-                </View>
-                <View
-                  style={{
-                    height: 100,
-                    width: '100%',
-                    flexDirection: 'row'
-                  }}>
-                  {/* <TouchableOpacity
-                    style={{
-                      height: '100%',
-                      width: '18%',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}
-                    onPress={handleBackPress}>
-                    <Icon name="arrow-back-ios" size={27} color="black" />
-                  </TouchableOpacity> */}
                   <View
                     style={{
                       height: '100%',
-                      width: '100%',
+                      width: '33%',
+                      justifyContent: 'center',
+                      alignItems: 'center',
                       flexDirection: 'row'
                     }}>
-                    <View
+                    <MaterialCommunityIcons
+                      name="eye"
+                      size={30}
+                      color="#030124"
+                    />
+                    <Text
                       style={{
-                        height: '70%',
-                        width: '50%',
-                        paddingLeft: '3%',
-                        justifyContent: 'flex-end'
+                        fontFamily: 'Ubuntu',
+                        fontSize: 20,
+                        fontWeight: '700',
+                        letterSpacing: 0.03,
+                        textAlign: 'left',
+                        color: '#030124',
+                        marginLeft: 10
                       }}>
-                      <View
-                        style={{
-                          backgroundColor: 'white',
-                          height: '53%',
-                          width: '57%',
-                          borderRadius: 10,
-                          justifyContent: 'center',
-                          alignItems: 'center'
-                        }}>
-                        <Text
-                          style={{
-                            fontFamily: 'Ubuntu',
-                            fontSize: 18,
-                            fontWeight: '700',
-                            lineHeight: 28,
-                            letterSpacing: 0.03,
-                            textAlign: 'left',
-                            color: '#030124'
-                          }}>
-                          <Icon name="eye" size={22} color="#030124" />{' '}
-                          {views ? views.toString() : ''}
-                        </Text>
-                      </View>
-                    </View>
-
-                    <View
+                      {views ? views.toString() : ''}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      height: '100%',
+                      width: '33%',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}>
+                    <Text
                       style={{
-                        height: '100%',
-                        width: '50%',
-                        flexDirection: 'row',
-                        justifyContent: 'flex-end',
-                        alignItems: 'center'
+                        fontSize: 11,
+                        fontWeight: 'bold',
+                        color: '#030124'
                       }}>
-                      <View
-                        style={{
-                          height: '100%',
-                          width: '50%',
-                          justifyContent: 'center',
-                          alignItems: 'center'
-                        }}>
-                        <View
-                          style={{
-                            marginVertical: 10,
-                            alignItems: 'center'
-                          }}>
-                          <Text
-                            style={{
-                              fontSize: 11,
-                              fontWeight: 'bold',
-                              color: '#030124'
-                            }}>
-                            Ináctivar perfil
-                          </Text>
+                      Ináctivar perfil
+                    </Text>
 
-                          <CustomSwitch
-                            uid={user?.uid}
-                            setAlertSwitchOff={setAlertSwitchOff}
-                          />
-                          <Text
-                            style={{
-                              fontSize: 11,
-                              fontWeight: 'bold',
-                              color: '#030124'
-                            }}>
-                            On | Off
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
+                    <CustomSwitch
+                      uid={user?.uid}
+                      setAlertSwitchOff={setAlertSwitchOff}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 'bold',
+                        color: '#030124'
+                      }}>
+                      On | Off
+                    </Text>
                   </View>
                 </View>
-
                 <PhotoUser
                   name={user && user?.name ? user?.name || '' : ''}
                   isProUser={false}
                 />
-
                 <View
                   style={{
                     height: 100,
@@ -469,16 +373,6 @@ const Profile = () => {
                     selectedArea={user?.selectedArea}
                   />
                 </View>
-                <View
-                  style={{
-                    height: 5,
-                    width: '100%',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginTop: 9,
-                    marginBottom: 10
-                  }}></View>
-
                 <View style={{backgroundColor: 'white'}}>
                   <View
                     style={{
@@ -503,7 +397,10 @@ const Profile = () => {
                           backgroundColor: '#396593',
                           borderRadius: 5
                         }}>
-                        <Text style={{color: 'white'}}> Datos empleado</Text>
+                        <Text style={{color: 'white', fontWeight: 'normal'}}>
+                          {' '}
+                          Datos empleado
+                        </Text>
                       </View>
                     </View>
                   </View>
@@ -575,7 +472,8 @@ const Profile = () => {
                                 width: '95%',
                                 fontSize: 15,
                                 color: 'black',
-                                marginBottom: -5
+                                marginBottom: -5,
+                                fontWeight: 'normal'
                                 //paddingLeft: 1,
                               }}>
                               {user?.firstName[0]} {user?.lastName[0]}
@@ -653,7 +551,8 @@ const Profile = () => {
                                 width: '95%',
                                 fontSize: 15,
                                 color: 'black',
-                                marginBottom: -5
+                                marginBottom: -5,
+                                fontWeight: 'normal'
                                 //paddingLeft: 1,
                               }}>
                               {user?.position[0]}
@@ -695,7 +594,10 @@ const Profile = () => {
                           backgroundColor: '#396593',
                           borderRadius: 5
                         }}>
-                        <Text style={{color: 'white'}}> Datos Empresa</Text>
+                        <Text style={{color: 'white', fontWeight: 'normal'}}>
+                          {' '}
+                          Datos Empresa
+                        </Text>
                       </View>
                     </View>
                   </View>
@@ -769,7 +671,8 @@ const Profile = () => {
                                 width: '95%',
                                 fontSize: 15,
                                 color: 'black',
-                                marginBottom: -5
+                                marginBottom: -5,
+                                fontWeight: 'normal'
                                 //paddingLeft: 1,
                               }}>
                               {company?.tradename[0]}
@@ -847,7 +750,8 @@ const Profile = () => {
                                 width: '95%',
                                 fontSize: 15,
                                 color: 'black',
-                                marginBottom: -5
+                                marginBottom: -5,
+                                fontWeight: 'normal'
                                 //paddingLeft: 1,
                               }}>
                               {company?.id[0]}
@@ -927,7 +831,8 @@ const Profile = () => {
                                 width: '95%',
                                 fontSize: 15,
                                 color: 'black',
-                                marginBottom: -5
+                                marginBottom: -5,
+                                fontWeight: 'normal'
                                 //paddingLeft: 1,
                               }}>
                               {company?.address[0]}
@@ -1001,7 +906,8 @@ const Profile = () => {
                                 width: '95%',
                                 fontSize: 15,
                                 color: 'black',
-                                marginBottom: -5
+                                marginBottom: -5,
+                                fontWeight: 'normal'
                                 //paddingLeft: 1,
                               }}>
                               {company?.phone[0]}
@@ -1044,7 +950,10 @@ const Profile = () => {
                           backgroundColor: '#396593',
                           borderRadius: 5
                         }}>
-                        <Text style={{color: 'white'}}> Urls Empresa</Text>
+                        <Text style={{color: 'white', fontWeight: 'normal'}}>
+                          {' '}
+                          Urls Empresa
+                        </Text>
                       </View>
                     </View>
                   </View>
@@ -1123,7 +1032,8 @@ const Profile = () => {
                                     width: '95%',
                                     fontSize: 15,
                                     color: 'black',
-                                    marginBottom: -5
+                                    marginBottom: -5,
+                                    fontWeight: 'normal'
                                     //paddingLeft: 1,
                                   }}>
                                   {item.url}
@@ -1170,7 +1080,7 @@ const Profile = () => {
                           backgroundColor: '#396593',
                           borderRadius: 5
                         }}>
-                        <Text style={{color: 'white'}}>
+                        <Text style={{color: 'white', fontWeight: 'normal'}}>
                           Area {area?.areaName}
                         </Text>
                       </View>
@@ -1271,7 +1181,7 @@ const Profile = () => {
                 source={require('../../../../../images/icon.png')}
                 style={{width: 25, height: 25, tintColor: '#606060'}}
               />
-              <Text style={{color: '#606060'}}>Home</Text>
+              <Text style={{color: '#606060', fontWeight: 'normal'}}>Home</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
@@ -1284,7 +1194,9 @@ const Profile = () => {
               }}
               onPress={() => handleTabPress('Profile')}>
               <Ionicons name="person-outline" size={25} color="#396593" />
-              <Text style={{color: '#396593'}}>Empleado</Text>
+              <Text style={{color: '#396593', fontWeight: 'normal'}}>
+                Empleado
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
@@ -1295,7 +1207,9 @@ const Profile = () => {
               }}
               onPress={() => handleTabPress('Meetings')}>
               <Ionicons name="calendar-outline" size={25} color="#606060" />
-              <Text style={{color: '#606060'}}>Reuniones</Text>
+              <Text style={{color: '#606060', fontWeight: 'normal'}}>
+                Reuniones
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
@@ -1306,7 +1220,9 @@ const Profile = () => {
               }}
               onPress={() => handleTabPress('Roads')}>
               <Ionicons name="car-outline" size={30} color="#606060" />
-              <Text style={{color: '#606060'}}>Rutas</Text>
+              <Text style={{color: '#606060', fontWeight: 'normal'}}>
+                Rutas
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
@@ -1317,7 +1233,9 @@ const Profile = () => {
               }}
               onPress={() => handleTabPress('ShareQR')}>
               <Feather name="share" size={25} color="#606060" />
-              <Text style={{color: '#606060'}}>Compartir</Text>
+              <Text style={{color: '#606060', fontWeight: 'normal'}}>
+                Compartir
+              </Text>
             </TouchableOpacity>
           </View>
 

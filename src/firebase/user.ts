@@ -10,26 +10,14 @@ import {
   setDoc,
 } from 'firebase/firestore';
 import { getAuth, updatePassword } from 'firebase/auth';
-import { dataBase } from './firebaseConfig';
-import {
-  AllRefPropsFirebase,
-  GetUserByLoginProps,
-  LoginRefProps,
-  RefPropsFirebase,
-} from '../types/userFirebase';
-import {
-  DataForm,
-  ProfessionalDataForm,
-  SocialDataForm,
-} from '../types/profile';
-import firestore from '@react-native-firebase/firestore';
+import { app, dataBase } from './firebaseConfig';
 
-const ref = ({ ref, collection }: RefPropsFirebase) =>
+const ref = ({ ref, collection }: any) =>
   doc(dataBase, collection, ref.document);
 
-const allRef = ({ ref }: AllRefPropsFirebase) => collection(dataBase, ref);
+const allRef = ({ ref }: any) => collection(dataBase, ref);
 
-const loginRef = ({ user, password }: LoginRefProps) =>
+const loginRef = ({ user, password }: any) =>
   query(
     collection(dataBase, 'users'),
     where('user_name', '==', user),
@@ -38,7 +26,7 @@ const loginRef = ({ user, password }: LoginRefProps) =>
 
 
 export const getUserByIdFireStore = async (user: string) =>
-  await firestore().collection('users').doc(user).get()
+  await getDoc(doc(dataBase, 'users', user));
 
 
 export const getAllUsers = async () => await getDocs(allRef({ ref: 'users' }));
@@ -71,7 +59,7 @@ export const updateTemplateSelectedFirebase = async (
 
 export const updateDataUserProfile = async (
   userId: string,
-  data: SocialDataForm | ProfessionalDataForm,
+  data: any,
   isProUser: boolean
 ) => {
   try {
@@ -93,11 +81,8 @@ export const updateSwitchAllFirebase = async (userId: string, newData: any) => {
 };
 
 export const updatePasswordFirebase = async (newPassword: string) => {
-  const auth =  getAuth();
+  const auth =  getAuth(app);
   const user =  auth.currentUser;
-  console.log(auth);
-  console.log("usuario",user);
-
   if (user) {
     return await updatePassword(user, newPassword)
       .then(() => {

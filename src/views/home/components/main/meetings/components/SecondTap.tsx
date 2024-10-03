@@ -45,6 +45,9 @@ export default function SecondTap({
             style={meetingsStyles.searchInput}
             placeholder="Buscar..."
             selectionColor={'#396593'}
+            cursorColor={'#396593'}
+            placeholderTextColor="#a0a0a0"
+            underlineColorAndroid="transparent"
             value={searchText}
             onChangeText={text => setSearchText(text)}
           />

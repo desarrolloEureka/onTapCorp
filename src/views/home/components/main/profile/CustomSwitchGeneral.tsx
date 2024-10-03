@@ -66,7 +66,10 @@ const CustomSwitchGeneral = ({
             justifyContent: 'center',
             alignItems: 'center'
           }}>
-          <Text style={[{color: '#030124', fontSize: 13}]}>off/on</Text>
+          <Text
+            style={[{color: '#030124', fontSize: 13, fontWeight: 'normal'}]}>
+            off/on
+          </Text>
         </View>
       </View>
     </View>

@@ -50,7 +50,8 @@ export const profileStyles = StyleSheet.create({
   },
   textName: {
     color: 'white',
-    fontSize: 17
+    fontSize: 17,
+    fontWeight: 'normal'
   },
   scrollViewContainer: {
     flexGrow: 1,
@@ -93,7 +94,8 @@ export const profileStyles = StyleSheet.create({
   label: {
     color: '#396593',
     fontSize: 14,
-    marginTop: 0
+    marginTop: 0,
+    fontWeight: 'normal'
     //marginRight: 170
   }
 });

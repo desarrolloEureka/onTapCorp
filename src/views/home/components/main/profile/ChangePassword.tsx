@@ -13,7 +13,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {UpdatePassword} from '../../../../../reactQuery/users';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
-import {getAuth} from 'firebase/auth';
 
 const ChangePassword = () => {
   const navigation = useNavigation();
@@ -33,12 +32,17 @@ const ChangePassword = () => {
   };
 
   const handleChangePassword = async () => {
-    if (password && passwordConfirm && password === passwordConfirm) {
+    if (
+      password &&
+      passwordConfirm &&
+      password === passwordConfirm &&
+      passwordConfirm?.length > 5
+    ) {
       setErrorForm(0);
       const resUpdate = await UpdatePassword(password);
       setStateUpdate(resUpdate);
       if (resUpdate === true) {
-        Alert.alert('Alerta', 'La contraseña se cambió correctamente.', [
+        Alert.alert('', 'La contraseña se cambió correctamente.', [
           {
             text: 'Aceptar',
             onPress: () => navigation.navigate('Home') // Navega a 'Home' al aceptar
@@ -46,7 +50,7 @@ const ChangePassword = () => {
         ]);
       } else {
         Alert.alert(
-          'Error',
+          '',
           'Ocurrió un error y no fue posible cambiar la contraseña. Por favor, inténtalo de nuevo.'
         );
       }
@@ -57,6 +61,8 @@ const ChangePassword = () => {
         setErrorForm(2);
       } else if (password !== passwordConfirm) {
         setErrorForm(3);
+      } else if (passwordConfirm?.length < 6) {
+        setErrorForm(4);
       }
     }
   };
@@ -165,7 +171,9 @@ const ChangePassword = () => {
               alignItems: 'center'
             }}>
             <View style={{height: '100%', width: '95%'}}>
-              <Text style={{color: 'red'}}>La contraseña está vacía.</Text>
+              <Text style={{color: 'red', fontWeight: 'normal'}}>
+                La contraseña está vacía.
+              </Text>
             </View>
           </View>
         )}
@@ -244,7 +252,7 @@ const ChangePassword = () => {
               alignItems: 'center'
             }}>
             <View style={{height: '100%', width: '95%'}}>
-              <Text style={{color: 'red'}}>
+              <Text style={{color: 'red', fontWeight: 'normal'}}>
                 La confirmación de contraseña está vacía.
               </Text>
             </View>
@@ -260,10 +268,29 @@ const ChangePassword = () => {
               alignItems: 'center'
             }}>
             <View style={{height: '100%', width: '95%'}}>
-              <Text style={{color: 'red'}}>Las contraseñas no coinciden.</Text>
+              <Text style={{color: 'red', fontWeight: 'normal'}}>
+                Las contraseñas no coinciden.
+              </Text>
             </View>
           </View>
         )}
+
+        {errorForm === 4 && (
+          <View
+            style={{
+              flex: 1,
+              aspectRatio: 1 / 0.05,
+              width: '100%',
+              alignItems: 'center'
+            }}>
+            <View style={{height: '100%', width: '95%'}}>
+              <Text style={{color: 'red', fontWeight: 'normal'}}>
+                La contraseña debe tener minimo 6 caracteres.
+              </Text>
+            </View>
+          </View>
+        )}
+
         <View
           style={{
             flex: 1,
@@ -293,25 +320,30 @@ const ChangePassword = () => {
 const styles = StyleSheet.create({
   title: {
     color: '#396593',
-    fontSize: 24
+    fontSize: 24,
+    fontWeight: 'normal'
   },
   input: {
     height: 52,
     width: 386,
     fontSize: 16,
-    color: '#396593'
+    color: '#396593',
+    fontWeight: 'normal'
   },
   label: {
     color: '#030124',
     marginTop: 3,
-    marginRight: 220
+    marginRight: 220,
+    fontWeight: 'normal'
   },
   labelPassword: {
-    color: '#030124'
+    color: '#030124',
+    fontWeight: 'normal'
   },
   buttonText: {
     color: 'white',
-    fontSize: 16
+    fontSize: 16,
+    fontWeight: 'normal'
   }
 });
 

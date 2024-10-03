@@ -68,7 +68,8 @@ const styles = StyleSheet.create({
   label: {
     paddingLeft: 20,
     color: 'white',
-    fontSize: 16
+    fontSize: 16,
+    fontWeight: 'normal'
   },
   optionsContainer: {
     backgroundColor: '#fff',
@@ -80,7 +81,8 @@ const styles = StyleSheet.create({
     padding: 10
   },
   optionText: {
-    color: 'black'
+    color: 'black',
+    fontWeight: 'normal'
   }
 });
 

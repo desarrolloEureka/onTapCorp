@@ -58,7 +58,6 @@ const ModalDetail = ({show, data, handleClose}: Props) => {
         }}>
         <View
           style={{
-            height: '85%',
             width: '100%',
             justifyContent: 'center',
             alignItems: 'center'
@@ -66,26 +65,21 @@ const ModalDetail = ({show, data, handleClose}: Props) => {
           }}>
           <View
             style={{
-              height: '95%',
-              width: '95%',
+              width: '90%',
               justifyContent: 'center',
               alignItems: 'center'
             }}>
             <View
               style={{
-                height: '100%',
                 width: '95%',
                 backgroundColor: 'white',
                 borderRadius: 20,
                 justifyContent: 'flex-start',
                 alignItems: 'center',
-                elevation: 15
+                elevation: 15,
+                marginTop: 40
               }}>
-              <View
-                style={{
-                  height: '100%',
-                  width: '100%'
-                }}>
+              <View style={{width: '100%'}}>
                 <View
                   style={{
                     height: '8%',
@@ -97,13 +91,12 @@ const ModalDetail = ({show, data, handleClose}: Props) => {
                   }}>
                   <View
                     style={{
-                      height: '100%',
-                      width: '50%',
+                      width: '80%',
                       justifyContent: 'center'
                     }}>
                     <Text
                       style={{
-                        fontSize: 13,
+                        fontSize: 20,
                         fontWeight: 'bold',
                         color: '#396593'
                       }}>
@@ -113,7 +106,7 @@ const ModalDetail = ({show, data, handleClose}: Props) => {
                   <TouchableOpacity
                     style={{
                       height: '100%',
-                      width: '50%',
+                      width: '20%',
                       alignItems: 'flex-end',
                       justifyContent: 'center'
                     }}
@@ -124,7 +117,6 @@ const ModalDetail = ({show, data, handleClose}: Props) => {
 
                 <View
                   style={{
-                    height: '88%',
                     width: '100%',
                     marginTop: 10,
                     paddingHorizontal: 20
@@ -152,7 +144,8 @@ const ModalDetail = ({show, data, handleClose}: Props) => {
                           <Text
                             style={{
                               fontSize: 13,
-                              color: 'black'
+                              color: 'black',
+                              fontWeight: 'normal'
                             }}>
                             {item?.text}
                           </Text>
@@ -161,7 +154,6 @@ const ModalDetail = ({show, data, handleClose}: Props) => {
                     }}
                     keyExtractor={item => item?.id}
                     style={{
-                      height: '100%',
                       width: '100%',
                       marginVertical: 5
                     }}

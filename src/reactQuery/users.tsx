@@ -199,18 +199,30 @@ const SendTemplateSelected = async (
 ) => {
   const templateData = data;
   const userDocument = doc(dataBase, 'users', userId);
-  try {
-    await setDoc(userDocument, {templateData}, {merge: true});
-    const updatedUser = await getUserByIdFireStore(userId);
-    if (updatedUser.exists()) {
-      const userData = (await updatedUser.data()) as any;
-      const getUser = await reBuildUserData(userData);
-      await AsyncStorage.setItem('@user', JSON.stringify(getUser));
-      await queryClient.setQueryData(['user'], () => getUser);
+  const userDoc = await getDoc(userDocument);
+  if (userDoc.exists()) {
+    try {
+      const userData = userDoc.data();
+      const existingTemplateData = Array.isArray(userData.templateData)
+        ? userData.templateData
+        : [];
+      existingTemplateData[0] = data[0];
+      await setDoc(
+        userDocument,
+        {templateData: existingTemplateData},
+        {merge: true}
+      );
+      const updatedUser = await getUserByIdFireStore(userId);
+      if (updatedUser.exists()) {
+        const userData = (await updatedUser.data()) as any;
+        const getUser = await reBuildUserData(userData);
+        await AsyncStorage.setItem('@user', JSON.stringify(getUser));
+        await queryClient.setQueryData(['user'], () => getUser);
+      }
+    } catch (error) {
+      console.error('Error al enviar la plantilla seleccionada:', error);
+      throw error; // Opcional: lanzar el error para manejarlo en otro lugar
     }
-  } catch (error) {
-    console.error('Error al enviar la plantilla seleccionada:', error);
-    throw error; // Opcional: lanzar el error para manejarlo en otro lugar
   }
 };
 

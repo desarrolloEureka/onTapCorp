@@ -104,7 +104,7 @@ const ChangePassword = () => {
             width: '100%',
             alignItems: 'center'
           }}>
-          <View style={{height: '100%', width: '95%'}}>
+          <View style={{height: '100%', width: '90%'}}>
             <Text style={styles.labelPassword}>Contraseña</Text>
           </View>
         </View>
@@ -112,12 +112,12 @@ const ChangePassword = () => {
         <View
           style={{
             flex: 1,
-            aspectRatio: 1 / 0.2,
+            aspectRatio: 1 / 0.15,
             width: '100%',
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-          <View style={{height: '100%', width: '95%'}}>
+          <View style={{height: '100%', width: '90%'}}>
             <View
               style={{
                 height: '80%',
@@ -130,7 +130,7 @@ const ChangePassword = () => {
                 <TextInput
                   style={styles.input}
                   placeholder="Contraseña"
-                  placeholderTextColor="#396593"
+                  placeholderTextColor="#a8a8a8"
                   underlineColorAndroid="transparent"
                   secureTextEntry={!showPasswordOne}
                   onChangeText={text => setPassword(text)}
@@ -144,19 +144,11 @@ const ChangePassword = () => {
                   justifyContent: 'center'
                 }}
                 onPress={handleSeePassword}>
-                {showPasswordOne ? (
-                  <MaterialCommunityIcons
-                    name="eye-outline"
-                    size={30}
-                    color="#030124"
-                  />
-                ) : (
-                  <MaterialCommunityIcons
-                    name="eye-off-outline"
-                    size={30}
-                    color="#030124"
-                  />
-                )}
+                <MaterialCommunityIcons
+                  name={showPasswordOne ? 'eye-outline' : 'eye-off-outline'}
+                  size={30}
+                  color="#396593"
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -168,9 +160,10 @@ const ChangePassword = () => {
               flex: 1,
               aspectRatio: 1 / 0.08,
               width: '100%',
-              alignItems: 'center'
+              alignItems: 'center',
+              justifyContent: 'flex-start'
             }}>
-            <View style={{height: '100%', width: '95%'}}>
+            <View style={{height: '100%', width: '90%'}}>
               <Text style={{color: 'red', fontWeight: 'normal'}}>
                 La contraseña está vacía.
               </Text>
@@ -181,24 +174,25 @@ const ChangePassword = () => {
         <View
           style={{
             flex: 1,
-            aspectRatio: 1 / 0.05,
+            aspectRatio: 1 / 0.1,
             width: '100%',
-            alignItems: 'center'
+            alignItems: 'center',
+            justifyContent: 'flex-end'
           }}>
-          <View style={{height: '100%', width: '95%'}}>
-            <Text style={styles.label}>Confirmar Contraseña</Text>
+          <View style={{height: '50%', width: '90%'}}>
+            <Text style={styles.label}>Verificar contraseñao</Text>
           </View>
         </View>
 
         <View
           style={{
             flex: 1,
-            aspectRatio: 1 / 0.2,
+            aspectRatio: 1 / 0.15,
             width: '100%',
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-          <View style={{height: '100%', width: '95%'}}>
+          <View style={{height: '100%', width: '90%'}}>
             <View
               style={{
                 height: '80%',
@@ -210,8 +204,8 @@ const ChangePassword = () => {
               <View style={{height: '100%', width: '85%'}}>
                 <TextInput
                   style={styles.input}
-                  placeholder="Contraseña"
-                  placeholderTextColor="#396593"
+                  placeholder="Verificar contraseña"
+                  placeholderTextColor="#a8a8a8"
                   underlineColorAndroid="transparent"
                   secureTextEntry={!showPasswordTwo}
                   onChangeText={text => setPasswordConfirm(text)}
@@ -225,19 +219,11 @@ const ChangePassword = () => {
                   justifyContent: 'center'
                 }}
                 onPress={handleSeePasswordTwo}>
-                {showPasswordTwo ? (
-                  <MaterialCommunityIcons
-                    name="eye-outline"
-                    size={30}
-                    color="#030124"
-                  />
-                ) : (
-                  <MaterialCommunityIcons
-                    name="eye-off-outline"
-                    size={30}
-                    color="#030124"
-                  />
-                )}
+                <MaterialCommunityIcons
+                  name={showPasswordTwo ? 'eye-outline' : 'eye-off-outline'}
+                  size={30}
+                  color="#396593"
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -251,7 +237,7 @@ const ChangePassword = () => {
               width: '100%',
               alignItems: 'center'
             }}>
-            <View style={{height: '100%', width: '95%'}}>
+            <View style={{height: '100%', width: '90%'}}>
               <Text style={{color: 'red', fontWeight: 'normal'}}>
                 La confirmación de contraseña está vacía.
               </Text>
@@ -267,7 +253,7 @@ const ChangePassword = () => {
               width: '100%',
               alignItems: 'center'
             }}>
-            <View style={{height: '100%', width: '95%'}}>
+            <View style={{height: '100%', width: '90%'}}>
               <Text style={{color: 'red', fontWeight: 'normal'}}>
                 Las contraseñas no coinciden.
               </Text>
@@ -283,7 +269,7 @@ const ChangePassword = () => {
               width: '100%',
               alignItems: 'center'
             }}>
-            <View style={{height: '100%', width: '95%'}}>
+            <View style={{height: '100%', width: '90%'}}>
               <Text style={{color: 'red', fontWeight: 'normal'}}>
                 La contraseña debe tener minimo 6 caracteres.
               </Text>
@@ -294,14 +280,14 @@ const ChangePassword = () => {
         <View
           style={{
             flex: 1,
-            aspectRatio: 1 / 0.9,
+            aspectRatio: 1 / 1,
             width: '100%',
             alignItems: 'center',
             justifyContent: 'flex-end'
           }}>
           <TouchableOpacity
             style={{
-              height: '15%',
+              height: '13%',
               width: '65%',
               backgroundColor: '#396593',
               justifyContent: 'center',
@@ -319,26 +305,26 @@ const ChangePassword = () => {
 
 const styles = StyleSheet.create({
   title: {
-    color: '#396593',
+    color: 'black',
     fontSize: 24,
-    fontWeight: 'normal'
+    fontWeight: 'bold'
   },
   input: {
     height: 52,
     width: 386,
     fontSize: 16,
-    color: '#396593',
+    color: 'black',
     fontWeight: 'normal'
   },
   label: {
-    color: '#030124',
-    marginTop: 3,
-    marginRight: 220,
-    fontWeight: 'normal'
+    color: '#396593',
+    fontWeight: 'normal',
+    fontSize: 18
   },
   labelPassword: {
-    color: '#030124',
-    fontWeight: 'normal'
+    color: '#396593',
+    fontWeight: 'normal',
+    fontSize: 18
   },
   buttonText: {
     color: 'white',

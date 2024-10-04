@@ -1,55 +1,72 @@
-import React, { useState } from 'react';
-import { TouchableOpacity } from 'react-native';
-import { TemplateData } from '../../../../../types/user';
-import { SendTemplateSelected } from '../../../../../reactQuery/users';
+import React, {useState, useRef} from 'react';
+import {TouchableOpacity} from 'react-native';
+import {SendTemplateSelected} from '../../../../../reactQuery/users';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useQueryClient } from '@tanstack/react-query';
+import {useQueryClient} from '@tanstack/react-query';
 import CustomModalLoading from '../profile/CustomModalLoading';
 
 const CustomCheckbox = ({
-    uid,
-    value,
-    checked,
+  uid,
+  value,
+  setTemplateSelect,
+  templates,
+  checked
 }: {
-    uid?: string;
-    value: any;
-    templates?: TemplateData[];
-    checked: boolean;
+  uid?: string;
+  value: any;
+  setTemplateSelect?: (e: any) => void;
+  templates?: any[];
+  checked: boolean;
 }) => {
-    const queryClient = useQueryClient();
-    const [isLoadingSendData, setIsLoadingSendData] = useState(false);
+  const queryClient = useQueryClient();
+  const [isLoadingSendData, setIsLoadingSendData] = useState(false);
 
-    const handleSelectTemplate = async () => {
-        let fakeDataClone = []
-        setIsLoadingSendData(true);
-        fakeDataClone = [({
-            id: value.id,
-            checked: true,
-        })];
-        if (uid) {
-            await SendTemplateSelected(uid, fakeDataClone, queryClient);
-            await setIsLoadingSendData(false);
-        }
-    };
-
-    return (
-        <>
-            <TouchableOpacity
-                onPress={handleSelectTemplate}
-                disabled={checked}
-                style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}
-            >
-                <Ionicons
-                    name={checked ? 'radio-button-on-outline' : 'radio-button-off-outline'}
-                    size={19}
-                    color={'#030124'}
-                />
-            </TouchableOpacity>
-            <CustomModalLoading
-                isLoadingSendData={isLoadingSendData}
-            />
-        </>
+  const handleSelectTemplate = async () => {
+    setIsLoadingSendData(true);
+    const userId = uid;
+    const newCheckedState = !checked;
+    if (newCheckedState) {
+      setTemplateSelect && setTemplateSelect(value);
+    }
+    const fakeDataClone = templates ? [...templates] : [];
+    const templateIndex = fakeDataClone.findIndex(
+      template => template.id === value.uid
     );
+
+    if (templateIndex === -1) {
+      const dataSend = [
+        {
+          id: value.uid,
+          checked: newCheckedState
+        }
+      ];
+      console.log('dataSend', dataSend);
+      uid && (await SendTemplateSelected(uid, dataSend, queryClient));
+      setIsLoadingSendData(false);
+    }
+  };
+
+  return (
+    <>
+      <TouchableOpacity
+        onPress={handleSelectTemplate}
+        disabled={checked}
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+        <Ionicons
+          name={
+            checked ? 'radio-button-on-outline' : 'radio-button-off-outline'
+          }
+          size={19}
+          color={'#030124'}
+        />
+      </TouchableOpacity>
+      <CustomModalLoading isLoadingSendData={isLoadingSendData} />
+    </>
+  );
 };
 
 export default CustomCheckbox;

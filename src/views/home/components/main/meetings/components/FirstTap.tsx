@@ -19,7 +19,13 @@ import Geolocation from '@react-native-community/geolocation';
 import MeetingsHook from '../hook/MeetingsHook';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
+const FirstTap = ({
+  meetingStatus,
+  setActiveTab
+}: {
+  meetingStatus: any;
+  setActiveTab: (tab: string) => void;
+}) => {
   const {
     handleSendInitialInfo,
     handleSendUpdateInfo,
@@ -268,6 +274,7 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
 
   const handleModalSaveData = () => {
     setSaveData(false);
+    setActiveTab('tab2');
   };
 
   const calculateDuration = () => {
@@ -290,17 +297,21 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
 
   const displayStartTime = () => {
     if (startTime) {
-      return new Date(startTime)
-        .toLocaleString()
-        .replace(/^\d{1,2}\/\d{1,2}\/\d{4},\s*/, '');
+      return new Date(startTime).toLocaleString('es-CO', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
     }
   };
 
   const displayEndTime = () => {
     if (endTime) {
-      return new Date(endTime)
-        .toLocaleString()
-        .replace(/^\d{1,2}\/\d{1,2}\/\d{4},\s*/, '');
+      return new Date(endTime).toLocaleString('es-CO', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
     }
   };
 
@@ -627,8 +638,8 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
                 alignItems: 'flex-start'
               }}>
               <Text
-                style={{color: 'white', fontSize: 11, fontWeight: 'normal'}}>
-                Iniciar Reunión
+                style={{color: 'white', fontSize: 15, fontWeight: 'normal'}}>
+                Iniciar
               </Text>
             </View>
           </TouchableOpacity>
@@ -680,8 +691,8 @@ const FirstTap = ({meetingStatus}: {meetingStatus: any}) => {
                 alignItems: 'flex-start'
               }}>
               <Text
-                style={{color: 'white', fontSize: 11, fontWeight: 'normal'}}>
-                Finalizar Reunión
+                style={{color: 'white', fontSize: 15, fontWeight: 'normal'}}>
+                Finalizar
               </Text>
             </View>
           </TouchableOpacity>

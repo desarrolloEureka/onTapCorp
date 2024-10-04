@@ -134,7 +134,10 @@ const Meetings = () => {
 
         <View style={meetingsStyles.tabContent}>
           {activeTab === 'tab1' ? (
-            <FirstTap meetingStatus={meetingStatus} />
+            <FirstTap
+              meetingStatus={meetingStatus}
+              setActiveTab={setActiveTab}
+            />
           ) : (
             <SecondTap
               handleConfigSearch={handleConfigSearch}

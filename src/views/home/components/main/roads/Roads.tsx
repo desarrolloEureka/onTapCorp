@@ -268,17 +268,21 @@ const Roads = () => {
 
   const displayStartTime = () => {
     if (startTime) {
-      return new Date(startTime)
-        .toLocaleString()
-        .replace(/^\d{1,2}\/\d{1,2}\/\d{4},\s*/, '');
+      return new Date(startTime).toLocaleString('es-CO', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
     }
   };
 
   const displayEndTime = () => {
     if (endTime) {
-      return new Date(endTime)
-        .toLocaleString()
-        .replace(/^\d{1,2}\/\d{1,2}\/\d{4},\s*/, '');
+      return new Date(endTime).toLocaleString('es-CO', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
     }
   };
 

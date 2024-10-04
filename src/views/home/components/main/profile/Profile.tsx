@@ -302,10 +302,9 @@ const Profile = () => {
                   <View
                     style={{
                       height: '100%',
-                      width: '33%',
+                      width: '34%',
                       justifyContent: 'center',
-                      alignItems: 'center',
-                      flexDirection: 'row'
+                      alignItems: 'center'
                     }}>
                     <MaterialCommunityIcons
                       name="eye"
@@ -318,9 +317,8 @@ const Profile = () => {
                         fontSize: 20,
                         fontWeight: '700',
                         letterSpacing: 0.03,
-                        textAlign: 'left',
-                        color: '#030124',
-                        marginLeft: 10
+                        textAlign: 'center',
+                        color: '#030124'
                       }}>
                       {views ? views.toString() : ''}
                     </Text>

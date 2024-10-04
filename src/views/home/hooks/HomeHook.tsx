@@ -49,7 +49,7 @@ const HomeHook = () => {
   const [alertDelte, setAlertDelte] = useState(false);
   const handleAlertDelete = (status: boolean) => setAlertDelte(!alertDelte);
 
-  const handleNavigatePreview = async (template: any | undefined) => {
+  const handleNavigatePreview = async () => {
     // if (data?.profile?.social) {
     // if (template) {
     navigation.navigate('PreviewTemplate');

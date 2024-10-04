@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   FlatList,
   Image,
@@ -50,6 +50,7 @@ const Templates = () => {
   } = HomeHook();
 
   const navigation = useNavigation();
+  const [templateSelect, setTemplateSelect] = useState<any>(null);
 
   const handleBackPress = () => {
     navigation.goBack();
@@ -245,12 +246,8 @@ const Templates = () => {
                 keyExtractor={item => item.id.toString()}
                 numColumns={2}
                 renderItem={({item, index}) => {
-                  const i = item.id;
                   const itemData = user?.templateData?.find(
-                    (val: any) => val.id === i
-                  );
-                  const background = user?.templateData?.find(
-                    (val: any) => val.id === i && val.background_id
+                    (val: any) => val.id === item.uid
                   );
 
                   return (
@@ -291,7 +288,7 @@ const Templates = () => {
                                 justifyContent: 'center',
                                 alignItems: 'center'
                               }}
-                              onPress={() => handleNavigatePreview(background)}>
+                              onPress={() => handleNavigatePreview()}>
                               <Ionicons
                                 name="eye-sharp"
                                 size={15}
@@ -325,11 +322,12 @@ const Templates = () => {
                                 <CustomCheckbox
                                   uid={user?.uid}
                                   value={item}
+                                  setTemplateSelect={setTemplateSelect}
+                                  templates={user.templateData}
                                   checked={
-                                    itemData != undefined
-                                      ? itemData
-                                        ? itemData?.checked
-                                        : false
+                                    item?.uid ===
+                                    (itemData?.id || templateSelect?.id)
+                                      ? true
                                       : false
                                   }
                                 />
@@ -338,9 +336,10 @@ const Templates = () => {
                                 style={{
                                   fontSize: 9,
                                   color: '#030124',
-                                  fontWeight: 'normal'
+                                  fontWeight: 'normal',
+                                  textAlign: 'center'
                                 }}>
-                                Seleccionar {'\n'} plantilla
+                                Seleccionar{'\n'}plantilla
                               </Text>
                             </View>
                           </View>

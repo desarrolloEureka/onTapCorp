@@ -336,7 +336,7 @@ const Profile = () => {
                         fontWeight: 'bold',
                         color: '#030124'
                       }}>
-                      Ináctivar perfil
+                      Activar perfil
                     </Text>
 
                     <CustomSwitch
@@ -349,7 +349,7 @@ const Profile = () => {
                         fontWeight: 'bold',
                         color: '#030124'
                       }}>
-                      On | Off
+                      Off | On
                     </Text>
                   </View>
                 </View>
@@ -1176,7 +1176,7 @@ const Profile = () => {
               onPress={() => handleTabPress('Home')}>
               {/* <Ionicons name="home-outline" size={25} color="#606060" /> */}
               <Image
-                source={require('../../../../../images/icon.png')}
+                source={require('../../../../../images/icon2.png')}
                 style={{width: 25, height: 25, tintColor: '#606060'}}
               />
               <Text style={{color: '#606060', fontWeight: 'normal'}}>Home</Text>

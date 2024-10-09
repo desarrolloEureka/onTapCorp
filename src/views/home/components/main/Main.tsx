@@ -527,8 +527,8 @@ const Main = () => {
             onPress={() => handleTabPress('Home')}>
             {/* <Ionicons name="home-outline" size={25} color="#396593" /> */}
             <Image
-              source={require('../../../../images/icon.png')}
-              style={{width: 25, height: 25, tintColor: '#396593'}}
+              source={require('../../../../images/icon2.png')}
+              style={{width: 28, height: 28, tintColor: '#396593'}}
             />
             <Text style={{color: '#396593', fontWeight: 'normal'}}>Home</Text>
           </TouchableOpacity>

@@ -131,7 +131,7 @@ const PhotoUser = ({name, isProUser}: {name?: string; isProUser: boolean}) => {
               ) : (
                 <Image
                   style={{borderRadius: 100, aspectRatio: 1 / 1, height: '85%'}}
-                  source={require('./../../../../../images/profilePhoto.png')}
+                  source={require('./../../../../../images/default.png')}
                 />
               )}
             </View>

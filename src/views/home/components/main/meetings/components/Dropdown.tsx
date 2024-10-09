@@ -6,9 +6,10 @@ type DropdownProps = {
   label: string;
   options: any;
   onSelect: (option: any) => void;
+  isEnable: boolean;
 };
 
-const Dropdown = ({label, options, onSelect}: DropdownProps) => {
+const Dropdown = ({label, options, onSelect, isEnable}: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<any>(null);
 
@@ -21,8 +22,10 @@ const Dropdown = ({label, options, onSelect}: DropdownProps) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={styles.dropdown}
-        onPress={() => setIsOpen(prev => !prev)}>
+        style={[{backgroundColor: isEnable ? '#396593' : "#888888"}, styles.dropdown]}
+        onPress={() => setIsOpen(prev => !prev)}
+        disabled={!isEnable}
+        >
         <Text style={styles.label}>
           {selectedOption ? selectedOption.name : label}
         </Text>
@@ -56,7 +59,6 @@ const styles = StyleSheet.create({
     marginVertical: 10
   },
   dropdown: {
-    backgroundColor: '#396593',
     padding: 10,
     borderRadius: 50,
     flexDirection: 'row',

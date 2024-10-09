@@ -48,6 +48,8 @@ const FirstTap = ({
   const [documentId, setDocumentId] = useState('');
   const [saveData, setSaveData] = useState(false);
 
+  console.log("isDataSuccess", isDataSuccess)
+
   const requestLocationPermission = async () => {
     if (Platform.OS === 'android') {
       const granted = await PermissionsAndroid.request(
@@ -80,12 +82,12 @@ const FirstTap = ({
           setMeetingStarted(JSON.parse(meeting));
         }
 
-        if (startTime !== null) {
-          setStartTime(JSON.parse(startTime));
+        if (startTime !== '') {
+          startTime && setStartTime(JSON.parse(startTime));
         }
 
-        if (endTime !== null) {
-          setEndTime(JSON.parse(endTime));
+        if (endTime !== '') {
+          endTime && setEndTime(JSON.parse(endTime));
         }
 
         if (meetingStartInfo !== null) {
@@ -353,12 +355,14 @@ const FirstTap = ({
       setEndTime('');
       setMeetingStarted(false);
       setDocumentId('');
+      console.log("hola")
       const resetAsyncStorage = async () => {
-        await AsyncStorage.setItem('@startTime', JSON.stringify(null));
-        await AsyncStorage.setItem('@endTime', JSON.stringify(null));
+        await AsyncStorage.setItem('@startTime', JSON.stringify(''));
+        await AsyncStorage.setItem('@endTime', JSON.stringify(''));
         await AsyncStorage.setItem('@meeting', JSON.stringify(null));
         await AsyncStorage.setItem('@meetingStartInfo', JSON.stringify(null));
         await AsyncStorage.setItem('@meetingEndInfo', JSON.stringify(null));
+        console.log("adios")
       };
 
       resetAsyncStorage();
@@ -735,6 +739,7 @@ const FirstTap = ({
           label="Selecciona una opción"
           options={meetingStatus}
           onSelect={selected => setMeetingStatusId(selected?.uid.toString())}
+          isEnable={endTime !== '' && startTime !== ''}
         />
 
         <View
@@ -786,6 +791,7 @@ const FirstTap = ({
               onChangeText={(text: any) => {
                 setObservations(text);
               }}
+              editable={endTime !== '' && startTime !== ''}  
             />
           </View>
         </View>

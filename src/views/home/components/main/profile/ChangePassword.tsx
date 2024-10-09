@@ -13,8 +13,10 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {UpdatePassword} from '../../../../../reactQuery/users';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
+import LogOut from '../../../../../hooks/logOut/LogOut';
 
 const ChangePassword = () => {
+  const {logOut} = LogOut();
   const navigation = useNavigation();
   const [showPasswordOne, setShowPasswordOne] = useState(false);
   const [showPasswordTwo, setShowPasswordTwo] = useState(false);
@@ -49,10 +51,12 @@ const ChangePassword = () => {
           }
         ]);
       } else {
-        Alert.alert(
-          '',
-          'Ocurrió un error y no fue posible cambiar la contraseña. Por favor, inténtalo de nuevo.'
-        );
+        Alert.alert('', 'Ocurrió un error y no fue posible cambiar la contraseña. Por favor, iniciar sesión nuevamente.', [
+            {
+              text: 'Aceptar',
+              onPress: logOut
+            }
+          ]);
       }
     } else {
       if (!password) {
@@ -100,7 +104,7 @@ const ChangePassword = () => {
         <View
           style={{
             flex: 1,
-            aspectRatio: 1 / 0.05,
+            aspectRatio: 1 / 0.1,
             width: '100%',
             alignItems: 'center'
           }}>
@@ -179,8 +183,8 @@ const ChangePassword = () => {
             alignItems: 'center',
             justifyContent: 'flex-end'
           }}>
-          <View style={{height: '50%', width: '90%'}}>
-            <Text style={styles.label}>Verificar contraseñao</Text>
+          <View style={{height: '100%', width: '90%'}}>
+            <Text style={styles.label}>Verificar contraseña</Text>
           </View>
         </View>
 

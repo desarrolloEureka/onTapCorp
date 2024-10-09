@@ -175,7 +175,6 @@ const SendSwitchActivateCard = async (userId: string, switchState: boolean) => {
 
 const UpdatePassword = async (password: string) => {
   const res = await updatePasswordFirebase(password);
-  console.log('res', res);
   return res;
 };
 

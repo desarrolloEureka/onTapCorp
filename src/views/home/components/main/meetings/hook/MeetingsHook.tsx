@@ -87,13 +87,13 @@ const MeetingsHook = (props?: Props) => {
         documentId,
         dataUpdate
       );
-      console.log('isSendDataProfile', isSendDataProfile);
       if (isSendDataProfile?.success) {
         if (save) {
           setIsDataSuccess(true);
         } else {
           setIsDataSuccess(false);
         }
+        return isSendDataProfile?.uid?.toString();
       } else {
         setIsDataSuccess(false);
         console.log('ERROR =>', isSendDataProfile?.error);

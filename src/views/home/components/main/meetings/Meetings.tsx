@@ -51,14 +51,14 @@ const processMeetings = (
   const sortedMeetings = [...updatedMeetings].sort((a, b) => {
     switch (selectedFilter) {
       case 'fecha':
-        return new Date(b.timestamp) - new Date(a.timestamp);
+        return new Date(a.timestamp) - new Date(b.timestamp);
       case 'estado':
         return a.meetingStatusName.localeCompare(b.meetingStatusName);
       case 'cliente':
         return a.companyNameToVisit.localeCompare(b.companyNameToVisit);
       case 'todos':
       default:
-        return 0; // Sin orden
+        return new Date(b.timestamp) - new Date(a.timestamp);
     }
   });
 

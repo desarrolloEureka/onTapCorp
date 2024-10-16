@@ -10,7 +10,8 @@ import {
   ScrollView,
   View,
   Platform,
-  PermissionsAndroid
+  PermissionsAndroid,
+  ActivityIndicator
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -104,6 +105,7 @@ const Roads = () => {
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [routeStarted, setRouteStarted] = useState(false);
+  const [isLoadingFirebase, setIsLoadingFirebase] = useState(false)
 
   useEffect(() => {
     if (filteredRoutes.length > 0 && !selectedOption) {
@@ -212,26 +214,32 @@ const Roads = () => {
       console.log('Permiso de ubicación denegado');
       return;
     }
+    setIsLoadingFirebase(true)
     const currentTime = new Date().toISOString();
     Geolocation.getCurrentPosition(
       async position => {
         const {latitude, longitude} = position.coords;
-        await handleSendLocation(
+        const send = await handleSendLocation(
           latitude.toString(),
           longitude.toString(),
           'startRoute',
           currentTime
         );
+        if  (send) {
+          setRouteStarted(true);
+          setStartTime(currentTime);
+          await AsyncStorage.setItem('@route', JSON.stringify(true));
+          await AsyncStorage.setItem('@startTime2', JSON.stringify(currentTime));
+          setIsLoadingFirebase(false)
+        }
       },
       error => {
         console.log('Error obteniendo la ubicación:', error.message);
+        setIsLoadingFirebase(false)
       },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000}
     );
-    setRouteStarted(true);
-    setStartTime(currentTime);
-    await AsyncStorage.setItem('@route', JSON.stringify(true));
-    await AsyncStorage.setItem('@startTime2', JSON.stringify(currentTime));
+    
   };
 
   const handlePressEndRoute = async () => {
@@ -244,26 +252,32 @@ const Roads = () => {
       console.log('Permiso de ubicación denegado');
       return;
     }
+    setIsLoadingFirebase(true)
     const currentTime = new Date().toISOString();
     Geolocation.getCurrentPosition(
       async position => {
         const {latitude, longitude} = position.coords;
-        await handleSendLocation(
+        const send = await handleSendLocation(
           latitude.toString(),
           longitude.toString(),
           'endRoute',
           currentTime
         );
+        if(send){ 
+          setIsLoadingFirebase(false)
+          setEndTime(currentTime);
+          setRouteStarted(false);
+          await AsyncStorage.setItem('@route', JSON.stringify(false));
+          await AsyncStorage.setItem('@startTime2', JSON.stringify(''));
+        }
       },
       error => {
         console.log('Error obteniendo la ubicación:', error.message);
+        setIsLoadingFirebase(false)
       },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000}
     );
-    setEndTime(currentTime);
-    setRouteStarted(false);
-    await AsyncStorage.setItem('@route', JSON.stringify(false));
-    await AsyncStorage.setItem('@startTime2', JSON.stringify(''));
+   
   };
 
   const displayStartTime = () => {
@@ -605,7 +619,7 @@ const Roads = () => {
                   width: 150
                 }}
                 onPress={!routeStarted ? handlePressStartRoute : undefined}
-                disabled={routeStarted}>
+                disabled={routeStarted || isLoadingFirebase}>
                 <View
                   style={{
                     flex: 1,
@@ -620,14 +634,18 @@ const Roads = () => {
                     justifyContent: 'center',
                     alignItems: 'flex-start'
                   }}>
-                  <Text
-                    style={{
-                      color: 'white',
-                      fontSize: 15,
-                      fontWeight: 'normal'
-                    }}>
-                    Iniciar
-                  </Text>
+                    {!routeStarted && isLoadingFirebase ?
+                      <ActivityIndicator size={25} color='white'/>
+                    :
+                      <Text
+                      style={{
+                        color: 'white',
+                        fontSize: 15,
+                        fontWeight: 'normal'
+                      }}>
+                      Iniciar
+                    </Text>
+                    }
                 </View>
               </TouchableOpacity>
               <View
@@ -658,7 +676,7 @@ const Roads = () => {
                   width: 150
                 }}
                 onPress={routeStarted ? handlePressEndRoute : undefined}
-                disabled={!routeStarted}>
+                disabled={!routeStarted || isLoadingFirebase}>
                 <View
                   style={{
                     flex: 1,
@@ -673,14 +691,18 @@ const Roads = () => {
                     justifyContent: 'center',
                     alignItems: 'flex-start'
                   }}>
-                  <Text
-                    style={{
-                      color: 'white',
-                      fontSize: 15,
-                      fontWeight: 'normal'
-                    }}>
-                    Finalizar
-                  </Text>
+                    {routeStarted && isLoadingFirebase ?
+                      <ActivityIndicator size={25} color='white'/>
+                    : 
+                      <Text
+                        style={{
+                          color: 'white',
+                          fontSize: 15,
+                          fontWeight: 'normal'
+                        }}>
+                        Finalizar
+                      </Text>
+                    }
                 </View>
               </TouchableOpacity>
               <View

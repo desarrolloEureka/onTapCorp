@@ -47,8 +47,7 @@ const FirstTap = ({
   const [meetingStarted, setMeetingStarted] = useState(false);
   const [documentId, setDocumentId] = useState('');
   const [saveData, setSaveData] = useState(false);
-
-  console.log("isDataSuccess", isDataSuccess)
+  const [isLoadingFirebase, setIsLoadingFirebase] = useState(false)
 
   const requestLocationPermission = async () => {
     if (Platform.OS === 'android') {
@@ -133,6 +132,7 @@ const FirstTap = ({
       return;
     }
 
+    setIsLoadingFirebase(true)
     const currentTime = new Date().toISOString();
     Geolocation.getCurrentPosition(
       async position => {
@@ -154,46 +154,54 @@ const FirstTap = ({
           }
         };
         try {
-          const documentId = await handleSendInitialInfo(dataInitial);
-          await handleSendLocation(
+          const send = await handleSendLocation(
             latitude.toString(),
             longitude.toString(),
             'startMeeting',
             currentTime
           );
-          if (documentId) {
-            setDocumentId(documentId);
-            await AsyncStorage.setItem(
-              '@meetingStartInfo',
-              JSON.stringify({
-                companyNameToVisit,
-                subject,
-                contactName,
-                email,
-                meetingStart: {
-                  latitude,
-                  longitude,
-                  timestamp: currentTime
-                },
-                documentId
-              })
-            );
-          } else {
-            console.log('No se pudo obtener el ID del documento');
+          console.log('send', send);
+          if (send) {
+            const documentId = await handleSendInitialInfo(dataInitial);
+            console.log('documentId', documentId);
+            if (documentId) {
+              setDocumentId(documentId);
+              await AsyncStorage.setItem(
+                '@meetingStartInfo',
+                JSON.stringify({
+                  companyNameToVisit,
+                  subject,
+                  contactName,
+                  email,
+                  meetingStart: {
+                    latitude,
+                    longitude,
+                    timestamp: currentTime
+                  },
+                  documentId
+                })
+              );
+              setStartTime(currentTime);
+              setMeetingStarted(true);
+              await AsyncStorage.setItem('@startTime', JSON.stringify(currentTime));
+              await AsyncStorage.setItem('@meeting', JSON.stringify(true));
+              setIsLoadingFirebase(false)
+            } else {
+              console.log('No se pudo obtener el ID del documento');
+              setIsLoadingFirebase(false)
+            }
           }
         } catch (error) {
           console.log('Error al enviar la información inicial:', error);
+          setIsLoadingFirebase(false)
         }
       },
       error => {
         console.log('Error obteniendo la ubicación:', error.message);
+        setIsLoadingFirebase(false)
       },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000}
     );
-    setStartTime(currentTime);
-    setMeetingStarted(true);
-    await AsyncStorage.setItem('@startTime', JSON.stringify(currentTime));
-    await AsyncStorage.setItem('@meeting', JSON.stringify(true));
   };
 
   const handlePressEndMeeting = async () => {
@@ -208,6 +216,7 @@ const FirstTap = ({
       return;
     }
 
+    setIsLoadingFirebase(true)
     const currentTime = new Date().toISOString();
     Geolocation.getCurrentPosition(
       async position => {
@@ -225,36 +234,46 @@ const FirstTap = ({
           }
         };
         try {
-          await handleSendUpdateInfo(documentId, dataUpdate, false);
-          await handleSendLocation(
+          const send = await handleSendLocation(
             latitude.toString(),
             longitude.toString(),
             'endMeeting',
             currentTime
           );
-          await AsyncStorage.setItem(
-            '@meetingEndInfo',
-            JSON.stringify({
-              meetingEnd: {
-                latitude,
-                longitude,
-                timestamp: currentTime
-              }
-            })
-          );
+          console.log('sendA', send);
+          if(send) {
+            const send2 = await handleSendUpdateInfo(documentId, dataUpdate, false);
+            console.log('send2A', send2);
+            if(send2) {
+              await AsyncStorage.setItem(
+                '@meetingEndInfo',
+                JSON.stringify({
+                  meetingEnd: {
+                    latitude,
+                    longitude,
+                    timestamp: currentTime
+                  }
+                })
+              );
+              setEndTime(currentTime);
+              setMeetingStarted(false);
+              await AsyncStorage.setItem('@endTime', JSON.stringify(currentTime));
+              await AsyncStorage.setItem('@meeting', JSON.stringify(false));
+              setIsLoadingFirebase(false)
+            }
+          }
         } catch (error) {
           console.log('Error al enviar la información inicial:', error);
+          setIsLoadingFirebase(false)
         }
       },
       error => {
         console.log('Error obteniendo la ubicación:', error.message);
+        setIsLoadingFirebase(false)
       },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000}
     );
-    setEndTime(currentTime);
-    setMeetingStarted(false);
-    await AsyncStorage.setItem('@endTime', JSON.stringify(currentTime));
-    await AsyncStorage.setItem('@meeting', JSON.stringify(false));
+    
   };
 
   const handlePressSave = async () => {
@@ -355,16 +374,13 @@ const FirstTap = ({
       setEndTime('');
       setMeetingStarted(false);
       setDocumentId('');
-      console.log("hola")
       const resetAsyncStorage = async () => {
         await AsyncStorage.setItem('@startTime', JSON.stringify(''));
         await AsyncStorage.setItem('@endTime', JSON.stringify(''));
         await AsyncStorage.setItem('@meeting', JSON.stringify(null));
         await AsyncStorage.setItem('@meetingStartInfo', JSON.stringify(null));
         await AsyncStorage.setItem('@meetingEndInfo', JSON.stringify(null));
-        console.log("adios")
       };
-
       resetAsyncStorage();
     }
   }, [isDataSuccess]);
@@ -626,7 +642,7 @@ const FirstTap = ({
               width: 150
             }}
             onPress={isFormValid() ? handlePressStartMeeting : undefined}
-            disabled={!isFormValid() || meetingStarted}>
+            disabled={!isFormValid() || meetingStarted || isLoadingFirebase}>
             <View
               style={{
                 flex: 1,
@@ -641,10 +657,14 @@ const FirstTap = ({
                 justifyContent: 'center',
                 alignItems: 'flex-start'
               }}>
-              <Text
-                style={{color: 'white', fontSize: 15, fontWeight: 'normal'}}>
-                Iniciar
-              </Text>
+                {!meetingStarted && isLoadingFirebase ? 
+                  <ActivityIndicator size={25} color='white'/>
+                :
+                  <Text
+                    style={{color: 'white', fontSize: 15, fontWeight: 'normal'}}>
+                    Iniciar
+                  </Text>
+                }
             </View>
           </TouchableOpacity>
           <View
@@ -679,7 +699,7 @@ const FirstTap = ({
                 ? handlePressEndMeeting
                 : undefined
             }
-            disabled={!isFormValid() || !meetingStarted}>
+            disabled={!isFormValid() || !meetingStarted || isLoadingFirebase}>
             <View
               style={{
                 flex: 1,
@@ -694,10 +714,14 @@ const FirstTap = ({
                 justifyContent: 'center',
                 alignItems: 'flex-start'
               }}>
-              <Text
-                style={{color: 'white', fontSize: 15, fontWeight: 'normal'}}>
-                Finalizar
-              </Text>
+                {meetingStarted && isLoadingFirebase ? 
+                  <ActivityIndicator size={25} color='white'/>
+                :
+                  <Text
+                    style={{color: 'white', fontSize: 15, fontWeight: 'normal'}}>
+                    Finalizar
+                  </Text>
+                }
             </View>
           </TouchableOpacity>
           <View

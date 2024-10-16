@@ -38,7 +38,7 @@ export const meetingsStyles = StyleSheet.create({
     marginHorizontal: 10,
     borderRadius: 20,
     marginTop: 30,
-    maxHeight: 500,
+    maxHeight: '70%',
     elevation: 15
   },
   item: {
@@ -86,8 +86,7 @@ export const meetingsStyles = StyleSheet.create({
     color: 'black'
   },
   searchButton: {
-    marginLeft: 10,
-    marginRight: 10,
+    marginHorizontal: 10,
     borderRadius: 20
   },
   searchConfigIcon: {
@@ -102,7 +101,7 @@ export const meetingsStyles = StyleSheet.create({
     backgroundColor: 'white',
     elevation: 10,
     borderRadius: 20,
-    height: 40,
+    height: '100%',
     width: '70%'
   },
   searchConfig: {
@@ -111,7 +110,6 @@ export const meetingsStyles = StyleSheet.create({
     backgroundColor: 'white',
     elevation: 10,
     borderRadius: 100,
-    height: 40,
     width: '10%'
   },
   inputBox: {

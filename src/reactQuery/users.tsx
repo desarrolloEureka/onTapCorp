@@ -420,7 +420,7 @@ const SendDataUpdateInfo = async (userId: string, uid: string, data: any) => {
       await updateDoc(meetDocRef, updateData);
     }
 
-    return {success: true, error: false};
+    return {success: true, error: false, uid: meetDocRef.id}
   } catch (error: any) {
     console.error('Error updating user profile:', error.message);
     return {success: false, error: error.message};

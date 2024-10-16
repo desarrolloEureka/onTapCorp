@@ -26,7 +26,8 @@ export default function SecondTap({
         style={{
           flexDirection: 'row',
           marginTop: 30,
-          justifyContent: 'space-around'
+          justifyContent: 'space-around',
+          height:"6%"
         }}>
         <View style={meetingsStyles.searchConfig}>
           <TouchableOpacity

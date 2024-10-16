@@ -16,7 +16,8 @@ import {
   View,
   PermissionsAndroid,
   Linking,
-  Switch
+  Switch,
+  ActivityIndicator
 } from 'react-native';
 import {GetUser, GetCompany, GetArea} from '../../../../../reactQuery/users';
 import {profileStyles} from '../../../styles/profileStyles';
@@ -87,13 +88,7 @@ const Profile = () => {
 
   const [isModalAlertNavigation, setIsModalAlertNavigation] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
-  const [timestamps, setTimestamps] = useState<
-    {
-      inicio_jornada?: string;
-      final_jornada?: string;
-      location?: {latitude: number; longitude: number};
-    }[]
-  >([]);
+  const [isLoadingFirebase, setIsLoadingFirebase] = useState(false)
 
   const [company, setCompany] = useState<any>(null);
   const [area, setArea] = useState<any>(null);
@@ -192,6 +187,7 @@ const Profile = () => {
   };
 
   const toggleJornada = async () => {
+    setIsLoadingFirebase(true)
     const currentTime = new Date().toISOString();
     const hasLocationPermission = await requestLocationPermission();
     if (!hasLocationPermission) {
@@ -201,27 +197,24 @@ const Profile = () => {
     Geolocation.getCurrentPosition(
       async position => {
         const {latitude, longitude} = position.coords;
-        setTimestamps(prev => [
-          ...prev,
-          {
-            [isStarted ? 'final_jornada' : 'inicio_jornada']: currentTime,
-            location: {latitude, longitude}
-          }
-        ]);
-        await handleSendLocation(
+        const send = await handleSendLocation(
           latitude.toString(),
           longitude.toString(),
           isStarted ? 'endDay' : 'startDay',
           currentTime
         );
+        if(send) {
+          await AsyncStorage.setItem('@profile', JSON.stringify(!isStarted));
+          setIsStarted(!isStarted);
+          setIsLoadingFirebase(false)
+        }
       },
       error => {
         console.log('Error obteniendo la ubicación:', error.message);
+        setIsLoadingFirebase(false)
       },
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000}
     );
-    await AsyncStorage.setItem('@profile', JSON.stringify(!isStarted));
-    setIsStarted(!isStarted);
   };
 
   const handleTabPress = (tabName: string) => {
@@ -268,12 +261,14 @@ const Profile = () => {
                       justifyContent: 'center',
                       alignItems: 'center'
                     }}>
-                    <TouchableOpacity
+                      <TouchableOpacity
                       onPress={toggleJornada}
                       style={{
                         alignItems: 'center',
                         justifyContent: 'center'
-                      }}>
+                      }}
+                      disabled={isLoadingFirebase}
+                      >
                       <View
                         style={{
                           padding: 3,
@@ -282,11 +277,15 @@ const Profile = () => {
                           alignItems: 'center',
                           justifyContent: 'center'
                         }}>
-                        <MaterialCommunityIcons
-                          name="power-standby"
-                          size={25}
-                          color={isStarted ? 'white' : '#030124'}
-                        />
+                        {isLoadingFirebase ? 
+                          <ActivityIndicator size={25} color={isStarted ? 'white': '#030124'} />
+                          : 
+                          <MaterialCommunityIcons
+                            name="power-standby"
+                            size={25}
+                            color={isStarted ? 'white' : '#030124'}
+                          />
+                        }
                       </View>
                     </TouchableOpacity>
                     <Text

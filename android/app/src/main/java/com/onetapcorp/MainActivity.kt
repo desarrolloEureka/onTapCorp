@@ -1,4 +1,4 @@
-package com.onetapcorp
+package onetapcorp.appspot.com
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

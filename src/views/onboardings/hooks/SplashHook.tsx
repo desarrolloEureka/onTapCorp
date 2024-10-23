@@ -19,10 +19,10 @@ const SplashHook = () => {
           if (user?.isActive) {
             navigation.push('Home');
           } else {
-            navigation.push('Login');
+            navigation.push('OnboardingInicioSesion');
           }
         } else {
-          navigation.push('Login');
+          navigation.push('OnboardingInicioSesion');
         }
       }
     } catch (error) {

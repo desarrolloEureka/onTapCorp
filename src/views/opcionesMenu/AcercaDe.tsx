@@ -121,7 +121,7 @@ const AcercaDe = () => {
                   textAlign: 'left',
                   color: '#030124',
                 }}>
-                2024-10-22
+                2024-10-23
               </Text>
             </View>
 

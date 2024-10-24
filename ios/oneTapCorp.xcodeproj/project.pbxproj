@@ -494,8 +494,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = LZMSK34D47;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = oneTapCorp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "One Tap Corp";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -48,6 +48,8 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>In order to add a profile photo, you need to grant photo reading permissions</string>		
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

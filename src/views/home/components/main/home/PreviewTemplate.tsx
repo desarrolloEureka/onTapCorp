@@ -56,7 +56,7 @@ const PreviewTemplate = () => {
           {data && data?.uid && (
             <WebView
               source={{
-                uri: `https://one-tap-corp-dev.vercel.app/components/views/cardView/?uid=${data.uid}&platform=${template}`
+                uri: `https://one-tap-corp.vercel.app/components/views/cardView/?uid=${data.uid}&platform=${template}`
               }}
               style={{flex: 1}}
               scalesPageToFit

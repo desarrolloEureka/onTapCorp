@@ -112,7 +112,7 @@ const CustomSwitchIndividual = ({
           onValueChange={handleSwitchChange}
           trackColor={{
             false: '#030124',
-            true: '#02AF9B'
+            true: '#396593'
           }}
           thumbColor={'#f4f3f4'}
           ios_backgroundColor="#3e3e3e"
@@ -124,7 +124,7 @@ const CustomSwitchIndividual = ({
           }}
         />
         <Text style={[{color: '#030124', fontSize: 13, fontWeight: 'normal'}]}>
-          off/on
+          Off | On
         </Text>
       </View>
     </View>

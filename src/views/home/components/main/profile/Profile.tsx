@@ -398,7 +398,7 @@ const Profile = () => {
                         }}>
                         <Text style={{color: 'white', fontWeight: 'normal'}}>
                           {' '}
-                          Datos empleado
+                          Datos Empleado
                         </Text>
                       </View>
                     </View>

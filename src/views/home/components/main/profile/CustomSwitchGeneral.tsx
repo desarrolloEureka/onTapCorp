@@ -48,7 +48,7 @@ const CustomSwitchGeneral = ({
           <Switch
             value={isActive}
             onValueChange={handleSwitchChange}
-            trackColor={{false: '#030124', true: '#02AF9B'}}
+            trackColor={{false: '#030124', true: '#396593'}}
             thumbColor={'#f4f3f4'}
             ios_backgroundColor="#3e3e3e"
             style={{
@@ -68,7 +68,7 @@ const CustomSwitchGeneral = ({
           }}>
           <Text
             style={[{color: '#030124', fontSize: 13, fontWeight: 'normal'}]}>
-            off/on
+            Off | On
           </Text>
         </View>
       </View>

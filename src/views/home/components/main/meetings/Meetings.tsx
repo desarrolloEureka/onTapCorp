@@ -26,6 +26,12 @@ import {
 } from '../../../../../reactQuery/home';
 import {GetUser} from '../../../../../reactQuery/users';
 
+const formatMeetingStatusActive = (meetingStatus: any) => {
+  if (!meetingStatus) return [];
+  const activeMeetings = meetingStatus.filter(meeting => meeting.isActive);
+  return activeMeetings.sort((a: any, b: any) => a.name.localeCompare(b.name));
+}
+
 const processMeetings = (
   meetingStatus: any,
   meetings: any,
@@ -108,10 +114,11 @@ const Meetings = () => {
     data?.idCompany,
     activeTab,
   )?.data;
+  const meetingStatusActive = formatMeetingStatusActive(meetingStatus)
   const meetings = GetAllMeetings('meetings', data?.uid, activeTab)?.data;
 
   const filteredMeetings = processMeetings(
-    meetingStatus,
+    meetingStatusActive,
     meetings,
     selectedFilter,
     searchText,
@@ -135,7 +142,7 @@ const Meetings = () => {
         <View style={meetingsStyles.tabContent}>
           {activeTab === 'tab1' ? (
             <FirstTap
-              meetingStatus={meetingStatus}
+              meetingStatus={meetingStatusActive}
               setActiveTab={setActiveTab}
             />
           ) : (

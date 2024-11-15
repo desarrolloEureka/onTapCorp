@@ -177,7 +177,9 @@ const Roads = () => {
     {titulo: 'Jefe Ruta', texto: routeDetails?.routeManager || 'N/A'},
     {
       titulo: 'Tiempo estimado',
-      texto: `${routeDetails?.estimatedHours} Horas ${routeDetails?.estimatedMinutes} Minutos`,
+      texto: routeDetails?.estimatedHours && routeDetails?.estimatedMinutes ? 
+            `${routeDetails?.estimatedHours} Horas ${routeDetails?.estimatedMinutes} Minutos` 
+            : 'N/A',
     },
   ];
 
@@ -352,6 +354,7 @@ const Roads = () => {
         </View>
 
         <ScrollView contentContainerStyle={{flexGrow: 1, paddingBottom: 430}}>
+        {routeDetails?.routeManager && (
           <View
             style={{
               height: '50%',
@@ -359,7 +362,6 @@ const Roads = () => {
               justifyContent: 'flex-end',
               alignItems: 'center',
             }}>
-            {routeDetails && (
               <MapView
                 initialRegion={{
                   latitude: routeDetails?.geolocations[0]?.coords?.lat,
@@ -394,8 +396,9 @@ const Roads = () => {
                   }}
                 />
               </MapView>
-            )}
           </View>
+        )}
+
           {/* <View
           style={{
             height: '25%',
@@ -615,12 +618,12 @@ const Roads = () => {
                   flexDirection: 'row',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  backgroundColor: !routeStarted ? '#030124' : '#888888',
+                  backgroundColor: !routeStarted && routeDetails?.routeManager? '#030124' : '#888888',
                   height: 40,
                   width: 150,
                 }}
                 onPress={!routeStarted ? handlePressStartRoute : undefined}
-                disabled={routeStarted || isLoadingFirebase}>
+                disabled={routeStarted || isLoadingFirebase || !routeDetails?.routeManager}>
                 <View
                   style={{
                     flex: 1,

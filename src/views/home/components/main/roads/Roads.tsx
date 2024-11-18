@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
+import React, { useState, useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import {
   Image,
   ImageBackground,
@@ -15,34 +15,57 @@ import {
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import Icon2 from 'react-native-vector-icons/Entypo';
-import RoadsHook from './hook/RoadsHook';
-import {roadsStyles} from './styles/roadsStyles';
 import MenuSuperior from '../../../../menuSuperior/MenuSuperior';
 import HomeHook from '../../../hooks/HomeHook';
 import MeetingsHook from '../meetings/hook/MeetingsHook';
 
 import ModalAlertDown from '../profile/ModalAlertDown';
-import MapView, {Marker, Polyline} from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
-import {GetAllRoutes} from '../../../../../reactQuery/home';
-import {GetUser} from '../../../../../reactQuery/users';
+import { GetAllRoutes } from '../../../../../reactQuery/home';
+import { GetUser } from '../../../../../reactQuery/users';
 import Geolocation from '@react-native-community/geolocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const daysMap: { [key: string]: string } = {
+  sundayRoute: 'Domingo',
+  mondayRoute: 'Lunes',
+  tuesdayRoute: 'Martes',
+  wednesdayRoute: 'Miércoles',
+  thursdayRoute: 'Jueves',
+  fridayRoute: 'Viernes',
+  saturdayRoute: 'Sábado',
+};
+
+const days = [
+  'Domingo',
+  'Lunes',
+  'Martes',
+  'Miércoles',
+  'Jueves',
+  'Viernes',
+  'Sábado',
+];
+
+const monthNames = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre',
+];
 
 const processRoutes = (data: any, routes: any) => {
   if (!routes || !data) return [];
   const filteredRoutes: any[] = [];
-  const daysMap: {[key: string]: string} = {
-    sundayRoute: 'Domingo',
-    mondayRoute: 'Lunes',
-    tuesdayRoute: 'Martes',
-    wednesdayRoute: 'Miércoles',
-    thursdayRoute: 'Jueves',
-    fridayRoute: 'Viernes',
-    saturdayRoute: 'Sábado',
-  };
   const days = Object.keys(daysMap);
 
   days.forEach(day => {
@@ -75,7 +98,7 @@ const Roads = () => {
     }
   };
 
-  const {handleSendLocation} = MeetingsHook();
+  const { handleSendLocation } = MeetingsHook();
   const {
     setAlertLogOut,
     setAlertDelte,
@@ -86,7 +109,7 @@ const Roads = () => {
     alertLogOut,
   } = HomeHook();
 
-  const {data} = GetUser();
+  const { data } = GetUser();
   const routes = GetAllRoutes([
     data?.mondayRoute,
     data?.tuesdayRoute,
@@ -132,35 +155,14 @@ const Roads = () => {
 
   const getCurrentDateFormatted = (dayName: string) => {
     const date = new Date();
-    const days = [
-      'Domingo',
-      'Lunes',
-      'Martes',
-      'Miércoles',
-      'Jueves',
-      'Viernes',
-      'Sábado',
-    ];
-    const dayIndex = days.indexOf(dayName);
     const todayIndex = new Date().getDay();
-    const difference = dayIndex - todayIndex;
-    date.setDate(date.getDate() + difference);
+    const dayIndex = days.indexOf(dayName);
+
+    // Calcular días para avanzar
+    const daysToAdd = dayIndex >= todayIndex ? dayIndex - todayIndex : 7 - (todayIndex - dayIndex);
+    date.setDate(date.getDate() + daysToAdd);
 
     const dayNumber = date.getDate();
-    const monthNames = [
-      'Enero',
-      'Febrero',
-      'Marzo',
-      'Abril',
-      'Mayo',
-      'Junio',
-      'Julio',
-      'Agosto',
-      'Septiembre',
-      'Octubre',
-      'Noviembre',
-      'Diciembre',
-    ];
     const monthName = monthNames[date.getMonth()];
 
     return `Ruta ${dayName} ${dayNumber} de ${monthName}`;
@@ -172,20 +174,20 @@ const Roads = () => {
   };
 
   const data2 = [
-    {titulo: 'Nombre de Ruta', texto: routeDetails?.routeName || 'N/A'},
-    {titulo: 'Zona', texto: routeDetails?.zoneName || 'N/A'},
-    {titulo: 'Jefe Ruta', texto: routeDetails?.routeManager || 'N/A'},
+    { titulo: 'Nombre de Ruta', texto: routeDetails?.routeName || 'N/A' },
+    { titulo: 'Zona', texto: routeDetails?.zoneName || 'N/A' },
+    { titulo: 'Jefe Ruta', texto: routeDetails?.routeManager || 'N/A' },
     {
       titulo: 'Tiempo estimado',
-      texto: routeDetails?.estimatedHours && routeDetails?.estimatedMinutes ? 
-            `${routeDetails?.estimatedHours} Horas ${routeDetails?.estimatedMinutes} Minutos` 
-            : 'N/A',
+      texto: routeDetails?.estimatedHours && routeDetails?.estimatedMinutes ?
+        `${routeDetails?.estimatedHours} Horas ${routeDetails?.estimatedMinutes} Minutos`
+        : 'N/A',
     },
   ];
 
   if (routeDetails?.addresses) {
     routeDetails.addresses.forEach((direccion: any, index: any) => {
-      data2.push({titulo: `Dirección ${index + 1}`, texto: direccion});
+      data2.push({ titulo: `Dirección ${index + 1}`, texto: direccion });
     });
   }
 
@@ -220,7 +222,7 @@ const Roads = () => {
     const currentTime = new Date().toISOString();
     Geolocation.getCurrentPosition(
       async position => {
-        const {latitude, longitude} = position.coords;
+        const { latitude, longitude } = position.coords;
         const send = await handleSendLocation(
           latitude.toString(),
           longitude.toString(),
@@ -242,7 +244,7 @@ const Roads = () => {
         console.log('Error obteniendo la ubicación:', error.message);
         setIsLoadingFirebase(false);
       },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
     );
   };
 
@@ -260,7 +262,7 @@ const Roads = () => {
     const currentTime = new Date().toISOString();
     Geolocation.getCurrentPosition(
       async position => {
-        const {latitude, longitude} = position.coords;
+        const { latitude, longitude } = position.coords;
         const send = await handleSendLocation(
           latitude.toString(),
           longitude.toString(),
@@ -279,7 +281,7 @@ const Roads = () => {
         console.log('Error obteniendo la ubicación:', error.message);
         setIsLoadingFirebase(false);
       },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
     );
   };
 
@@ -314,9 +316,8 @@ const Roads = () => {
       );
       const minutes = Math.ceil((duration % (1000 * 60 * 60)) / (1000 * 60));
 
-      return `${hours} hora${hours !== 1 ? 's' : ''} y ${minutes} minuto${
-        minutes !== 1 ? 's' : ''
-      }`;
+      return `${hours} hora${hours !== 1 ? 's' : ''} y ${minutes} minuto${minutes !== 1 ? 's' : ''
+        }`;
     }
     return '0 horas y 0 minutos';
   };
@@ -341,27 +342,27 @@ const Roads = () => {
     }));
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#E9E9E9'}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#E9E9E9' }}>
       <ImageBackground
         resizeMode="cover"
-        style={{height: '100%', width: '100%'}}
+        style={{ height: '100%', width: '100%' }}
         source={require('../../../../../images/background.png')}>
-        <View style={{height: '7%', width: '90%', paddingLeft: 10}}>
+        <View style={{ height: '7%', width: '90%', paddingLeft: 10 }}>
           <MenuSuperior
             setAlertLogOut={setAlertLogOut}
             setAlertDelte={setAlertDelte}
           />
         </View>
 
-        <ScrollView contentContainerStyle={{flexGrow: 1, paddingBottom: 430}}>
-        {routeDetails?.routeManager && (
-          <View
-            style={{
-              height: '50%',
-              width: '100%',
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-            }}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 430 }}>
+          {routeDetails?.routeManager && (
+            <View
+              style={{
+                height: '50%',
+                width: '100%',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+              }}>
               <MapView
                 initialRegion={{
                   latitude: routeDetails?.geolocations[0]?.coords?.lat,
@@ -396,8 +397,8 @@ const Roads = () => {
                   }}
                 />
               </MapView>
-          </View>
-        )}
+            </View>
+          )}
 
           {/* <View
           style={{
@@ -495,10 +496,12 @@ const Roads = () => {
                     marginTop: 3,
                   }}>
                   {filteredRoutes &&
-                    filteredRoutes.map((option: any) => (
+                    filteredRoutes.map((option, index) => (
                       <TouchableOpacity
                         onPress={() => handleSelect(option)}
-                        style={{padding: 10}}>
+                        style={{ padding: 10 }}
+                        key={index}
+                      >
                         <Text
                           style={{
                             color: 'black',
@@ -516,7 +519,7 @@ const Roads = () => {
           </View>
           <View
             style={{
-              height: '5%',
+              height: '10%',
               width: '100%',
               justifyContent: 'center',
               alignItems: 'flex-start',
@@ -524,9 +527,9 @@ const Roads = () => {
               paddingLeft: 20,
               marginBottom: 20,
             }}>
-            <Text style={{fontSize: 20, fontWeight: '500', color: '#396593'}}>
+            <Text style={{ fontSize: 20, fontWeight: '500', color: '#396593' }}>
               {selectedOption
-                ? getCurrentDateFormatted(selectedOption.dayName)
+                ? getCurrentDateFormatted(selectedOption?.dayName)
                 : getCurrentDateFormatted('Hoy')}
             </Text>
           </View>
@@ -541,19 +544,20 @@ const Roads = () => {
             }}>
             <View
               style={{
-                height: 320,
+                height: routeDetails?.routeManager ? 320 : 240,
                 width: '90%',
                 backgroundColor: 'white',
                 borderRadius: 15,
                 elevation: 16,
               }}>
               <ScrollView
-                contentContainerStyle={{paddingVertical: 10}}
-                style={{flex: 1}}
+                contentContainerStyle={{ paddingVertical: 10 }}
+                style={{ flex: 1 }}
                 horizontal={false}
                 nestedScrollEnabled={true}>
                 {data2.map((item, index) => (
                   <View
+                    key={index}
                     style={{
                       flex: 1,
                       flexDirection: 'row',
@@ -602,139 +606,142 @@ const Roads = () => {
             </View>
           </View>
 
-          <View
-            style={{
-              justifyContent: 'flex-start',
-              alignItems: 'flex-start',
-              margin: 20,
-              width: '90%',
-            }}>
+          {selectedOption?.dayName === Object.values(daysMap)[currentDayIndex] &&
             <View
               style={{
-                flexDirection: 'row',
-              }}>
-              <TouchableOpacity
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: !routeStarted && routeDetails?.routeManager? '#030124' : '#888888',
-                  height: 40,
-                  width: 150,
-                }}
-                onPress={!routeStarted ? handlePressStartRoute : undefined}
-                disabled={routeStarted || isLoadingFirebase || !routeDetails?.routeManager}>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Ionicons name="play" size={28} color="white" />
-                </View>
-                <View
-                  style={{
-                    width: 100,
-                    justifyContent: 'center',
-                    alignItems: 'flex-start',
-                  }}>
-                  {!routeStarted && isLoadingFirebase ? (
-                    <ActivityIndicator size={25} color="white" />
-                  ) : (
-                    <Text
-                      style={{
-                        color: 'white',
-                        fontSize: 15,
-                        fontWeight: 'normal',
-                      }}>
-                      Iniciar
-                    </Text>
-                  )}
-                </View>
-              </TouchableOpacity>
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'flex-start',
-                  paddingHorizontal: 15,
-                }}>
-                <Text
-                  style={{color: 'black', fontSize: 15, fontWeight: 'normal'}}>
-                  {displayStartTime()}
-                </Text>
-              </View>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: 20,
-              }}>
-              <TouchableOpacity
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: routeStarted ? '#030124' : '#888888',
-                  height: 40,
-                  width: 150,
-                }}
-                onPress={routeStarted ? handlePressEndRoute : undefined}
-                disabled={!routeStarted || isLoadingFirebase}>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Ionicons name="stop" size={28} color="white" />
-                </View>
-                <View
-                  style={{
-                    width: 100,
-                    justifyContent: 'center',
-                    alignItems: 'flex-start',
-                  }}>
-                  {routeStarted && isLoadingFirebase ? (
-                    <ActivityIndicator size={25} color="white" />
-                  ) : (
-                    <Text
-                      style={{
-                        color: 'white',
-                        fontSize: 15,
-                        fontWeight: 'normal',
-                      }}>
-                      Finalizar
-                    </Text>
-                  )}
-                </View>
-              </TouchableOpacity>
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'flex-start',
-                  paddingHorizontal: 15,
-                }}>
-                <Text
-                  style={{color: 'black', fontSize: 15, fontWeight: 'normal'}}>
-                  {displayEndTime()}
-                </Text>
-              </View>
-            </View>
-            <View
-              style={{
-                justifyContent: 'center',
+                justifyContent: 'flex-start',
                 alignItems: 'flex-start',
-                height: 80,
-                width: '100%',
+                margin: 20,
+                width: '90%',
               }}>
-              <Text
-                style={{color: '#030124', fontSize: 14, fontWeight: 'normal'}}>
-                Tiempo tomado: {calculateDuration()}
-              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                }}>
+                <TouchableOpacity
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: !routeStarted && routeDetails?.routeManager ? '#030124' : '#888888',
+                    height: 40,
+                    width: 150,
+                  }}
+                  onPress={!routeStarted ? handlePressStartRoute : undefined}
+                  disabled={routeStarted || isLoadingFirebase || !routeDetails?.routeManager}>
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Ionicons name="play" size={28} color="white" />
+                  </View>
+                  <View
+                    style={{
+                      width: 100,
+                      justifyContent: 'center',
+                      alignItems: 'flex-start',
+                    }}>
+                    {!routeStarted && isLoadingFirebase ? (
+                      <ActivityIndicator size={25} color="white" />
+                    ) : (
+                      <Text
+                        style={{
+                          color: 'white',
+                          fontSize: 15,
+                          fontWeight: 'normal',
+                        }}>
+                        Iniciar
+                      </Text>
+                    )}
+                  </View>
+                </TouchableOpacity>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'flex-start',
+                    paddingHorizontal: 15,
+                  }}>
+                  <Text
+                    style={{ color: 'black', fontSize: 15, fontWeight: 'normal' }}>
+                    {displayStartTime()}
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  marginTop: 20,
+                }}>
+                <TouchableOpacity
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: routeStarted ? '#030124' : '#888888',
+                    height: 40,
+                    width: 150,
+                  }}
+                  onPress={routeStarted ? handlePressEndRoute : undefined}
+                  disabled={!routeStarted || isLoadingFirebase}>
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Ionicons name="stop" size={28} color="white" />
+                  </View>
+                  <View
+                    style={{
+                      width: 100,
+                      justifyContent: 'center',
+                      alignItems: 'flex-start',
+                    }}>
+                    {routeStarted && isLoadingFirebase ? (
+                      <ActivityIndicator size={25} color="white" />
+                    ) : (
+                      <Text
+                        style={{
+                          color: 'white',
+                          fontSize: 15,
+                          fontWeight: 'normal',
+                        }}>
+                        Finalizar
+                      </Text>
+                    )}
+                  </View>
+                </TouchableOpacity>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'flex-start',
+                    paddingHorizontal: 15,
+                  }}>
+                  <Text
+                    style={{ color: 'black', fontSize: 15, fontWeight: 'normal' }}>
+                    {displayEndTime()}
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'flex-start',
+                  height: 80,
+                  width: '100%',
+                }}>
+                <Text
+                  style={{ color: '#030124', fontSize: 14, fontWeight: 'normal' }}>
+                  Tiempo tomado: {calculateDuration()}
+                </Text>
+              </View>
             </View>
-          </View>
+          }
+
         </ScrollView>
 
         <View
@@ -759,9 +766,9 @@ const Roads = () => {
             {/* <Ionicons name="home-outline" size={25} color="#606060" /> */}
             <Image
               source={require('../../../../../images/icon2.png')}
-              style={{width: 28, height: 28, tintColor: '#606060'}}
+              style={{ width: 28, height: 28, tintColor: '#606060' }}
             />
-            <Text style={{color: '#606060', fontWeight: 'normal'}}>Home</Text>
+            <Text style={{ color: '#606060', fontWeight: 'normal' }}>Home</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -772,7 +779,7 @@ const Roads = () => {
             }}
             onPress={() => handleTabPress('Profile')}>
             <Ionicons name="person-outline" size={25} color="#606060" />
-            <Text style={{color: '#606060', fontWeight: 'normal'}}>
+            <Text style={{ color: '#606060', fontWeight: 'normal' }}>
               Empleado
             </Text>
           </TouchableOpacity>
@@ -785,7 +792,7 @@ const Roads = () => {
             }}
             onPress={() => handleTabPress('Meetings')}>
             <Ionicons name="calendar-outline" size={25} color="#606060" />
-            <Text style={{color: '#606060', fontWeight: 'normal'}}>
+            <Text style={{ color: '#606060', fontWeight: 'normal' }}>
               Reuniones
             </Text>
           </TouchableOpacity>
@@ -800,7 +807,7 @@ const Roads = () => {
             }}
             onPress={() => handleTabPress('Roads')}>
             <Ionicons name="car-outline" size={30} color="#396593" />
-            <Text style={{color: '#396593', fontWeight: 'normal'}}>Rutas</Text>
+            <Text style={{ color: '#396593', fontWeight: 'normal' }}>Rutas</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -811,7 +818,7 @@ const Roads = () => {
             }}
             onPress={() => handleTabPress('ShareQR')}>
             <Feather name="share" size={25} color="#606060" />
-            <Text style={{color: '#606060', fontWeight: 'normal'}}>
+            <Text style={{ color: '#606060', fontWeight: 'normal' }}>
               Compartir
             </Text>
           </TouchableOpacity>

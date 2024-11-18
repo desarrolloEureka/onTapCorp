@@ -812,10 +812,10 @@ const FirstTap = ({
                 color: 'black'
               }}
               value={observations}
-              onChangeText={(text: any) => {
+              onChangeText={(text: string) => {
                 setObservations(text);
               }}
-              editable={endTime !== '' && startTime !== ''}  
+              editable={startTime !== ''}  
             />
           </View>
         </View>

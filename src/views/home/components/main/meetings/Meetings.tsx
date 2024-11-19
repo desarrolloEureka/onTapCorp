@@ -118,7 +118,7 @@ const Meetings = () => {
   const meetings = GetAllMeetings('meetings', data?.uid, activeTab)?.data;
 
   const filteredMeetings = processMeetings(
-    meetingStatusActive,
+    meetingStatus,
     meetings,
     selectedFilter,
     searchText,

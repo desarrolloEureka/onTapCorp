@@ -36,9 +36,9 @@ const CustomSwitch = ({
       <Switch
         value={switchCard}
         onValueChange={handleSwitchChange}
-        trackColor={{ false: '#030124', true: '#030124' }}
+        trackColor={{ false: '#030124', true: '#396593' }}
         thumbColor={'#f4f3f4'}
-        ios_backgroundColor="#02AF9B"
+        ios_backgroundColor="#3e3e3e"
         style={{
           transform:
             platform == 'android'

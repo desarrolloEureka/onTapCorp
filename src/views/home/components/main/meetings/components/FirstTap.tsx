@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
   Text,
@@ -13,11 +13,12 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {meetingsStyles} from '../styles/meetingsStyles';
+import { meetingsStyles } from '../styles/meetingsStyles';
 import Dropdown from './Dropdown';
 import Geolocation from '@react-native-community/geolocation';
 import MeetingsHook from '../hook/MeetingsHook';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const FirstTap = ({
   meetingStatus,
@@ -106,7 +107,7 @@ const FirstTap = ({
           setDocumentId(documentId);
         }
         if (meetingEndInfo !== null) {
-          const {meetingEnd} = JSON.parse(meetingEndInfo);
+          const { meetingEnd } = JSON.parse(meetingEndInfo);
           setMeetingEnd(meetingEnd);
         }
       } catch (error) {
@@ -136,7 +137,7 @@ const FirstTap = ({
     const currentTime = new Date().toISOString();
     Geolocation.getCurrentPosition(
       async position => {
-        const {latitude, longitude} = position.coords;
+        const { latitude, longitude } = position.coords;
         setMeetingStart({
           latitude,
           longitude,
@@ -200,7 +201,7 @@ const FirstTap = ({
         console.log('Error obteniendo la ubicación:', error.message);
         setIsLoadingFirebase(false)
       },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000}
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
     );
   };
 
@@ -220,7 +221,7 @@ const FirstTap = ({
     const currentTime = new Date().toISOString();
     Geolocation.getCurrentPosition(
       async position => {
-        const {latitude, longitude} = position.coords;
+        const { latitude, longitude } = position.coords;
         setMeetingEnd({
           latitude,
           longitude,
@@ -241,10 +242,10 @@ const FirstTap = ({
             currentTime
           );
           console.log('sendA', send);
-          if(send) {
+          if (send) {
             const send2 = await handleSendUpdateInfo(documentId, dataUpdate, false);
             console.log('send2A', send2);
-            if(send2) {
+            if (send2) {
               await AsyncStorage.setItem(
                 '@meetingEndInfo',
                 JSON.stringify({
@@ -271,9 +272,9 @@ const FirstTap = ({
         console.log('Error obteniendo la ubicación:', error.message);
         setIsLoadingFirebase(false)
       },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000}
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
     );
-    
+
   };
 
   const handlePressSave = async () => {
@@ -309,9 +310,8 @@ const FirstTap = ({
       );
       const minutes = Math.ceil((duration % (1000 * 60 * 60)) / (1000 * 60));
 
-      return `${hours} hora${hours !== 1 ? 's' : ''} y ${minutes} minuto${
-        minutes !== 1 ? 's' : ''
-      }`;
+      return `${hours} hora${hours !== 1 ? 's' : ''} y ${minutes} minuto${minutes !== 1 ? 's' : ''
+        }`;
     }
     return '0 horas y 0 minutos';
   };
@@ -386,591 +386,597 @@ const FirstTap = ({
   }, [isDataSuccess]);
 
   return (
-    <ScrollView
-      contentContainerStyle={{
-        flexGrow: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        marginRight: 5,
-        marginLeft: 5
-      }}>
-      <View
-        style={{
-          height: 355,
-          justifyContent: 'center',
+    <KeyboardAwareScrollView
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      scrollEnabled={true}
+      extraScrollHeight={200}
+    >
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: 'flex-start',
           alignItems: 'center',
-          flexDirection: 'row'
+          marginRight: 5,
+          marginLeft: 5
         }}>
+        <View
+          style={{
+            height: 355,
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'row'
+          }}>
+          <View
+            style={{
+              justifyContent: 'flex-start',
+              alignItems: 'flex-start',
+              height: '100%',
+              width: '90%'
+            }}>
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'flex-start',
+                marginTop: 15,
+                height: 20,
+                width: '100%'
+              }}>
+              <View
+                style={{
+                  alignItems: 'center'
+                }}>
+                <Text style={meetingsStyles.label}>Fecha</Text>
+              </View>
+              <Text style={{ color: 'black', fontSize: 13, fontWeight: 'normal' }}>
+                {new Date().toISOString().slice(0, 10)}
+              </Text>
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'flex-end',
+                height: 60,
+                width: '100%',
+                borderBottomWidth: 1,
+                borderBottomColor: '#9b9db3',
+                marginTop: 15
+              }}>
+              <View>
+                <View
+                  style={{
+                    alignItems: 'center'
+                  }}>
+                  <Text style={meetingsStyles.label}>Cliente</Text>
+                </View>
+                <View
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginVertical: 5
+                  }}>
+                  <Ionicons name="person-outline" size={28} color="#396593" />
+                </View>
+              </View>
+
+              <View
+                style={{
+                  width: '85%',
+                  alignItems: 'center'
+                }}>
+                <TextInput
+                  selectionColor={'#396593'}
+                  cursorColor={'#396593'}
+                  style={meetingsStyles.inputBox}
+                  placeholderTextColor="#000000"
+                  underlineColorAndroid="transparent"
+                  value={companyNameToVisit}
+                  onChangeText={(text: any) => {
+                    setCompanyNameToVisit(text);
+                  }}
+                />
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'flex-end',
+                height: 60,
+                width: '100%',
+                borderBottomWidth: 1,
+                borderBottomColor: '#9b9db3',
+                marginTop: 15
+              }}>
+              <View>
+                <View
+                  style={{
+                    paddingTop: 15,
+                    alignItems: 'center'
+                  }}>
+                  <Text style={meetingsStyles.label}>Asunto</Text>
+                </View>
+                <View
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginVertical: 5
+                  }}>
+                  <AntDesign name="file1" size={25} color="#396593" />
+                </View>
+              </View>
+
+              <View
+                style={{
+                  width: '85%',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                <TextInput
+                  selectionColor={'#396593'}
+                  style={meetingsStyles.inputBox}
+                  placeholderTextColor="#000000"
+                  underlineColorAndroid="transparent"
+                  value={subject}
+                  onChangeText={(text: any) => {
+                    setSubject(text);
+                  }}
+                />
+              </View>
+            </View>
+
+            <View
+              style={{
+                alignItems: 'flex-start',
+                height: 60,
+                width: '100%',
+                marginTop: 0
+              }}>
+              <View
+                style={{
+                  paddingTop: 15,
+                  alignItems: 'center'
+                }}>
+                <Text style={meetingsStyles.label}>
+                  Nombre contacto de la reunión
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  width: '100%',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  flexDirection: 'row',
+                  borderBottomWidth: 1,
+                  borderBottomColor: '#9b9db3'
+                }}>
+                <View
+                  style={{
+                    alignItems: 'flex-start',
+                    justifyContent: 'center',
+                    marginVertical: 5,
+                    paddingLeft: 10,
+                    marginRight: 15,
+                    width: '10%',
+                    height: '100%'
+                  }}>
+                  <AntDesign name="file1" size={25} color="#396593" />
+                </View>
+                <TextInput
+                  selectionColor={'#396593'}
+                  style={[meetingsStyles.inputBox, { width: '90%' }]}
+                  placeholderTextColor="#000000"
+                  underlineColorAndroid="transparent"
+                  value={contactName}
+                  onChangeText={(text: any) => {
+                    setContactName(text);
+                  }}
+                />
+              </View>
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'flex-end',
+                height: 60,
+                width: '100%',
+                borderBottomWidth: 1,
+                borderBottomColor: '#9b9db3',
+                marginTop: 36
+              }}>
+              <View>
+                <View
+                  style={{
+                    paddingTop: 15,
+                    alignItems: 'center'
+                  }}>
+                  <Text style={meetingsStyles.label}>Correo</Text>
+                </View>
+                <View
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginVertical: 5
+                  }}>
+                  <Fontisto name="email" size={28} color="#396593" />
+                </View>
+              </View>
+
+              <View
+                style={{
+                  width: '85%',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                <TextInput
+                  keyboardType="email-address"
+                  selectionColor={'#396593'}
+                  style={meetingsStyles.inputBox}
+                  placeholderTextColor="#000000"
+                  underlineColorAndroid="transparent"
+                  value={email}
+                  onChangeText={(text: any) => {
+                    setEmail(text);
+                  }}
+                />
+              </View>
+            </View>
+          </View>
+        </View>
         <View
           style={{
             justifyContent: 'flex-start',
             alignItems: 'flex-start',
-            height: '100%',
+            marginTop: 15,
+            height: 650,
             width: '90%'
           }}>
           <View
             style={{
-              justifyContent: 'center',
-              alignItems: 'flex-start',
-              marginTop: 15,
-              height: 20,
-              width: '100%'
+              flexDirection: 'row'
             }}>
-            <View
+            <TouchableOpacity
               style={{
-                alignItems: 'center'
-              }}>
-              <Text style={meetingsStyles.label}>Fecha</Text>
-            </View>
-            <Text style={{color: 'black', fontSize: 13, fontWeight: 'normal'}}>
-              {new Date().toISOString().slice(0, 10)}
-            </Text>
-          </View>
-
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'flex-end',
-              height: 60,
-              width: '100%',
-              borderBottomWidth: 1,
-              borderBottomColor: '#9b9db3',
-              marginTop: 15
-            }}>
-            <View>
-              <View
-                style={{
-                  alignItems: 'center'
-                }}>
-                <Text style={meetingsStyles.label}>Cliente</Text>
-              </View>
-              <View
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginVertical: 5
-                }}>
-                <Ionicons name="person-outline" size={28} color="#396593" />
-              </View>
-            </View>
-
-            <View
-              style={{
-                width: '85%',
-                alignItems: 'center'
-              }}>
-              <TextInput
-                selectionColor={'#396593'}
-                cursorColor={'#396593'}
-                style={meetingsStyles.inputBox}
-                placeholderTextColor="#000000"
-                underlineColorAndroid="transparent"
-                value={companyNameToVisit}
-                onChangeText={(text: any) => {
-                  setCompanyNameToVisit(text);
-                }}
-              />
-            </View>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'flex-end',
-              height: 60,
-              width: '100%',
-              borderBottomWidth: 1,
-              borderBottomColor: '#9b9db3',
-              marginTop: 15
-            }}>
-            <View>
-              <View
-                style={{
-                  paddingTop: 15,
-                  alignItems: 'center'
-                }}>
-                <Text style={meetingsStyles.label}>Asunto</Text>
-              </View>
-              <View
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginVertical: 5
-                }}>
-                <AntDesign name="file1" size={25} color="#396593" />
-              </View>
-            </View>
-
-            <View
-              style={{
-                width: '85%',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-              <TextInput
-                selectionColor={'#396593'}
-                style={meetingsStyles.inputBox}
-                placeholderTextColor="#000000"
-                underlineColorAndroid="transparent"
-                value={subject}
-                onChangeText={(text: any) => {
-                  setSubject(text);
-                }}
-              />
-            </View>
-          </View>
-
-          <View
-            style={{
-              alignItems: 'flex-start',
-              height: 60,
-              width: '100%',
-              marginTop: 0
-            }}>
-            <View
-              style={{
-                paddingTop: 15,
-                alignItems: 'center'
-              }}>
-              <Text style={meetingsStyles.label}>
-                Nombre contacto de la reunión
-              </Text>
-            </View>
-
-            <View
-              style={{
-                width: '100%',
-                alignItems: 'center',
-                justifyContent: 'flex-start',
                 flexDirection: 'row',
-                borderBottomWidth: 1,
-                borderBottomColor: '#9b9db3'
-              }}>
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor:
+                  isFormValid() && !meetingStarted ? '#030124' : '#888888',
+                height: 40,
+                width: 150
+              }}
+              onPress={isFormValid() ? handlePressStartMeeting : undefined}
+              disabled={!isFormValid() || meetingStarted || isLoadingFirebase}>
               <View
                 style={{
-                  alignItems: 'flex-start',
+                  flex: 1,
                   justifyContent: 'center',
-                  marginVertical: 5,
-                  paddingLeft: 10,
-                  marginRight: 15,
-                  width: '10%',
-                  height: '100%'
-                }}>
-                <AntDesign name="file1" size={25} color="#396593" />
-              </View>
-              <TextInput
-                selectionColor={'#396593'}
-                style={[meetingsStyles.inputBox, {width: '90%'}]}
-                placeholderTextColor="#000000"
-                underlineColorAndroid="transparent"
-                value={contactName}
-                onChangeText={(text: any) => {
-                  setContactName(text);
-                }}
-              />
-            </View>
-          </View>
-
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'flex-end',
-              height: 60,
-              width: '100%',
-              borderBottomWidth: 1,
-              borderBottomColor: '#9b9db3',
-              marginTop: 36
-            }}>
-            <View>
-              <View
-                style={{
-                  paddingTop: 15,
                   alignItems: 'center'
                 }}>
-                <Text style={meetingsStyles.label}>Correo</Text>
+                <Ionicons name="play" size={28} color="white" />
               </View>
               <View
                 style={{
-                  alignItems: 'center',
+                  width: 100,
                   justifyContent: 'center',
-                  marginVertical: 5
+                  alignItems: 'flex-start'
                 }}>
-                <Fontisto name="email" size={28} color="#396593" />
-              </View>
-            </View>
-
-            <View
-              style={{
-                width: '85%',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-              <TextInput
-                keyboardType="email-address"
-                selectionColor={'#396593'}
-                style={meetingsStyles.inputBox}
-                placeholderTextColor="#000000"
-                underlineColorAndroid="transparent"
-                value={email}
-                onChangeText={(text: any) => {
-                  setEmail(text);
-                }}
-              />
-            </View>
-          </View>
-        </View>
-      </View>
-      <View
-        style={{
-          justifyContent: 'flex-start',
-          alignItems: 'flex-start',
-          marginTop: 15,
-          height: 650,
-          width: '90%'
-        }}>
-        <View
-          style={{
-            flexDirection: 'row'
-          }}>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor:
-                isFormValid() && !meetingStarted ? '#030124' : '#888888',
-              height: 40,
-              width: 150
-            }}
-            onPress={isFormValid() ? handlePressStartMeeting : undefined}
-            disabled={!isFormValid() || meetingStarted || isLoadingFirebase}>
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}>
-              <Ionicons name="play" size={28} color="white" />
-            </View>
-            <View
-              style={{
-                width: 100,
-                justifyContent: 'center',
-                alignItems: 'flex-start'
-              }}>
-                {!meetingStarted && isLoadingFirebase ? 
-                  <ActivityIndicator size={25} color='white'/>
-                :
+                {!meetingStarted && isLoadingFirebase ?
+                  <ActivityIndicator size={25} color='white' />
+                  :
                   <Text
-                    style={{color: 'white', fontSize: 15, fontWeight: 'normal'}}>
+                    style={{ color: 'white', fontSize: 15, fontWeight: 'normal' }}>
                     Iniciar
                   </Text>
                 }
-            </View>
-          </TouchableOpacity>
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'flex-start',
-              paddingHorizontal: 15
-            }}>
-            <Text style={{color: 'black', fontSize: 15, fontWeight: 'normal'}}>
-              {displayStartTime()}
-            </Text>
-          </View>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            marginTop: 20
-          }}>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor:
-                isFormValid() && meetingStarted ? '#030124' : '#888888',
-              height: 40,
-              width: 150
-            }}
-            onPress={
-              isFormValid() && meetingStarted
-                ? handlePressEndMeeting
-                : undefined
-            }
-            disabled={!isFormValid() || !meetingStarted || isLoadingFirebase}>
+              </View>
+            </TouchableOpacity>
             <View
               style={{
                 flex: 1,
                 justifyContent: 'center',
-                alignItems: 'center'
+                alignItems: 'flex-start',
+                paddingHorizontal: 15
               }}>
-              <Ionicons name="stop" size={28} color="white" />
+              <Text style={{ color: 'black', fontSize: 15, fontWeight: 'normal' }}>
+                {displayStartTime()}
+              </Text>
             </View>
-            <View
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              marginTop: 20
+            }}>
+            <TouchableOpacity
               style={{
-                width: 100,
+                flexDirection: 'row',
                 justifyContent: 'center',
-                alignItems: 'flex-start'
-              }}>
-                {meetingStarted && isLoadingFirebase ? 
-                  <ActivityIndicator size={25} color='white'/>
-                :
+                alignItems: 'center',
+                backgroundColor:
+                  isFormValid() && meetingStarted ? '#030124' : '#888888',
+                height: 40,
+                width: 150
+              }}
+              onPress={
+                isFormValid() && meetingStarted
+                  ? handlePressEndMeeting
+                  : undefined
+              }
+              disabled={!isFormValid() || !meetingStarted || isLoadingFirebase}>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}>
+                <Ionicons name="stop" size={28} color="white" />
+              </View>
+              <View
+                style={{
+                  width: 100,
+                  justifyContent: 'center',
+                  alignItems: 'flex-start'
+                }}>
+                {meetingStarted && isLoadingFirebase ?
+                  <ActivityIndicator size={25} color='white' />
+                  :
                   <Text
-                    style={{color: 'white', fontSize: 15, fontWeight: 'normal'}}>
+                    style={{ color: 'white', fontSize: 15, fontWeight: 'normal' }}>
                     Finalizar
                   </Text>
                 }
+              </View>
+            </TouchableOpacity>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'flex-start',
+                paddingHorizontal: 15
+              }}>
+              <Text style={{ color: 'black', fontSize: 15, fontWeight: 'normal' }}>
+                {displayEndTime()}
+              </Text>
             </View>
-          </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'flex-start',
+              height: 80,
+              width: '100%'
+            }}>
+            <Text style={{ color: '#030124', fontSize: 14, fontWeight: 'normal' }}>
+              Tiempo total reunión: {calculateDuration()}
+            </Text>
+          </View>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'flex-start',
+              height: 20,
+              width: '100%'
+            }}>
+            <Text style={{ color: '#396593', fontSize: 14, fontWeight: '500' }}>
+              Resumen de Reunión
+            </Text>
+          </View>
+
+          <Dropdown
+            label="Selecciona una opción"
+            options={meetingStatus}
+            onSelect={selected => setMeetingStatusId(selected?.uid.toString())}
+            isEnable={endTime !== '' && startTime !== ''}
+          />
+
+          <View
+            style={{
+              backgroundColor: 'white',
+              height: 300,
+              width: '100%',
+              borderRadius: 20,
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+              elevation: 5,
+              marginVertical: 20
+            }}>
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'flex-start',
+                height: 50,
+                width: '100%',
+                paddingLeft: 20
+              }}>
+              <Text style={{ color: '#396593', fontSize: 16, fontWeight: '500' }}>
+                Observaciones:
+              </Text>
+            </View>
+            <View
+              style={{
+                marginBottom: 10,
+                height: 230,
+                width: '90%'
+              }}>
+              <TextInput
+                placeholderTextColor="#a0a0a0"
+                underlineColorAndroid="transparent"
+                selectionColor={'#396593'}
+                cursorColor={'#396593'}
+                multiline={true}
+                numberOfLines={8}
+                placeholder="Escribe tus comentarios aquí..."
+                style={{
+                  height: 230,
+                  textAlignVertical: 'top',
+                  fontSize: 16,
+                  padding: 10,
+                  fontWeight: 'normal',
+                  color: 'black'
+                }}
+                value={observations}
+                onChangeText={(text: string) => {
+                  setObservations(text);
+                }}
+                editable={startTime !== ''}
+              />
+            </View>
+          </View>
+
+          <View
+            style={{
+              height: 90,
+              width: '100%',
+              justifyContent: 'center',
+              alignItems: 'flex-end'
+            }}>
+            {isLoadingSendData ? (
+              <View
+                style={{
+                  backgroundColor: '#396593',
+                  height: 40,
+                  width: '50%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  elevation: 5,
+                  borderRadius: 20
+                }}>
+                <ActivityIndicator size="large" color="#FFFFFF" />
+              </View>
+            ) : (
+              <TouchableOpacity
+                style={{
+                  backgroundColor: isFormValid2() ? '#396593' : '#808080',
+                  height: 40,
+                  width: '50%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  elevation: 5,
+                  borderRadius: 20
+                }}
+                onPress={isFormValid2() ? handlePressSave : undefined}>
+                <Text
+                  style={{ color: 'white', fontSize: 16, fontWeight: 'normal' }}>
+                  Guardar
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+
+        <View
+          style={{
+            height: 140,
+            width: '100%',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            marginTop: 20
+          }}></View>
+
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={saveData}
+          onRequestClose={() => handleModalSaveData()}>
           <View
             style={{
               flex: 1,
               justifyContent: 'center',
-              alignItems: 'flex-start',
-              paddingHorizontal: 15
-            }}>
-            <Text style={{color: 'black', fontSize: 15, fontWeight: 'normal'}}>
-              {displayEndTime()}
-            </Text>
-          </View>
-        </View>
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'flex-start',
-            height: 80,
-            width: '100%'
-          }}>
-          <Text style={{color: '#030124', fontSize: 14, fontWeight: 'normal'}}>
-            Tiempo total reunión: {calculateDuration()}
-          </Text>
-        </View>
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'flex-start',
-            height: 20,
-            width: '100%'
-          }}>
-          <Text style={{color: '#396593', fontSize: 14, fontWeight: '500'}}>
-            Resumen de Reunión
-          </Text>
-        </View>
-
-        <Dropdown
-          label="Selecciona una opción"
-          options={meetingStatus}
-          onSelect={selected => setMeetingStatusId(selected?.uid.toString())}
-          isEnable={endTime !== '' && startTime !== ''}
-        />
-
-        <View
-          style={{
-            backgroundColor: 'white',
-            height: 300,
-            width: '100%',
-            borderRadius: 20,
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            elevation: 5,
-            marginVertical: 20
-          }}>
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'flex-start',
-              height: 50,
-              width: '100%',
-              paddingLeft: 20
-            }}>
-            <Text style={{color: '#396593', fontSize: 16, fontWeight: '500'}}>
-              Observaciones:
-            </Text>
-          </View>
-          <View
-            style={{
-              marginBottom: 10,
-              height: 230,
-              width: '90%'
-            }}>
-            <TextInput
-              placeholderTextColor="#a0a0a0"
-              underlineColorAndroid="transparent"
-              selectionColor={'#396593'}
-              cursorColor={'#396593'}
-              multiline={true}
-              numberOfLines={8}
-              placeholder="Escribe tus comentarios aquí..."
-              style={{
-                height: 230,
-                textAlignVertical: 'top',
-                fontSize: 16,
-                padding: 10,
-                fontWeight: 'normal',
-                color: 'black'
-              }}
-              value={observations}
-              onChangeText={(text: string) => {
-                setObservations(text);
-              }}
-              editable={startTime !== ''}  
-            />
-          </View>
-        </View>
-
-        <View
-          style={{
-            height: 90,
-            width: '100%',
-            justifyContent: 'center',
-            alignItems: 'flex-end'
-          }}>
-          {isLoadingSendData ? (
-            <View
-              style={{
-                backgroundColor: '#396593',
-                height: 40,
-                width: '50%',
-                justifyContent: 'center',
-                alignItems: 'center',
-                elevation: 5,
-                borderRadius: 20
-              }}>
-              <ActivityIndicator size="large" color="#FFFFFF" />
-            </View>
-          ) : (
-            <TouchableOpacity
-              style={{
-                backgroundColor: isFormValid2() ? '#396593' : '#808080',
-                height: 40,
-                width: '50%',
-                justifyContent: 'center',
-                alignItems: 'center',
-                elevation: 5,
-                borderRadius: 20
-              }}
-              onPress={isFormValid2() ? handlePressSave : undefined}>
-              <Text
-                style={{color: 'white', fontSize: 16, fontWeight: 'normal'}}>
-                Guardar
-              </Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      </View>
-
-      <View
-        style={{
-          height: 140,
-          width: '100%',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-          marginTop: 20
-        }}></View>
-
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={saveData}
-        onRequestClose={() => handleModalSaveData()}>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(128, 128, 128, 0.5)'
-          }}>
-          <View
-            style={{
-              height: '100%',
-              width: '100%',
-              justifyContent: 'center',
-              alignItems: 'center'
+              alignItems: 'center',
+              backgroundColor: 'rgba(128, 128, 128, 0.5)'
             }}>
             <View
               style={{
-                height: '20%',
-                width: '80%',
-                borderRadius: 20,
+                height: '100%',
+                width: '100%',
                 justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'rgba(255, 255, 255, 0.95)'
+                alignItems: 'center'
               }}>
-              <View
-                style={{
-                  height: '60%',
-                  width: '80%',
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}>
-                <Text
-                  style={{
-                    fontSize: 22,
-                    fontWeight: '600',
-                    lineHeight: 22.98,
-                    letterSpacing: 0.03,
-                    textAlign: 'center',
-                    color: 'black'
-                  }}>
-                  Guardado
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    fontWeight: '400',
-                    lineHeight: 22.98,
-                    letterSpacing: 0.03,
-                    textAlign: 'center',
-                    color: 'black',
-                    marginTop: 5
-                  }}>
-                  Reunión guardada exitosamente
-                </Text>
-              </View>
               <View
                 style={{
                   height: '20%',
-                  width: '100%'
+                  width: '80%',
+                  borderRadius: 20,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)'
                 }}>
                 <View
                   style={{
-                    height: '100%',
-                    width: '100%',
+                    height: '60%',
+                    width: '80%',
                     justifyContent: 'center',
-                    alignItems: 'center',
-                    borderColor: '#a9a9ab',
-                    borderTopWidth: 1
+                    alignItems: 'center'
                   }}>
-                  <TouchableOpacity
+                  <Text
                     style={{
-                      height: '70%',
-                      width: '45%',
-                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                      fontSize: 22,
+                      fontWeight: '600',
+                      lineHeight: 22.98,
+                      letterSpacing: 0.03,
+                      textAlign: 'center',
+                      color: 'black'
+                    }}>
+                    Guardado
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontWeight: '400',
+                      lineHeight: 22.98,
+                      letterSpacing: 0.03,
+                      textAlign: 'center',
+                      color: 'black',
+                      marginTop: 5
+                    }}>
+                    Reunión guardada exitosamente
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    height: '20%',
+                    width: '100%'
+                  }}>
+                  <View
+                    style={{
+                      height: '100%',
+                      width: '100%',
                       justifyContent: 'center',
-                      alignItems: 'center'
-                    }}
-                    onPress={() => handleModalSaveData()}>
-                    <Text
+                      alignItems: 'center',
+                      borderColor: '#a9a9ab',
+                      borderTopWidth: 1
+                    }}>
+                    <TouchableOpacity
                       style={{
-                        fontSize: 17,
-                        fontWeight: '400',
-                        lineHeight: 22.98,
-                        letterSpacing: 0.03,
-                        textAlign: 'center',
-                        color: '#007aff'
-                      }}>
-                      Aceptar
-                    </Text>
-                  </TouchableOpacity>
+                        height: '70%',
+                        width: '45%',
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                      onPress={() => handleModalSaveData()}>
+                      <Text
+                        style={{
+                          fontSize: 17,
+                          fontWeight: '400',
+                          lineHeight: 22.98,
+                          letterSpacing: 0.03,
+                          textAlign: 'center',
+                          color: '#007aff'
+                        }}>
+                        Aceptar
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </View>
           </View>
-        </View>
-      </Modal>
-    </ScrollView>
+        </Modal>
+      </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };
 

@@ -7,10 +7,15 @@ const formatDataForModal = (data: any) => {
 
   const startTime = new Date(data.meetingStart.timestamp);
   const endTime = new Date(data.meetingEnd.timestamp);
-  const duration = new Date(endTime - startTime); // Calcular duración
 
-  const hours = duration.getUTCHours();
-  const minutes = duration.getUTCMinutes();
+  // Calcular duración en milisegundos
+  const durationMs = endTime.getTime() - startTime.getTime();
+
+  // Convertir a horas y minutos redondeando hacia arriba
+  const totalMinutes = Math.ceil(durationMs / (1000 * 60)); // Redondear minutos hacia arriba
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  
   const durationText = `${hours} Hora${
     hours !== 1 ? 's' : ''
   } y ${minutes} Minuto${minutes !== 1 ? 's' : ''}`;

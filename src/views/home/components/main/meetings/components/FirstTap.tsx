@@ -201,7 +201,7 @@ const FirstTap = ({
         console.log('Error obteniendo la ubicación:', error.message);
         setIsLoadingFirebase(false)
       },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+      { enableHighAccuracy: false, timeout: 15000, maximumAge: 10000 }
     );
   };
 
@@ -272,7 +272,7 @@ const FirstTap = ({
         console.log('Error obteniendo la ubicación:', error.message);
         setIsLoadingFirebase(false)
       },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+      { enableHighAccuracy: false, timeout: 15000, maximumAge: 10000 }
     );
 
   };
@@ -389,7 +389,7 @@ const FirstTap = ({
     <KeyboardAwareScrollView
       resetScrollToCoords={{ x: 0, y: 0 }}
       scrollEnabled={true}
-      extraScrollHeight={200}
+      extraScrollHeight={20}
     >
       <ScrollView
         contentContainerStyle={{

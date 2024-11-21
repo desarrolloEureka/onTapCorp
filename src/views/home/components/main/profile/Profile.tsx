@@ -213,7 +213,7 @@ const Profile = () => {
         console.log('Error obteniendo la ubicación:', error.message);
         setIsLoadingFirebase(false);
       },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      {enableHighAccuracy: false, timeout: 15000, maximumAge: 10000},
     );
   };
 

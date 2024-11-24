@@ -21,6 +21,7 @@ const MeetingsHook = (props?: Props) => {
   const [isLoadingSendData, setIsLoadingSendData] = useState(false);
   const [isDataSuccess, setIsDataSuccess] = useState(false);
   const [selectedMeeting, setSelectedMeeting] = useState(null);
+  const [alertGPSOff, setAlertGPSOff] = useState(false);
 
   const navigation = useNavigation<StackNavigationProp<any, 'Home'>>();
 
@@ -135,6 +136,9 @@ const MeetingsHook = (props?: Props) => {
     }
   };
 
+  const handleAlertGPS = () =>
+    setAlertGPSOff(!alertGPSOff);
+
   return {
     user: data,
     handleTabPress,
@@ -154,7 +158,10 @@ const MeetingsHook = (props?: Props) => {
     handleSendUpdateInfo,
     isLoadingSendData,
     isDataSuccess,
-    handleSendLocation
+    handleSendLocation,
+    setAlertGPSOff,
+    handleAlertGPS,
+    alertGPSOff,
   };
 };
 

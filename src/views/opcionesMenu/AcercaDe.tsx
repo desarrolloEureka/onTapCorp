@@ -109,7 +109,7 @@ const AcercaDe = () => {
                   textAlign: 'left',
                   color: '#030124',
                 }}>
-                One Tap Version 1.0.5
+                One Tap Version 1.0.6
               </Text>
               <Text
                 style={{
@@ -121,7 +121,7 @@ const AcercaDe = () => {
                   textAlign: 'left',
                   color: '#030124',
                 }}>
-                2024-11-21
+                2024-11-25
               </Text>
             </View>
 

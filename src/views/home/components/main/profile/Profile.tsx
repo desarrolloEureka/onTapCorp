@@ -10,28 +10,24 @@ import {
   SafeAreaView,
   ScrollView,
   Text,
-  TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
   PermissionsAndroid,
   Linking,
-  Switch,
   ActivityIndicator,
 } from 'react-native';
-import {GetUser, GetCompany, GetArea} from '../../../../../reactQuery/users';
+import {GetCompany, GetArea} from '../../../../../reactQuery/users';
 import {profileStyles} from '../../../styles/profileStyles';
 import CustomModalAlert from './CustomModalAlert';
 import CustomModalLoading from './CustomModalLoading';
 import CustomSwitchGeneral from './CustomSwitchGeneral';
 import CustomSwitchIndividual from './CustomSwitchIndividual';
 import CustomSwitch from '../home/CustomSwitch';
-import FormAddDataUser from './FormAddDataUser';
-import FormDataUser from './FormDataUser';
 import ProfileHook from './hooks/ProfileHook';
 import MeetingsHook from '../meetings/hook/MeetingsHook';
 import PhotoUser from './PhotoUser';
-import CustomAlertBadge from '../../../../../componets/customAlertBadge/CustomAlertBadge';
+import CustomAlertBadge from '../../../../../componets/CustomAlertBadge';
 // Iconos
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -39,46 +35,24 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Geolocation from '@react-native-community/geolocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AlertGPS from '../../../../../componets/AlertGPS';
 
 const Profile = () => {
   const {
-    handleModalAlert,
-    handleDeleteData,
-    isDetailOpen,
-    itemDetail,
-    isModalAlert,
-    handleModalAux,
     dataForm,
-    setDataForm,
-    handleSendProfile,
-    isSuccessDelete,
-    handleSuccessDelete,
     isDataError,
     isDataSuccess,
     setIsDataError,
     setIsDataSuccess,
-
     isLoadingSendData,
-    status,
-    isEmailPhoneRight,
-    setisEmailPhoneRight,
-    noDeleted,
     data,
     user,
-    handleSwitch,
-    handleData,
-    handleAddData,
-    handleModalAlertLimit,
     setAlertSwitchOff,
-    isModalAlertLimit,
-    handleDataNetworks,
-    setModalIcons,
-    itemUrlKey,
-    itemUrlSelected,
-    handleModalIcons,
-    isModalIcons,
+    setAlertGPSOff,
     alertSwitchOff,
+    alertGPSOff,
     handleAlertSwitch,
+    handleAlertGPS,
     areaDataUrls,
     views,
   } = ProfileHook({
@@ -86,7 +60,6 @@ const Profile = () => {
   });
   const {handleSendLocation} = MeetingsHook();
 
-  const [isModalAlertNavigation, setIsModalAlertNavigation] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
   const [isLoadingFirebase, setIsLoadingFirebase] = useState(false);
 
@@ -187,6 +160,10 @@ const Profile = () => {
   };
 
   const toggleJornada = async () => {
+    if(!user?.isGPSActive){ 
+      setAlertGPSOff(true)
+      return;
+    }
     setIsLoadingFirebase(true);
     const currentTime = new Date().toISOString();
     const hasLocationPermission = await requestLocationPermission();
@@ -1242,6 +1219,11 @@ const Profile = () => {
             isOpen={alertSwitchOff}
             handleAlertSwitch={handleAlertSwitch}
           />
+          <AlertGPS
+            isOpen={alertGPSOff}
+            handleAlertClose={handleAlertGPS}
+          />
+
         </ImageBackground>
       </SafeAreaView>
     )

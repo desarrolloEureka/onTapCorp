@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-// import CustomAlertBadge from '../../../../componets/customAlertBadge/CustomAlertBadge';
+// import CustomAlertBadge from '../../../../componets/CustomAlertBadge';
 import MenuSuperior from '../../../menuSuperior/MenuSuperior';
 import HomeHook from '../../hooks/HomeHook';
 import {homeStyles} from '../../styles/homeStyles';

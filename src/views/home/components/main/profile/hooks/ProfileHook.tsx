@@ -56,6 +56,7 @@ const ProfileHook = ({
   const [views, setViews] = useState<number>();
 
   const [alertSwitchOff, setAlertSwitchOff] = useState(false);
+  const [alertGPSOff, setAlertGPSOff] = useState(false);
 
   const validLabel = useCallback((key: string) => {
     let label = '';
@@ -161,6 +162,9 @@ const ProfileHook = ({
 
   const handleAlertSwitch = (status: boolean) =>
     setAlertSwitchOff(!alertSwitchOff);
+
+  const handleAlertGPS = () =>
+    setAlertGPSOff(!alertGPSOff);
 
   const handleModalAlert = (itemDelete: {index: string; subindex: string}) => {
     if (!isModalAlert) {
@@ -497,8 +501,11 @@ const ProfileHook = ({
     noDeleted,
     handleModalAlertLimit,
     setAlertSwitchOff,
+    setAlertGPSOff,
     handleAlertSwitch,
+    handleAlertGPS,
     alertSwitchOff,
+    alertGPSOff,
     views
   };
 };

@@ -19,6 +19,7 @@ import Geolocation from '@react-native-community/geolocation';
 import MeetingsHook from '../hook/MeetingsHook';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import AlertGPS from '../../../../../../componets/AlertGPS';
 
 const FirstTap = ({
   meetingStatus,
@@ -28,11 +29,15 @@ const FirstTap = ({
   setActiveTab: (tab: string) => void;
 }) => {
   const {
+    user,
     handleSendInitialInfo,
     handleSendUpdateInfo,
     isLoadingSendData,
     isDataSuccess,
-    handleSendLocation
+    handleSendLocation,
+    setAlertGPSOff,
+    alertGPSOff,
+    handleAlertGPS,
   } = MeetingsHook();
 
   const [companyNameToVisit, setCompanyNameToVisit] = useState('');
@@ -119,6 +124,11 @@ const FirstTap = ({
   }, []);
 
   const handlePressStartMeeting = async () => {
+    if(!user?.isGPSActive){ 
+      setAlertGPSOff(true)
+      return;
+    }
+
     if (meetingStarted) {
       console.log('La reunión ya ha comenzado. No se puede iniciar de nuevo.');
       return;
@@ -975,6 +985,10 @@ const FirstTap = ({
             </View>
           </View>
         </Modal>
+        <AlertGPS
+            isOpen={alertGPSOff}
+            handleAlertClose={handleAlertGPS}
+          />
       </ScrollView>
     </KeyboardAwareScrollView>
   );

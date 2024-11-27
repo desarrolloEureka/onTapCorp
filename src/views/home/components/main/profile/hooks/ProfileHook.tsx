@@ -7,16 +7,15 @@ import {
   handleDataProps,
   handleDataNetworksProps,
   NetworksSubIndexDataForm,
-  SocialDataForm
+  SocialDataForm,
 } from '../../../../../../types/profile';
 import {profile} from '../../../../../../initialData/profileInitialData';
 import {GetUser} from '../../../../../../reactQuery/users';
-import {doc, onSnapshot} from 'firebase/firestore';
 import {dataBase} from '../../../../../../firebase/firebaseConfig';
 
 const ProfileHook = ({
   handleDataSet,
-  isProUser
+  isProUser,
 }: {
   handleDataSet?: (e: SocialDataForm) => void;
   isProUser: boolean;
@@ -83,7 +82,7 @@ const ProfileHook = ({
         const aa = a[1].length ? a[1][0].order : a[1].order;
         const bb = b[1].length ? b[1][0].order : b[1].order;
         return aa - bb;
-      }
+      },
     );
     setObjectDataSort(data);
   }, [dataForm, isProUser]);
@@ -139,22 +138,25 @@ const ProfileHook = ({
   }, [allChecked, dataForm, handleDataSet]);
 
   useEffect(() => {
-    const areaDocRef = doc(dataBase, 'workAreas', data?.selectedArea); // Referencia al documento 'workAreas'
-    const unsubscribe = onSnapshot(areaDocRef, doc => {
-      const updatedData = doc.data();
-      setArea(updatedData);
-      setAreaDataUrls(transformData(updatedData, data?.uid)); // Actualiza los datos visibles en la interfaz
+    const areaDocRef = dataBase.collection('workAreas').doc(data?.selectedArea); // Referencia al documento 'workAreas'
+    const unsubscribe = areaDocRef.onSnapshot(doc => {
+      if (doc.exists) {
+        const updatedData = doc.data();
+        setArea(updatedData);
+        setAreaDataUrls(transformData(updatedData, data?.uid)); // Actualiza los datos visibles en la interfaz
+      }
     });
+    return () => unsubscribe(); // Limpiar el listener cuando el componente se desmonte
   }, [data?.selectedArea]);
 
   useEffect(() => {
-    const userDocRef = doc(dataBase, 'users', data?.uid); // Referencia al documento 'users'
-
-    const unsubscribe = onSnapshot(userDocRef, doc => {
-      const updatedData = doc.data();
-      setViews(updatedData?.views);
+    const userDocRef = dataBase.collection('users').doc(data?.uid); // Referencia al documento 'users'
+    const unsubscribe = userDocRef.onSnapshot(doc => {
+      if (doc.exists) {
+        const updatedData = doc.data();
+        setViews(updatedData?.views);
+      }
     });
-
     return () => unsubscribe(); // Para limpiar el listener cuando el componente se desmonte
   }, [data?.views]);
 
@@ -163,8 +165,7 @@ const ProfileHook = ({
   const handleAlertSwitch = (status: boolean) =>
     setAlertSwitchOff(!alertSwitchOff);
 
-  const handleAlertGPS = () =>
-    setAlertGPSOff(!alertGPSOff);
+  const handleAlertGPS = () => setAlertGPSOff(!alertGPSOff);
 
   const handleModalAlert = (itemDelete: {index: string; subindex: string}) => {
     if (!isModalAlert) {
@@ -194,7 +195,7 @@ const ProfileHook = ({
     currentDataRef,
     checked,
     name,
-    subindex
+    subindex,
   }: {
     currentDataRef?: any;
     checked?: boolean;
@@ -210,7 +211,7 @@ const ProfileHook = ({
     index: IndexDataForm,
     key: number,
     text: string,
-    subindexUrl?: NetworksSubIndexDataForm
+    subindexUrl?: NetworksSubIndexDataForm,
   ) => {
     const dataFormClone = {...dataForm};
 
@@ -222,7 +223,7 @@ const ProfileHook = ({
     name,
     text,
     subindex,
-    key
+    key,
   }: handleDataNetworksProps) => {
     const dataFormClone = {...dataForm};
     const index = name as keyof typeof dataFormClone;
@@ -237,7 +238,7 @@ const ProfileHook = ({
     text,
     subindex,
     key,
-    currentDataRef
+    currentDataRef,
   }: handleDataProps) => {
     const dataFormClone = {...dataForm};
     const index = name as keyof typeof dataFormClone;
@@ -409,7 +410,7 @@ const ProfileHook = ({
     data: DataFormValues[],
     value: string,
     checked?: boolean,
-    label?: string
+    label?: string,
   ) => {
     data.map(el => {
       el.checked = checked;
@@ -422,7 +423,7 @@ const ProfileHook = ({
     data: DataFormValues,
     value: string,
     checked?: boolean,
-    label?: string
+    label?: string,
   ) => {
     data.checked = checked;
     data.label = label ?? data.label;
@@ -449,7 +450,7 @@ const ProfileHook = ({
                   name: nameOrIcon,
                   checked: isActive, // Puedes ajustar esto según tu lógica
                   isActiveSwitch: userInfo.isActive, // Agregar isActive del usuario
-                  nameKey
+                  nameKey,
                 });
               }
             });
@@ -506,7 +507,7 @@ const ProfileHook = ({
     handleAlertGPS,
     alertSwitchOff,
     alertGPSOff,
-    views
+    views,
   };
 };
 

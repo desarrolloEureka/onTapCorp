@@ -1,7 +1,7 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 // import {RouteStackParamList} from './src/types/navigation';
 import HomeScreen from './src/views/home/Home';
 import Plantillas from './src/views/home/components/main/home/Plantillas';
@@ -26,31 +26,46 @@ import Terminos from './src/views/opcionesMenu/Terminos';
 import RecoveryPassword from './src/views/recovery/components/main/RecoveryPassword';
 import RecoveryPasswordTwo from './src/views/recovery/components/main/RecoveryPasswordTwo';
 
-import messaging from '@react-native-firebase/messaging';
 import {PermissionsAndroid} from 'react-native';
+import {message, AuthorizationStatus} from './src/firebase/firebaseConfig';
 
 const Stack = createNativeStackNavigator<any>();
 
 // Crea una instancia de QueryClient
 const queryClient = new QueryClient();
 
+export const getToken = async () => {
+  try {
+    const token = await message.getToken();
+    console.log('FCM Token:', token);
+    return token;
+  } catch (error) {
+    console.error('Error getting FCM token:', error);
+    return null;
+  }
+};
+
 const App = () => {
-  useEffect(() => {
-    const requestUserPermission = async () => {
-      PermissionsAndroid.request(
+  const requestUserPermission = async () => {
+    try {
+      await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
       );
-      const authStatus = await messaging().requestPermission();
+      const authStatus = await message.requestPermission();
       const enabled =
-        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
+        authStatus === AuthorizationStatus?.AUTHORIZED ||
+        authStatus === AuthorizationStatus?.PROVISIONAL;
       if (enabled) {
         console.log('Authorization status:', authStatus);
-        const token = await messaging().getToken();
-        console.log('Token Notifications =', token);
+      } else {
+        console.warn('Permission not granted for notifications');
       }
-    };
+    } catch (error) {
+      console.error('Error requesting notification permissions:', error);
+    }
+  };
+
+  useEffect(() => {
     requestUserPermission();
   }, []);
 

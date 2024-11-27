@@ -1,38 +1,20 @@
-import {loginFirebase} from '../firebase/auth';
+import {dataBase, authFire} from '../firebase/firebaseConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useQuery} from '@tanstack/react-query';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 import {
   getAllUsers,
   getUserByIdFireStore,
   updateDataUserProfile,
   updatePasswordFirebase,
-  updateSwitchActivateCard,
   updateSwitchAllFirebase,
   updateSwitchProfileFirebase,
   updateTemplateSelectedFirebase,
   updateUserData,
   updateViewsUser,
-  updateInactiveUser,
-  updatePreView
+  updatePreView,
 } from '../firebase/user';
-import {dataBase} from '../firebase/firebaseConfig';
-import {
-  doc,
-  getDoc,
-  addDoc,
-  updateDoc,
-  collection,
-  setDoc
-} from 'firebase/firestore';
-
-// import {ProfessionalDataForm, SocialDataForm} from '../types/profile';
-// import {TemplateData, UserData} from '../types/user';
-// import {GetLoginQueryProps} from '../types/userQuery';
-import {useQuery} from '@tanstack/react-query';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-// import {RouteStackParamList} from '../types/navigation';
 
 const navigation = useNavigation<StackNavigationProp<any, 'Home'>>();
 
@@ -40,7 +22,7 @@ const GetAllUserQuery = () => {
   const query = useQuery({
     queryKey: ['user'],
     queryFn: async () => await getAllUsers(),
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
   });
   return query;
 };
@@ -59,11 +41,10 @@ const GetLoginQuery = ({user, password, sendLogin}: any) => {
     queryKey: ['user'],
     queryFn: async () => {
       try {
-        await auth().signInWithEmailAndPassword(user!, password!);
-
-        const unsubscribe = auth().onAuthStateChanged(async user => {
+        await authFire.signInWithEmailAndPassword(user!, password!);
+        authFire.onAuthStateChanged(async (user: any) => {
           if (user) {
-            const userDocument = firestore().collection('users').doc(user.uid);
+            const userDocument = dataBase.collection('users').doc(user.uid);
             try {
               const documentSnapshot = await userDocument.get();
               if (documentSnapshot.exists) {
@@ -81,7 +62,7 @@ const GetLoginQuery = ({user, password, sendLogin}: any) => {
       }
     },
     retry: false,
-    enabled: sendLogin
+    enabled: sendLogin,
   });
 
   return query;
@@ -122,13 +103,12 @@ const GetLoginQuery = ({user, password, sendLogin}: any) => {
 const SendDataImage = async (
   isProUser: boolean,
   userId: string,
-  base64String: string
+  base64String: string,
 ) => {
-  let imageDataKey = isProUser ? 'imagePro' : 'image';
+  const imageDataKey = isProUser ? 'imagePro' : 'image';
   await updateUserData(userId, {[imageDataKey]: base64String});
-  const updatedUser = await getUserByIdFireStore(userId);
-  if (updatedUser.exists()) {
-    const userData = (await updatedUser.data()) as any;
+  const userData = await getUserByIdFireStore(userId);
+  if (userData) {
     const getUser = await reBuildUserData(userData);
     await AsyncStorage.setItem('@user', JSON.stringify(getUser));
   }
@@ -147,29 +127,12 @@ const reBuildUserData = async (userData: any) => {
 const SendSwitchProfile = async (userId: string, switchState: boolean) => {
   await updateSwitchProfileFirebase(userId, {
     switch_profile: switchState,
-    preview: 'https://backoffice.onetap.com.co/es/views/cardView?uid=' + userId
+    preview: 'https://backoffice.onetap.com.co/es/views/cardView?uid=' + userId,
   });
-  const updatedUser = await getUserByIdFireStore(userId);
-  if (updatedUser.exists()) {
-    const userData = (await updatedUser.data()) as any;
+  const userData = await getUserByIdFireStore(userId);
+  if (userData) {
     const getUser = await reBuildUserData(userData);
     await AsyncStorage.setItem('@user', JSON.stringify(getUser));
-  }
-};
-
-const SendSwitchActivateCard = async (userId: string, switchState: boolean) => {
-  const userDocumentRef = doc(dataBase, 'users', userId);
-  try {
-    await updateDoc(userDocumentRef, {switch_activateCard: switchState});
-    const updatedUser = await getUserByIdFireStore(userId);
-    if (updatedUser.exists()) {
-      const userData = await updatedUser.data();
-      const getUser = await reBuildUserData(userData);
-      await AsyncStorage.setItem('@user', JSON.stringify(getUser));
-    }
-  } catch (error) {
-    console.error('Error al enviar el estado del interruptor:', error);
-    throw error; // Opcional: lanzar el error para manejarlo en otro lugar
   }
 };
 
@@ -181,48 +144,14 @@ const UpdatePassword = async (password: string) => {
 const SendBackgroundSelected = async (
   userId: string,
   backgroundSelect: string,
-  templateSelect: string
+  templateSelect: string,
 ) => {
   const templateData = {
     template_id: templateSelect,
-    background_id: backgroundSelect
+    background_id: backgroundSelect,
   };
 
   await updateTemplateSelectedFirebase(userId, {templateData});
-};
-
-const SendTemplateSelected = async (
-  userId: string,
-  data: any[],
-  queryClient: any
-) => {
-  const templateData = data;
-  const userDocument = doc(dataBase, 'users', userId);
-  const userDoc = await getDoc(userDocument);
-  if (userDoc.exists()) {
-    try {
-      const userData = userDoc.data();
-      const existingTemplateData = Array.isArray(userData.templateData)
-        ? userData.templateData
-        : [];
-      existingTemplateData[0] = data[0];
-      await setDoc(
-        userDocument,
-        {templateData: existingTemplateData},
-        {merge: true}
-      );
-      const updatedUser = await getUserByIdFireStore(userId);
-      if (updatedUser.exists()) {
-        const userData = (await updatedUser.data()) as any;
-        const getUser = await reBuildUserData(userData);
-        await AsyncStorage.setItem('@user', JSON.stringify(getUser));
-        await queryClient.setQueryData(['user'], () => getUser);
-      }
-    } catch (error) {
-      console.error('Error al enviar la plantilla seleccionada:', error);
-      throw error; // Opcional: lanzar el error para manejarlo en otro lugar
-    }
-  }
 };
 
 const SendSwitchAllForm = async (userId: string, dataForm: any) => {
@@ -232,13 +161,12 @@ const SendSwitchAllForm = async (userId: string, dataForm: any) => {
 const SendDataUserProfile = async (
   userId: string,
   data: any,
-  isProUser: boolean
+  isProUser: boolean,
 ) => {
   return await updateDataUserProfile(userId, data, isProUser)
-    .then(async response => {
-      const updatedUser = await getUserByIdFireStore(userId);
-      if (updatedUser.exists()) {
-        const userData = (await updatedUser.data()) as any;
+    .then(async () => {
+      const userData = await getUserByIdFireStore(userId);
+      if (userData) {
         const getUser = await reBuildUserData(userData);
         await AsyncStorage.setItem('@user', JSON.stringify(getUser));
         return {success: true, error: false};
@@ -258,9 +186,8 @@ const GetUserById = (userUid: string) => {
   return useQuery({
     queryKey: ['user'],
     queryFn: async () => {
-      const updatedUser = await getUserByIdFireStore(userUid);
-      if (updatedUser.exists()) {
-        const userData = (await updatedUser.data()) as any;
+      const userData = await getUserByIdFireStore(userUid);
+      if (userData) {
         const getUser = await reBuildUserData(userData);
         await AsyncStorage.setItem('@user', JSON.stringify(getUser));
         return getUser;
@@ -268,19 +195,8 @@ const GetUserById = (userUid: string) => {
         return null;
       }
     },
-    enabled: !!userUid
+    enabled: !!userUid,
   });
-};
-
-const SendInactiveUser = async (userId: string) => {
-  try {
-    const userDocument = doc(dataBase, 'users', userId);
-    await updateDoc(userDocument, {isActive: false});
-    return true; // Otra forma de indicar que la actualización fue exitosa
-  } catch (error) {
-    console.error('Error al actualizar el usuario:', error);
-    return false; // Indicar que la actualización falló
-  }
 };
 
 const GetUser = (refetch?: boolean) =>
@@ -289,10 +205,9 @@ const GetUser = (refetch?: boolean) =>
     queryFn: async () => {
       const userLogged = await AsyncStorage.getItem('@user');
       if (userLogged) {
-        const user = (await JSON.parse(userLogged)) as any;
-        const updatedUser = await getUserByIdFireStore(user.uid);
-        if (updatedUser.exists()) {
-          const userData = (await updatedUser.data()) as any;
+        const user = await JSON.parse(userLogged);
+        const userData = await getUserByIdFireStore(user.uid);
+        if (userData) {
           const getUser = await reBuildUserData(userData);
           await AsyncStorage.setItem('@user', JSON.stringify(getUser));
           return getUser;
@@ -303,96 +218,125 @@ const GetUser = (refetch?: boolean) =>
         return null;
       }
     },
-    refetchOnWindowFocus: refetch ?? false
+    refetchOnWindowFocus: refetch ?? false,
   });
 
-const GetArea = async (uid: any) => {
-  const userLogged = await AsyncStorage.getItem('@user');
-  if (userLogged) {
-    const docRef = doc(dataBase, 'workAreas', uid);
-    const docSnap = await getDoc(docRef);
-    let companyData = {};
-    if (docSnap.exists()) {
-      companyData = docSnap.data();
-    } else {
-      console.log('No such document!');
+const SendPreView = async (userId: string, url: string) => {
+  const res = await updatePreView(userId, {preview: url});
+  return res;
+};
+
+const SendSwitchActivateCard = async (userId: string, switchState: boolean) => {
+  try {
+    const userDocumentRef = dataBase.collection('users').doc(userId);
+    await userDocumentRef.update({switch_activateCard: switchState});
+    const updatedUser = await userDocumentRef.get();
+    if (updatedUser.exists) {
+      const userData = updatedUser.data();
+      const getUser = await reBuildUserData(userData);
+      await AsyncStorage.setItem('@user', JSON.stringify(getUser));
     }
-    return companyData;
-  } else {
-    return null;
+  } catch (error) {
+    console.error('Error al enviar el estado del interruptor:', error);
+    throw error; // Opcional: lanzar el error para manejarlo en otro lugar
   }
 };
 
-const GetCompany = async (uid: any) => {
-  const userLogged = await AsyncStorage.getItem('@user');
-  if (userLogged) {
-    const docRef = doc(dataBase, 'companies', uid);
-    const docSnap = await getDoc(docRef);
-    let companyData = {};
-    if (docSnap.exists()) {
-      companyData = docSnap.data();
-    } else {
-      console.log('No such document!');
+const SendTemplateSelected = async (
+  userId: string,
+  data: any[],
+  queryClient: any,
+) => {
+  try {
+    const userDocumentRef = dataBase.collection('users').doc(userId);
+    const userDoc = await userDocumentRef.get();
+    if (userDoc.exists) {
+      const userData = userDoc.data();
+      const existingTemplateData = Array.isArray(userData?.templateData)
+        ? userData.templateData
+        : [];
+      existingTemplateData[0] = data[0];
+      await userDocumentRef.set(
+        {templateData: existingTemplateData},
+        {merge: true}, // Usamos 'merge' para no sobrescribir el resto de los datos
+      );
+
+      const userDataUpdate = await getUserByIdFireStore(userId);
+      if (userDataUpdate) {
+        const getUser = await reBuildUserData(userDataUpdate);
+
+        // Guardamos los datos del usuario en AsyncStorage y en el queryClient
+        await AsyncStorage.setItem('@user', JSON.stringify(getUser));
+        await queryClient.setQueryData(['user'], () => getUser);
+      }
     }
-    return companyData;
-  } else {
-    return null;
+  } catch (error) {
+    console.error('Error al enviar la plantilla seleccionada:', error);
+    throw error;
+  }
+};
+
+const SendInactiveUser = async (userId: string) => {
+  try {
+    const userDocumentRef = dataBase.collection('users').doc(userId);
+    await userDocumentRef.update({isActive: false});
+    return true; // Otra forma de indicar que la actualización fue exitosa
+  } catch (error) {
+    console.error('Error al actualizar el usuario:', error);
+    return false; // Indicar que la actualización falló
   }
 };
 
 const SendDataInitialInfo = async (userId: string, data: any) => {
+  // Crear un objeto con los datos necesarios
+  const meetingData = {
+    companyNameToVisit: data?.companyNameToVisit || '',
+    contactName: data?.contactName || '',
+    email: data?.email || '',
+    employeeId: userId, // Asignar el userId como employeeId
+    meetingEnd: {
+      latitude: data?.meetingEnd?.latitude || '',
+      longitude: data?.meetingEnd?.longitude || '',
+      timestamp: data?.meetingEnd?.timestamp || '',
+    },
+    meetingStart: {
+      latitude: data?.meetingStart?.latitude || '',
+      longitude: data?.meetingStart?.longitude || '',
+      timestamp: data?.meetingStart?.timestamp || '',
+    },
+    meetingStatusId: data?.meetingStatusId || '',
+    observations: data?.observations || '',
+    subject: data?.subject || '',
+    timestamp: new Date().toISOString(), // Marca de tiempo actual
+    uid: '', // Este será llenado después
+  };
+
   try {
-    // Crear un objeto con los datos necesarios
-    const meetingData = {
-      companyNameToVisit: data.companyNameToVisit || '',
-      contactName: data.contactName || '',
-      email: data.email || '',
-      employeeId: userId, // Asignar el userId como employeeId
-      meetingEnd: {
-        latitude: data.meetingEnd?.latitude || '',
-        longitude: data.meetingEnd?.longitude || '',
-        timestamp: data.meetingEnd?.timestamp || ''
-      },
-      meetingStart: {
-        latitude: data.meetingStart?.latitude || '',
-        longitude: data.meetingStart?.longitude || '',
-        timestamp: data.meetingStart?.timestamp || ''
-      },
-      meetingStatusId: data.meetingStatusId || '',
-      observations: data.observations || '',
-      subject: data.subject || '',
-      timestamp: new Date().toISOString(), // Marca de tiempo actual
-      uid: '' // Este será llenado después
-    };
-
-    // Agregar el documento a la colección "meetings"
-    const docRef = await addDoc(collection(dataBase, 'meetings'), meetingData);
-
-    // Actualizar el uid con el ID del documento creado
-    await updateDoc(docRef, {uid: docRef.id});
-
+    const docRef = await dataBase.collection('meetings').add(meetingData);
+    await docRef.update({uid: docRef.id});
     return {success: true, uid: docRef.id};
-  } catch (error: any) {
-    console.error('Error creating meeting document:', error.message);
-    return {success: false, error: error.message};
+  } catch (error) {
+    console.error('Error creating meeting document:', error);
+    return {success: false, error: error};
   }
 };
 
 const SendDataUpdateInfo = async (userId: string, uid: string, data: any) => {
   try {
-    const meetDocRef = doc(dataBase, 'meetings', uid);
-    const meetDoc = await getDoc(meetDocRef);
-
-    if (!meetDoc.exists()) {
+    const meetDocRef = dataBase.collection('meetings').doc(uid);
+    const meetDoc = await meetDocRef.get();
+    if (!meetDoc.exists) {
       return {success: false, error: 'User document does not exist'};
     }
+
     const meetData = meetDoc.data();
     // Validaciones
-    if (meetData.employeeId !== userId) {
+    if (meetData?.employeeId !== userId) {
       return {success: false, error: 'User ID does not match the employee ID'};
     }
 
     const updateData: {[key: string]: any} = {};
+
     if (data.meetingEnd !== undefined) {
       updateData.meetingEnd = {
         latitude:
@@ -406,7 +350,7 @@ const SendDataUpdateInfo = async (userId: string, uid: string, data: any) => {
         timestamp:
           data.meetingEnd.timestamp !== undefined
             ? data.meetingEnd.timestamp
-            : meetData.meetingEnd.timestamp
+            : meetData.meetingEnd.timestamp,
       };
     }
 
@@ -417,61 +361,25 @@ const SendDataUpdateInfo = async (userId: string, uid: string, data: any) => {
 
     // Actualizar el documento del usuario solo si hay datos para actualizar
     if (Object.keys(updateData).length > 0) {
-      await updateDoc(meetDocRef, updateData);
+      await meetDocRef.update(updateData);
     }
 
-    return {success: true, error: false, uid: meetDocRef.id}
-  } catch (error: any) {
-    console.error('Error updating user profile:', error.message);
-    return {success: false, error: error.message};
-  }
-};
-
-const SendDataLocation = async (
-  companyId: string,
-  userId: string,
-  latitude: string,
-  longitude: string,
-  subject: string,
-  timestamp: string
-) => {
-  try {
-    // Crear un objeto con los datos necesarios
-    const locationData = {
-      companyId: companyId,
-      employeeId: userId, // Asignar el userId como employeeId
-      latitude: latitude || '',
-      longitude: longitude || '',
-      timestamp: timestamp || '',
-      subject: subject,
-      uid: '' // Este será llenado después
-    };
-
-    // Agregar el documento a la colección "meetings"
-    const docRef = await addDoc(
-      collection(dataBase, 'locations'),
-      locationData
-    );
-
-    // Actualizar el uid con el ID del documento creado
-    await updateDoc(docRef, {uid: docRef.id});
-
-    return {success: true, uid: docRef.id};
-  } catch (error: any) {
-    console.error('Error creating meeting document:', error.message);
-    return {success: false, error: error.message};
+    return {success: true, error: false, uid: meetDocRef.id};
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    return {success: false, error: error};
   }
 };
 
 const SendDataAllSwitch = async (
   userId: string,
   selectedArea: string,
-  switchState: boolean
+  switchState: boolean,
 ) => {
-  const workAreaDocument = doc(dataBase, 'workAreas', selectedArea);
+  const workAreaDocument = dataBase.collection('workAreas').doc(selectedArea);
   try {
-    const docSnapshot = await getDoc(workAreaDocument);
-    if (docSnapshot.exists()) {
+    const docSnapshot = await workAreaDocument.get();
+    if (docSnapshot.exists) {
       const data = docSnapshot.data();
       // Itera sobre todas las propiedades del documento
       for (const key in data) {
@@ -488,17 +396,17 @@ const SendDataAllSwitch = async (
             const updatedArray = [...data[key]];
             updatedArray[2] = {
               ...userObjects, // Mantiene los demás usuarios
-              [userId]: user // Actualiza solo el usuario específico
+              [userId]: user, // Actualiza solo el usuario específico
             };
 
             // Actualiza el array en Firestore
-            await updateDoc(workAreaDocument, {
-              [key]: updatedArray
+            await workAreaDocument.update({
+              [key]: updatedArray,
             });
 
             console.log(
               `Estado actualizado en ${key} para el usuario ${userId}:`,
-              switchState
+              switchState,
             );
           }
         }
@@ -511,18 +419,50 @@ const SendDataAllSwitch = async (
   }
 };
 
+const SendDataLocation = async (
+  companyId: string,
+  userId: string,
+  latitude: string,
+  longitude: string,
+  subject: string,
+  timestamp: string,
+) => {
+  const locationData = {
+    companyId: companyId,
+    employeeId: userId, // Asignar el userId como employeeId
+    latitude: latitude || '',
+    longitude: longitude || '',
+    timestamp: timestamp || '',
+    subject: subject,
+    uid: '', // Este será llenado después
+  };
+
+  try {
+    const docRef = await dataBase.collection('locations').add(locationData);
+    await dataBase
+      .collection('locations')
+      .doc(docRef.id)
+      .update({uid: docRef.id});
+    return {success: true, uid: docRef.id};
+  } catch (error) {
+    console.error('Error creating meeting document:', error);
+    return {success: false, error: error};
+  }
+};
+
 const SendDataIndividualSwitch = async (
   userId: string,
   selectedArea: string,
   switchState: boolean,
-  item: any
+  item: any,
 ) => {
-  const workAreaDocument = doc(dataBase, 'workAreas', selectedArea);
+  const workAreaDocument = dataBase.collection('workAreas').doc(selectedArea);
   try {
     // Obtén el documento para acceder a los userObjects
-    const doc = await getDoc(workAreaDocument);
-    if (doc.exists()) {
-      const data = doc.data();
+    const docSnapshot = await workAreaDocument.get();
+
+    if (docSnapshot.exists) {
+      const data = docSnapshot.data();
 
       // Accede a los userObjects usando el nameKey
       const urlNameKey = item.nameKey; // Usa el nameKey del item
@@ -536,11 +476,11 @@ const SendDataIndividualSwitch = async (
         const updatedUrlName = [...data[urlNameKey]];
         updatedUrlName[2] = {
           ...userObjects, // Mantiene el resto de usuarios
-          [userId]: user // Actualiza solo el usuario específico
+          [userId]: user, // Actualiza solo el usuario específico
         };
 
-        await updateDoc(workAreaDocument, {
-          [urlNameKey]: updatedUrlName
+        await workAreaDocument.update({
+          [urlNameKey]: updatedUrlName,
         });
 
         console.log('Estado actualizado en Firebase:', switchState);
@@ -555,9 +495,44 @@ const SendDataIndividualSwitch = async (
   }
 };
 
-const SendPreView = async (userId: string, url: string) => {
-  const res = await updatePreView(userId, {preview: url});
-  return res;
+const GetArea = async (uid: string) => {
+  try {
+    const userLogged = await AsyncStorage.getItem('@user');
+    if (userLogged) {
+      const docSnap = await dataBase.collection('workAreas').doc(uid).get();
+      if (docSnap.exists) {
+        return docSnap.data();
+      } else {
+        console.log('No such document!');
+        return null;
+      }
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching area:', error);
+    return null;
+  }
+};
+
+const GetCompany = async (uid: string) => {
+  try {
+    const userLogged = await AsyncStorage.getItem('@user');
+    if (userLogged) {
+      const docSnap = await dataBase.collection('companies').doc(uid).get();
+      if (docSnap.exists) {
+        return docSnap.data();
+      } else {
+        console.log('No such document!');
+        return null;
+      }
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching area:', error);
+    return null;
+  }
 };
 
 export {
@@ -582,5 +557,5 @@ export {
   SendDataUpdateInfo,
   SendDataLocation,
   SendDataIndividualSwitch,
-  SendDataAllSwitch
+  SendDataAllSwitch,
 };

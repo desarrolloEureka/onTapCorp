@@ -7,7 +7,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -16,22 +16,20 @@ import {resetPasswordFirebase} from '../../../../firebase/auth';
 const RecoveryPassword = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
-  const [statusSendEmail, setStatusSendEmail] = useState('');
 
   const handleNextPress = async () => {
     const res = await resetPasswordFirebase(email);
-    setStatusSendEmail(res as any);
     if (res === 'success') {
       navigation.navigate('RecoveryPasswordTwo');
     } else if (res === 'user_not_found') {
       Alert.alert(
         '',
-        'El correo electrónico no está registrado. Por favor, verifica y vuelve a intentarlo.'
+        'El correo electrónico no está registrado. Por favor, verifica y vuelve a intentarlo.',
       );
     } else if (res === 'send_email_failed') {
       Alert.alert(
         '',
-        'Hubo un problema al intentar enviar el correo de restablecimiento. Por favor, inténtalo de nuevo.'
+        'Hubo un problema al intentar enviar el correo de restablecimiento. Por favor, inténtalo de nuevo.',
       );
     }
   };
@@ -91,38 +89,38 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'flex-start',
     justifyContent: 'center',
-    paddingLeft: 15
+    paddingLeft: 15,
   },
   contentContainer: {
     height: '77%',
     width: '100%',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   titleContainer: {
     height: '15%',
     width: '60%',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   container: {
     paddingTop: 2,
     height: '85%',
     width: '100%',
     alignItems: 'center',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
   },
   inputContainer: {
     height: '25%',
     width: '90%',
     alignItems: 'flex-start',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   footerContainer: {
     height: '15%',
     width: '100%',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   heading: {
     color: '#396593',
@@ -131,13 +129,13 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderColor: '#396593'
+    borderColor: '#396593',
   },
   label: {
     fontFamily: 'Open Sans',
     fontSize: 15,
     fontWeight: '400',
-    color: '#396593'
+    color: '#396593',
   },
   input: {
     height: 52,
@@ -147,7 +145,7 @@ const styles = StyleSheet.create({
     color: '#030124',
     fontFamily: 'Open Sans',
     fontSize: 17,
-    fontWeight: '300'
+    fontWeight: '300',
   },
   button: {
     backgroundColor: '#396593',
@@ -156,7 +154,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 30,
-    shadowColor: '#000'
+    shadowColor: '#000',
   },
   buttonText: {
     color: '#FFFFFF',
@@ -165,12 +163,12 @@ const styles = StyleSheet.create({
     fontWeight: '300',
     lineHeight: 19,
     letterSpacing: 0.08,
-    textAlign: 'left'
+    textAlign: 'left',
   },
   background: {
     flex: 1,
-    resizeMode: 'cover'
-  }
+    resizeMode: 'cover',
+  },
 });
 
 export default RecoveryPassword;

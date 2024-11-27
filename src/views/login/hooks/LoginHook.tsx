@@ -2,19 +2,18 @@ import {getUserByIdFireStore} from '../../../firebase/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {useState} from 'react';
-import {LoginError} from '../../../types/login';
-import {StackNavigation} from '../../../types/navigation';
-import {UserData} from '../../../types/user';
 import {Linking} from 'react-native';
 import {loginFirebase} from '../../../firebase/auth';
 import {Alert} from 'react-native';
+import { dataBase, fieldValue } from '../../../firebase/firebaseConfig';
+import { getToken } from '../../../../App';
 
 const LoginHook = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorForm, setErrorForm] = useState<LoginError | null>(null);
-  const navigation = useNavigation<StackNavigation>();
+  const [errorForm, setErrorForm] = useState<any | null>(null);
+  const navigation = useNavigation<any>();
 
   interface FirebaseError {
     code: string;
@@ -27,7 +26,7 @@ const LoginHook = () => {
 
   const handleGoTerms = () => {
     Linking.openURL(
-      'https://drive.google.com/file/d/1PSeTFOOG34BRrsoRGfcpQG72AurIc4ll/view'
+      'https://drive.google.com/file/d/1PSeTFOOG34BRrsoRGfcpQG72AurIc4ll/view',
     );
   };
 
@@ -48,25 +47,40 @@ const LoginHook = () => {
         setErrorForm(null);
         const resultUser = await loginFirebase({user: email, password});
         // Verifica si resultUser es nulo
-        if (!resultUser || !resultUser.user) {
+        if (!resultUser) {
           setErrorForm({errorType: 2, errorMessage: 'Credenciales inválidas'});
         }
-        if (resultUser && resultUser.user) {
-          const docSnap = await getUserByIdFireStore(resultUser.user.uid);
-          if (docSnap.exists()) {
-            const user = docSnap.data() as UserData;
+        if (resultUser) {
+          const user = await getUserByIdFireStore(resultUser.uid);
             if (user?.isActive) {
               await AsyncStorage.setItem('@user', JSON.stringify(user));
+                try {
+                  if (user?.uid) {
+                    const userDoc = await dataBase.collection('users').doc(user.uid).get();
+                    const existingTokens = userDoc.data()?.tokens || "";
+                    const token = await getToken()
+                    if (existingTokens !== token) {
+                      await dataBase
+                        .collection('users')
+                        .doc(user.uid)
+                        .update({
+                          tokens: token,
+                        });
+                      console.log('Token saved to database');
+                    } else {
+                      console.log('Token already exists in database');
+                    }
+                  }
+                } catch (error) {
+                  console.error('Error saving token to database:', error);
+                }
               navigation.navigate('Home');
             } else {
               Alert.alert(
                 '',
-                'Actualmente la cuenta no se encuentra activa, comunicarse con el administrador'
+                'Actualmente la cuenta no se encuentra activa, comunicarse con el administrador',
               );
             }
-          } else {
-            console.error('Error al obtener datos del usuario:', docSnap);
-          }
         }
 
         // const unsubscribe = auth().onAuthStateChanged(user => {
@@ -96,12 +110,12 @@ const LoginHook = () => {
           setErrorForm({
             errorType: 2,
             errorMessage:
-              'El acceso a esta cuenta se ha deshabilitado temporalmente debido a muchos intentos fallidos de inicio de sesión.'
+              'El acceso a esta cuenta se ha deshabilitado temporalmente debido a muchos intentos fallidos de inicio de sesión.',
           });
         } else {
           setErrorForm({
             errorType: 2,
-            errorMessage: 'Ocurrió un error, intenta de nuevo más tarde'
+            errorMessage: 'Ocurrió un error, intenta de nuevo más tarde',
           });
         }
       }
@@ -109,12 +123,12 @@ const LoginHook = () => {
       if (!email) {
         setErrorForm({
           errorType: 1,
-          errorMessage: 'El correo es obligatorio'
+          errorMessage: 'El correo es obligatorio',
         });
       } else if (!password) {
         setErrorForm({
           errorType: 2,
-          errorMessage: 'La contraseña es obligatoria'
+          errorMessage: 'La contraseña es obligatoria',
         });
       }
     }
@@ -134,7 +148,7 @@ const LoginHook = () => {
     handleGoTerms,
     handleBackPress,
     handleBackPress2,
-    handleLogin
+    handleLogin,
   };
 };
 

@@ -1,6 +1,7 @@
-import {initializeApp} from 'firebase/app';
-import {getAuth} from 'firebase/auth';
-import {getFirestore} from 'firebase/firestore';
+import {initializeApp} from '@react-native-firebase/app';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+import messaging from '@react-native-firebase/messaging';
 
 const firebaseConfig = {
   apiKey: "",
@@ -9,10 +10,14 @@ const firebaseConfig = {
   storageBucket: "",
   messagingSenderId: "",
   appId: "",
-  measurementId: ""
+  measurementId: "",
+  databaseURL: ""
 };
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-export const dataBase = getFirestore(app);
-export const authFire = getAuth(app);
+export const dataBase = firestore();
+export const authFire = auth()
+export const message = messaging();
+export const AuthorizationStatus = messaging.AuthorizationStatus; // Exporta AuthorizationStatus
+export const fieldValue = firestore.FieldValue; // Exporta FieldValue

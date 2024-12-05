@@ -4,13 +4,13 @@ import auth from '@react-native-firebase/auth';
 import messaging from '@react-native-firebase/messaging';
 
 const firebaseConfig = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: "",
-  measurementId: "",
+  apiKey: "AIzaSyBsybfHvoAj3Bvtzu_WwFq3fj9bWOYVziM",
+  authDomain: "onetapcorp-d0146.firebaseapp.com",
+  projectId: "onetapcorp-d0146",
+  storageBucket: "onetapcorp-d0146.appspot.com",
+  messagingSenderId: "828170350312",
+  appId: "1:828170350312:web:e023c1b6a14e680233235d",
+  measurementId: "G-ES4RD6WMNW",
   databaseURL: ""
 };
 

@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
 import { StackNavigation } from '../../../types/navigation';
+import { requestUserPermissionFb } from '../../../notifications/handlePushNotifications';
 
 const SplashHook = () => {
   const navigation = useNavigation<StackNavigation>();
@@ -36,6 +37,10 @@ const SplashHook = () => {
     }, 1500);
     return () => clearTimeout(timer);
   }, [navigation]);
+
+  useEffect(() => {
+    requestUserPermissionFb();
+  }, []);
 
   return {};
 };

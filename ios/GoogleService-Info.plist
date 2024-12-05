@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyBrloVj-MAjQFGZhIoFFwD8YxL6KuBUmP0</string>
+	<string>AIzaSyB6vtpxJ8gXeAuxCiUcQUkmXZyoeAIV1BQ</string>
 	<key>GCM_SENDER_ID</key>
-	<string>442493372856</string>
+	<string>828170350312</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>onetapcorp.appspot.com</string>
 	<key>PROJECT_ID</key>
-	<string>onetap-f8d4f</string>
+	<string>onetapcorp-d0146</string>
 	<key>STORAGE_BUCKET</key>
-	<string>onetap-f8d4f.appspot.com</string>
+	<string>onetapcorp-d0146.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,8 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:442493372856:ios:2cabe3875a3474b56e674d</string>
-	<key>DATABASE_URL</key>
-	<string>https://onetap-f8d4f-default-rtdb.firebaseio.com</string>
+	<string>1:828170350312:ios:18ca8d5f0054e49333235d</string>
 </dict>
 </plist>

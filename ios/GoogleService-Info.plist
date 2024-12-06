@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyB6vtpxJ8gXeAuxCiUcQUkmXZyoeAIV1BQ</string>
+	<string>AIzaSyD5vD2XVqwJrs5fIxIuyMo9wJ6qRfjRQVA</string>
 	<key>GCM_SENDER_ID</key>
-	<string>828170350312</string>
+	<string>613452523667</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>onetapcorp.appspot.com</string>
 	<key>PROJECT_ID</key>
-	<string>onetapcorp-d0146</string>
+	<string>ontapcorp-backoffice</string>
 	<key>STORAGE_BUCKET</key>
-	<string>onetapcorp-d0146.appspot.com</string>
+	<string>ontapcorp-backoffice.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:828170350312:ios:18ca8d5f0054e49333235d</string>
+	<string>1:613452523667:ios:d0ea7e7f0d618713ab0566</string>
 </dict>
 </plist>

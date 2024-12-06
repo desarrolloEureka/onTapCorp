@@ -7,6 +7,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [FIRApp configure];
   [GMSServices provideAPIKey:@"AIzaSyBwlZ54JrUtje068KLc8he3W58QLGN-5g8"];
   self.moduleName = @"oneTapCorp";
   // You can add your custom initial props in the dictionary below.

@@ -33,6 +33,7 @@
 		C302653C2CD3CC1E002153B7 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C302651A2CD3CC1E002153B7 /* EvilIcons.ttf */; };
 		C302653D2CD3CC1E002153B7 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C302651E2CD3CC1E002153B7 /* FontAwesome5_Regular.ttf */; };
 		C302653E2CD3CC1E002153B7 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C30265252CD3CC1E002153B7 /* Ionicons.ttf */; };
+		C37E31682D032D7100C28289 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C37E31672D032D7100C28289 /* GoogleService-Info.plist */; };
 		EC12BF0C39867B1C367E0191 /* Pods_oneTapCorp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B1CCF29EC080BD9369B0676 /* Pods_oneTapCorp.framework */; };
 /* End PBXBuildFile section */
 
@@ -84,6 +85,8 @@
 		C30265282CD3CC1E002153B7 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
 		C30265292CD3CC1E002153B7 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimpleLineIcons.ttf; sourceTree = "<group>"; };
 		C302652A2CD3CC1E002153B7 /* Zocial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zocial.ttf; sourceTree = "<group>"; };
+		C37E31672D032D7100C28289 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		C37E31692D032D8A00C28289 /* oneTapCorp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = oneTapCorp.entitlements; path = oneTapCorp/oneTapCorp.entitlements; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -127,6 +130,7 @@
 		13B07FAE1A68108700A75B9A /* oneTapCorp */ = {
 			isa = PBXGroup;
 			children = (
+				C37E31692D032D8A00C28289 /* oneTapCorp.entitlements */,
 				C3B8FADF2CC80AFF00C4C434 /* Fonts */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
@@ -160,6 +164,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				C37E31672D032D7100C28289 /* GoogleService-Info.plist */,
 				C302652B2CD3CC1E002153B7 /* Fonts */,
 				13B07FAE1A68108700A75B9A /* oneTapCorp */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -339,6 +344,7 @@
 				C302653A2CD3CC1E002153B7 /* SimpleLineIcons.ttf in Resources */,
 				C302653B2CD3CC1E002153B7 /* Fontisto.ttf in Resources */,
 				C302653C2CD3CC1E002153B7 /* EvilIcons.ttf in Resources */,
+				C37E31682D032D7100C28289 /* GoogleService-Info.plist in Resources */,
 				C302653D2CD3CC1E002153B7 /* FontAwesome5_Regular.ttf in Resources */,
 				C302653E2CD3CC1E002153B7 /* Ionicons.ttf in Resources */,
 				52F23085EF644766F666C83C /* PrivacyInfo.xcprivacy in Resources */,
@@ -577,6 +583,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = oneTapCorp/oneTapCorp.entitlements;
 				CURRENT_PROJECT_VERSION = 1.0.2;
 				DEVELOPMENT_TEAM = LZMSK34D47;
 				ENABLE_BITCODE = NO;
@@ -607,6 +614,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = oneTapCorp/oneTapCorp.entitlements;
 				CURRENT_PROJECT_VERSION = 1.0.2;
 				DEVELOPMENT_TEAM = LZMSK34D47;
 				INFOPLIST_FILE = oneTapCorp/Info.plist;
@@ -711,7 +719,10 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -795,7 +806,10 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;

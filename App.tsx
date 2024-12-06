@@ -26,7 +26,7 @@ import Terminos from './src/views/opcionesMenu/Terminos';
 import RecoveryPassword from './src/views/recovery/components/main/RecoveryPassword';
 import RecoveryPasswordTwo from './src/views/recovery/components/main/RecoveryPasswordTwo';
 
-import {PermissionsAndroid} from 'react-native';
+import {PermissionsAndroid, Platform} from 'react-native';
 import {message, AuthorizationStatus} from './src/firebase/firebaseConfig';
 
 const Stack = createNativeStackNavigator<any>();
@@ -48,9 +48,11 @@ export const getToken = async () => {
 const App = () => {
   const requestUserPermission = async () => {
     try {
+      if (Platform.OS === 'android') {
       await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
       );
+    } else if (Platform.OS === 'ios'){
       const authStatus = await message.requestPermission();
       const enabled =
         authStatus === AuthorizationStatus?.AUTHORIZED ||
@@ -60,6 +62,7 @@ const App = () => {
       } else {
         console.warn('Permission not granted for notifications');
       }
+    }
     } catch (error) {
       console.error('Error requesting notification permissions:', error);
     }
@@ -67,6 +70,7 @@ const App = () => {
 
   useEffect(() => {
     requestUserPermission();
+    getToken();
   }, []);
 
   return (

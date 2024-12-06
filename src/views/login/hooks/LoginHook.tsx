@@ -5,7 +5,7 @@ import {useState} from 'react';
 import {Linking} from 'react-native';
 import {loginFirebase} from '../../../firebase/auth';
 import {Alert} from 'react-native';
-import { dataBase, fieldValue } from '../../../firebase/firebaseConfig';
+import { dataBase } from '../../../firebase/firebaseConfig';
 import { getToken } from '../../../../App';
 
 const LoginHook = () => {

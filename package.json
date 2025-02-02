@@ -1,6 +1,6 @@
 {
   "name": "onetapcorp.appspot.com",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -25,6 +25,7 @@
     "@react-navigation/stack": "^6.3.21",
     "@tanstack/react-query": "^5.22.2",
     "@tanstack/react-query-devtools": "^5.24.0",
+    "axios": "^1.7.9",
     "firebase": "^10.13.1",
     "react": "18.3.1",
     "react-native": "0.75.4",

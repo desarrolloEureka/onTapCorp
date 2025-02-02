@@ -14,6 +14,7 @@ function ShareHook() {
     useNavigation<StackNavigationProp<RouteStackParamList, 'Home'>>();
   const [copiedText, setCopiedText] = useState(false);
   const [urlGlobal, setUrlGlobal] = useState('');
+  const [alertGPSOff, setAlertGPSOff] = useState(false);
 
   const handleBackPress = () => {
     navigation.goBack();
@@ -47,7 +48,7 @@ function ShareHook() {
     Share.open({
       title: 'Compartir enlace',
       type: 'url',
-      url: urlGlobal
+      url: urlGlobal,
     })
       .then(res => {
         console.log(res);
@@ -56,6 +57,8 @@ function ShareHook() {
         err && console.log(err);
       });
   };
+
+  const handleAlertGPS = () => setAlertGPSOff(!alertGPSOff);
 
   useEffect(() => {
     if (data && data.preview) {
@@ -78,7 +81,10 @@ function ShareHook() {
     handleBackPress,
     copyToClipboard,
     handleTabPress,
-    handleShare
+    handleShare,
+    alertGPSOff,
+    setAlertGPSOff,
+    handleAlertGPS,
   };
 }
 

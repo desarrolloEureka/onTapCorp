@@ -22,6 +22,7 @@ import CustomModalAlert from '../profile/CustomModalAlert';
 import CustomModalLoading from '../profile/CustomModalLoading';
 import ModalAlertDown from '../profile/ModalAlertDown';
 import {useNavigation} from '@react-navigation/native';
+import AlertGPS from '../../../../../componets/AlertGPS';
 
 const Templates = () => {
   const {
@@ -47,6 +48,9 @@ const Templates = () => {
     setAlertDelte,
     handleAlertDelete,
     handlePressModalYes,
+    alertGPSOff,
+    setAlertGPSOff,
+    handleAlertGPS,
   } = HomeHook();
 
   const navigation = useNavigation();
@@ -452,7 +456,11 @@ const Templates = () => {
               alignItems: 'center',
               justifyContent: 'center',
             }}
-            onPress={() => handleTabPress('Meetings')}>
+            onPress={
+              user?.isGPSActive
+                ? () => handleTabPress('Meetings')
+                : () => setAlertGPSOff(true)
+            }>
             <Ionicons name="calendar-outline" size={25} color="#606060" />
             <Text style={{color: '#606060', fontWeight: 'normal'}}>
               Reuniones
@@ -465,7 +473,11 @@ const Templates = () => {
               alignItems: 'center',
               justifyContent: 'center',
             }}
-            onPress={() => handleTabPress('Roads')}>
+            onPress={
+              user?.isGPSActive
+                ? () => handleTabPress('Roads')
+                : () => setAlertGPSOff(true)
+            }>
             <Ionicons name="car-outline" size={30} color="#606060" />
             <Text style={{color: '#606060', fontWeight: 'normal'}}>Rutas</Text>
           </TouchableOpacity>
@@ -522,6 +534,7 @@ const Templates = () => {
           description={'¿Estás seguro de que deseas eliminar tu sesión?'}
           isDelete={true}
         />
+        <AlertGPS isOpen={alertGPSOff} handleAlertClose={handleAlertGPS} />
       </ImageBackground>
     </SafeAreaView>
   );

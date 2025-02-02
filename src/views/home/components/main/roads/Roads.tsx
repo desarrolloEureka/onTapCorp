@@ -23,16 +23,11 @@ import MapView, { Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import Geolocation from '@react-native-community/geolocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import AlertGPS from '../../../../../componets/AlertGPS';
 import RoadsHook from './hook/RoadsHook';
 
 const Roads = () => {
   const {
-    user,
     handleTabPress,
-    setAlertGPSOff,
-    alertGPSOff,
-    handleAlertGPS,
     routeStarted,
     isLoadingFirebase,
     setIsLoadingFirebase,
@@ -86,11 +81,6 @@ const Roads = () => {
   };
 
   const handlePressStartRoute = async () => {
-    if (!user?.isGPSActive) {
-      setAlertGPSOff(true)
-      return;
-    }
-
     if (routeStarted) {
       console.log('La ruta ya ha comenzado. No se puede iniciar de nuevo.');
       return;
@@ -110,6 +100,7 @@ const Roads = () => {
           longitude.toString(),
           'startRoute',
           currentTime,
+          '',
         );
         if (send) {
           setRouteStarted(true);
@@ -150,6 +141,7 @@ const Roads = () => {
           longitude.toString(),
           'endRoute',
           currentTime,
+          '',
         );
         if (send) {
           setIsLoadingFirebase(false);
@@ -664,10 +656,6 @@ const Roads = () => {
           handlePressModalYes={handlePressModalYes}
           description={'¿Estás seguro de que deseas eliminar tu cuenta?'}
           isDelete={true}
-        />
-        <AlertGPS
-          isOpen={alertGPSOff}
-          handleAlertClose={handleAlertGPS}
         />
       </ImageBackground>
     </SafeAreaView>

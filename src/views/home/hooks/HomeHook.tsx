@@ -33,6 +33,8 @@ const HomeHook = () => {
   const [isModalAlertBg, setIsModalAlertBg] = useState(false);
   const [isLoadingSendData, setIsLoadingSendData] = useState(false);
   const [copiedText, setIscopiedText] = useState(false);
+  const [alertGPSOff, setAlertGPSOff] = useState(false);
+
   const navigation = useNavigation<StackNavigationProp<any, 'Home'>>();
   const handleAlertProfileSocial = (status: boolean) =>
     setIsAlertProfileSocial(!isAlertProfileSocial);
@@ -129,6 +131,9 @@ const HomeHook = () => {
     }
   };
 
+  const handleAlertGPS = () =>
+    setAlertGPSOff(!alertGPSOff);
+
   useEffect(() => {
     const subscription = BackHandler.addEventListener(
       'hardwareBackPress',
@@ -160,7 +165,10 @@ const HomeHook = () => {
     alertDelte,
     setAlertDelte,
     handleAlertDelete,
-    handlePressModalYes
+    handlePressModalYes,
+    alertGPSOff,
+    setAlertGPSOff,
+    handleAlertGPS
   };
 };
 

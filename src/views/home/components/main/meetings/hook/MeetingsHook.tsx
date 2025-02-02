@@ -12,7 +12,6 @@ type Props = {};
 
 const MeetingsHook = (props?: Props) => {
   const {data} = GetUser();
-
   const [activeTab, setActiveTab] = useState('tab1');
   const [searchText, setSearchText] = useState('');
   const [showConfigSearch, setShowConfigSearch] = useState(false);
@@ -21,7 +20,6 @@ const MeetingsHook = (props?: Props) => {
   const [isLoadingSendData, setIsLoadingSendData] = useState(false);
   const [isDataSuccess, setIsDataSuccess] = useState(false);
   const [selectedMeeting, setSelectedMeeting] = useState(null);
-  const [alertGPSOff, setAlertGPSOff] = useState(false);
 
   const navigation = useNavigation<StackNavigationProp<any, 'Home'>>();
 
@@ -110,7 +108,8 @@ const MeetingsHook = (props?: Props) => {
     latitude: string,
     longitude: string,
     subject: string,
-    timestamp: string
+    timestamp: string,
+    address: string
   ) => {
     const userId = data?.uid;
     const companyId = data?.idCompany;
@@ -124,7 +123,8 @@ const MeetingsHook = (props?: Props) => {
         latitude,
         longitude,
         subject,
-        timestamp
+        timestamp,
+        address,
       );
       if (isSendDataProfile?.success) {
         return isSendDataProfile?.uid?.toString();
@@ -135,9 +135,6 @@ const MeetingsHook = (props?: Props) => {
       console.log('CATCH ERROR =>', error);
     }
   };
-
-  const handleAlertGPS = () =>
-    setAlertGPSOff(!alertGPSOff);
 
   return {
     user: data,
@@ -159,9 +156,6 @@ const MeetingsHook = (props?: Props) => {
     isLoadingSendData,
     isDataSuccess,
     handleSendLocation,
-    setAlertGPSOff,
-    handleAlertGPS,
-    alertGPSOff,
   };
 };
 

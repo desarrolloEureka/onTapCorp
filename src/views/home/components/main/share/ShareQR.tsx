@@ -15,6 +15,7 @@ import ShareHook from './hook/ShareHook';
 import MenuSuperior from '../../../../menuSuperior/MenuSuperior';
 import HomeHook from '../../../hooks/HomeHook';
 import ModalAlertDown from '../profile/ModalAlertDown';
+import AlertGPS from '../../../../../componets/AlertGPS';
 
 const ShareQR = () => {
   const {
@@ -25,6 +26,9 @@ const ShareQR = () => {
     copyToClipboard,
     handleTabPress,
     handleShare,
+    alertGPSOff,
+    setAlertGPSOff,
+    handleAlertGPS,
   } = ShareHook();
 
   const {
@@ -254,7 +258,11 @@ const ShareQR = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              onPress={() => handleTabPress('Meetings')}>
+              onPress={
+                data?.isGPSActive
+                  ? () => handleTabPress('Meetings')
+                  : () => setAlertGPSOff(true)
+              }>
               <Ionicons name="calendar-outline" size={25} color="#606060" />
               <Text style={{color: '#606060', fontWeight: 'normal'}}>
                 Reuniones
@@ -267,7 +275,11 @@ const ShareQR = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              onPress={() => handleTabPress('Roads')}>
+              onPress={
+                data?.isGPSActive
+                  ? () => handleTabPress('Roads')
+                  : () => setAlertGPSOff(true)
+              }>
               <Ionicons name="car-outline" size={30} color="#606060" />
               <Text style={{color: '#606060', fontWeight: 'normal'}}>
                 Rutas
@@ -306,6 +318,7 @@ const ShareQR = () => {
             isDelete={true}
           />
         </ImageBackground>
+        <AlertGPS isOpen={alertGPSOff} handleAlertClose={handleAlertGPS} />
       </SafeAreaView>
     )
   );

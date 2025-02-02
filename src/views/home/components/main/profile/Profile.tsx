@@ -17,7 +17,7 @@ import {
   Linking,
   ActivityIndicator,
 } from 'react-native';
-import {GetCompany, GetArea} from '../../../../../reactQuery/users';
+import {GetCompany, GetArea, getAddressFromCoordinates} from '../../../../../reactQuery/users';
 import {profileStyles} from '../../../styles/profileStyles';
 import CustomModalAlert from './CustomModalAlert';
 import CustomModalLoading from './CustomModalLoading';
@@ -160,8 +160,8 @@ const Profile = () => {
   };
 
   const toggleJornada = async () => {
-    if(!user?.isGPSActive){ 
-      setAlertGPSOff(true)
+    if (!user?.isGPSActive) {
+      setAlertGPSOff(true);
       return;
     }
     setIsLoadingFirebase(true);
@@ -174,11 +174,14 @@ const Profile = () => {
     Geolocation.getCurrentPosition(
       async position => {
         const {latitude, longitude} = position.coords;
+        const address = await getAddressFromCoordinates(latitude, longitude); 
+
         const send = await handleSendLocation(
           latitude.toString(),
           longitude.toString(),
           isStarted ? 'endDay' : 'startDay',
           currentTime,
+          address
         );
         if (send) {
           await AsyncStorage.setItem('@profile', JSON.stringify(!isStarted));
@@ -1181,7 +1184,11 @@ const Profile = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              onPress={() => handleTabPress('Meetings')}>
+              onPress={
+                user?.isGPSActive
+                  ? () => handleTabPress('Meetings')
+                  : () => setAlertGPSOff(true)
+              }>
               <Ionicons name="calendar-outline" size={25} color="#606060" />
               <Text style={{color: '#606060', fontWeight: 'normal'}}>
                 Reuniones
@@ -1194,7 +1201,11 @@ const Profile = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              onPress={() => handleTabPress('Roads')}>
+              onPress={
+                user?.isGPSActive
+                  ? () => handleTabPress('Roads')
+                  : () => setAlertGPSOff(true)
+              }>
               <Ionicons name="car-outline" size={30} color="#606060" />
               <Text style={{color: '#606060', fontWeight: 'normal'}}>
                 Rutas
@@ -1219,11 +1230,7 @@ const Profile = () => {
             isOpen={alertSwitchOff}
             handleAlertSwitch={handleAlertSwitch}
           />
-          <AlertGPS
-            isOpen={alertGPSOff}
-            handleAlertClose={handleAlertGPS}
-          />
-
+          <AlertGPS isOpen={alertGPSOff} handleAlertClose={handleAlertGPS} />
         </ImageBackground>
       </SafeAreaView>
     )

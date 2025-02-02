@@ -4,6 +4,7 @@ import { GetUser } from '../../../../../../reactQuery/users';
 import { RouteStackParamList } from '../../../../../../types/navigation';
 import { useState, useEffect } from 'react';
 import { GetAllRoutes } from '../../../../../../reactQuery/home';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = {};
 
@@ -81,7 +82,6 @@ const currentDayIndex = new Date().getDay();
 const RoadsHook = (props?: Props) => {
   const navigation = useNavigation<StackNavigationProp<RouteStackParamList, 'Home'>>();
   const { data } = GetUser();
-  const [alertGPSOff, setAlertGPSOff] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<any>(null);
   const routeDetails = selectedOption?.routeDetails;
@@ -93,9 +93,6 @@ const RoadsHook = (props?: Props) => {
   const handleBackPress = () => {
     navigation.goBack();
   };
-
-  const handleAlertGPS = () =>
-    setAlertGPSOff(!alertGPSOff);
 
   const handleTabPress = (tabName: string) => {
     if (tabName === 'Profile') {
@@ -228,9 +225,6 @@ const RoadsHook = (props?: Props) => {
     user: data,
     handleTabPress,
     handleBackPress,
-    setAlertGPSOff,
-    handleAlertGPS,
-    alertGPSOff,
     routeStarted,
     isLoadingFirebase,
     setIsLoadingFirebase,

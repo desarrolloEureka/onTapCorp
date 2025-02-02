@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {
   FlatList,
   Image,
@@ -19,25 +19,18 @@ import {homeStyles} from '../../styles/homeStyles';
 import CustomModalAlert from './profile/CustomModalAlert';
 import CustomModalLoading from './profile/CustomModalLoading';
 import ModalAlertDown from './profile/ModalAlertDown';
+import AlertGPS from '../../../../componets/AlertGPS';
 
 const Main = () => {
   const {
-    templates,
     communications,
-    copiedText,
     user,
     isModalAlertBg,
     handleModalAlertBg,
     handleAlertProfileSocial,
     isLoadingSendData,
-    copyToClipboard,
-    handleNavigatePreview,
-    selectTemplate,
     isAlertProfileSocial,
     handleTabPress,
-    alertSwitchOff,
-    handleAlertSwitch,
-    setAlertSwitchOff,
     alertLogOut,
     setAlertLogOut,
     handleAlertLogOut,
@@ -45,6 +38,9 @@ const Main = () => {
     setAlertDelte,
     handleAlertDelete,
     handlePressModalYes,
+    alertGPSOff,
+    setAlertGPSOff,
+    handleAlertGPS,
   } = HomeHook();
 
   const fechaActual = (): string => {
@@ -341,7 +337,7 @@ const Main = () => {
           {communications && (
             <FlatList
               data={communications}
-              renderItem={({item, index}) => (
+              renderItem={({item}) => (
                 <Section title={item?.title} items={item?.items} />
               )}
             />
@@ -552,7 +548,11 @@ const Main = () => {
               alignItems: 'center',
               justifyContent: 'center',
             }}
-            onPress={() => handleTabPress('Meetings')}>
+            onPress={
+              user?.isGPSActive
+                ? () => handleTabPress('Meetings')
+                : () => setAlertGPSOff(true)
+            }>
             <Ionicons name="calendar-outline" size={25} color="#606060" />
             <Text style={{color: '#606060', fontWeight: 'normal'}}>
               Reuniones
@@ -565,7 +565,11 @@ const Main = () => {
               alignItems: 'center',
               justifyContent: 'center',
             }}
-            onPress={() => handleTabPress('Roads')}>
+            onPress={
+              user?.isGPSActive
+                ? () => handleTabPress('Roads')
+                : () => setAlertGPSOff(true)
+            }>
             <Ionicons name="car-outline" size={30} color="#606060" />
             <Text style={{color: '#606060', fontWeight: 'normal'}}>Rutas</Text>
           </TouchableOpacity>
@@ -622,6 +626,8 @@ const Main = () => {
           description={'¿Estás seguro de que deseas eliminar tu sesión?'}
           isDelete={true}
         />
+
+        <AlertGPS isOpen={alertGPSOff} handleAlertClose={handleAlertGPS} />
       </ImageBackground>
     </SafeAreaView>
   );

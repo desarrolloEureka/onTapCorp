@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useQuery} from '@tanstack/react-query';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
+import axios from 'axios';
 import {
   getAllUsers,
   getUserByIdFireStore,
@@ -298,11 +299,13 @@ const SendDataInitialInfo = async (userId: string, data: any) => {
       latitude: data?.meetingEnd?.latitude || '',
       longitude: data?.meetingEnd?.longitude || '',
       timestamp: data?.meetingEnd?.timestamp || '',
+      address: data?.meetingEnd?.address || '',
     },
     meetingStart: {
       latitude: data?.meetingStart?.latitude || '',
       longitude: data?.meetingStart?.longitude || '',
       timestamp: data?.meetingStart?.timestamp || '',
+      address: data?.meetingStart?.address || '',
     },
     meetingStatusId: data?.meetingStatusId || '',
     observations: data?.observations || '',
@@ -351,6 +354,10 @@ const SendDataUpdateInfo = async (userId: string, uid: string, data: any) => {
           data.meetingEnd.timestamp !== undefined
             ? data.meetingEnd.timestamp
             : meetData.meetingEnd.timestamp,
+        address:
+        data.meetingEnd.address !== undefined
+          ? data.meetingEnd.address
+          : meetData.meetingEnd.address,
       };
     }
 
@@ -426,6 +433,7 @@ const SendDataLocation = async (
   longitude: string,
   subject: string,
   timestamp: string,
+  address: string,
 ) => {
   const locationData = {
     companyId: companyId,
@@ -434,6 +442,7 @@ const SendDataLocation = async (
     longitude: longitude || '',
     timestamp: timestamp || '',
     subject: subject,
+    address: address,
     uid: '', // Este será llenado después
   };
 
@@ -535,6 +544,33 @@ const GetCompany = async (uid: string) => {
   }
 };
 
+const getAddressFromCoordinates = async (
+  latitude: number,
+  longitude: number,
+) => {
+  try {
+    const apiKey = 'AIzaSyBwlZ54JrUtje068KLc8he3W58QLGN-5g8'; // Asegúrate de tener tu clave API configurada
+    if (latitude && longitude) {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json`,
+        {
+          params: {
+            latlng: `${latitude},${longitude}`,
+            key: apiKey,
+          },
+        },
+      );
+
+      if (response.data.status === 'OK') {
+        // Retorna la dirección formateada
+        return response.data.results[0].formatted_address;
+      }
+    }
+  } catch (error) {
+    return '';
+  }
+};
+
 export {
   GetAllUserQuery,
   GetLoginQuery,
@@ -558,4 +594,5 @@ export {
   SendDataLocation,
   SendDataIndividualSwitch,
   SendDataAllSwitch,
+  getAddressFromCoordinates,
 };

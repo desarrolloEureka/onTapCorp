@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     elevation: 5,
-    marginTop: '40%',
+    marginTop: '30%',
   },
   header: {
     width: '100%',

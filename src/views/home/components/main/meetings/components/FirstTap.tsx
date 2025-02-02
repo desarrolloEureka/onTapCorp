@@ -19,7 +19,7 @@ import Geolocation from '@react-native-community/geolocation';
 import MeetingsHook from '../hook/MeetingsHook';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import AlertGPS from '../../../../../../componets/AlertGPS';
+import { getAddressFromCoordinates } from '../../../../../../reactQuery/users';
 
 const FirstTap = ({
   meetingStatus,
@@ -29,15 +29,11 @@ const FirstTap = ({
   setActiveTab: (tab: string) => void;
 }) => {
   const {
-    user,
     handleSendInitialInfo,
     handleSendUpdateInfo,
     isLoadingSendData,
     isDataSuccess,
     handleSendLocation,
-    setAlertGPSOff,
-    alertGPSOff,
-    handleAlertGPS,
   } = MeetingsHook();
 
   const [companyNameToVisit, setCompanyNameToVisit] = useState('');
@@ -124,11 +120,6 @@ const FirstTap = ({
   }, []);
 
   const handlePressStartMeeting = async () => {
-    if(!user?.isGPSActive){ 
-      setAlertGPSOff(true)
-      return;
-    }
-
     if (meetingStarted) {
       console.log('La reunión ya ha comenzado. No se puede iniciar de nuevo.');
       return;
@@ -148,10 +139,13 @@ const FirstTap = ({
     Geolocation.getCurrentPosition(
       async position => {
         const { latitude, longitude } = position.coords;
+        const address = await getAddressFromCoordinates(latitude, longitude); 
+
         setMeetingStart({
           latitude,
           longitude,
-          timestamp: currentTime
+          timestamp: currentTime,
+          address
         });
         const dataInitial = {
           companyNameToVisit,
@@ -161,7 +155,8 @@ const FirstTap = ({
           meetingStart: {
             latitude,
             longitude,
-            timestamp: currentTime
+            timestamp: currentTime,
+            address
           }
         };
         try {
@@ -169,7 +164,8 @@ const FirstTap = ({
             latitude.toString(),
             longitude.toString(),
             'startMeeting',
-            currentTime
+            currentTime,
+            address
           );
           console.log('send', send);
           if (send) {
@@ -187,7 +183,8 @@ const FirstTap = ({
                   meetingStart: {
                     latitude,
                     longitude,
-                    timestamp: currentTime
+                    timestamp: currentTime,
+                    address
                   },
                   documentId
                 })
@@ -232,16 +229,20 @@ const FirstTap = ({
     Geolocation.getCurrentPosition(
       async position => {
         const { latitude, longitude } = position.coords;
+        const address = await getAddressFromCoordinates(latitude, longitude);
+
         setMeetingEnd({
           latitude,
           longitude,
-          timestamp: currentTime
+          timestamp: currentTime,
+          address
         });
         const dataUpdate = {
           meetingEnd: {
             latitude,
             longitude,
-            timestamp: currentTime
+            timestamp: currentTime,
+            address
           }
         };
         try {
@@ -249,7 +250,8 @@ const FirstTap = ({
             latitude.toString(),
             longitude.toString(),
             'endMeeting',
-            currentTime
+            currentTime,
+            address
           );
           console.log('sendA', send);
           if (send) {
@@ -262,7 +264,8 @@ const FirstTap = ({
                   meetingEnd: {
                     latitude,
                     longitude,
-                    timestamp: currentTime
+                    timestamp: currentTime,
+                    address
                   }
                 })
               );
@@ -985,10 +988,6 @@ const FirstTap = ({
             </View>
           </View>
         </Modal>
-        <AlertGPS
-            isOpen={alertGPSOff}
-            handleAlertClose={handleAlertGPS}
-          />
       </ScrollView>
     </KeyboardAwareScrollView>
   );

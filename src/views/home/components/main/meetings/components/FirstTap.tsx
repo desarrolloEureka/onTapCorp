@@ -78,9 +78,19 @@ const FirstTap = ({
         const meetingStartInfo = await AsyncStorage.getItem(
           '@meetingStartInfo'
         );
+        const observationInfo = await AsyncStorage.getItem('@observationInfo');
+        const meetingStatusIdInfo = await AsyncStorage.getItem('@meetingStatusIdInfo');
+
+        if (observationInfo !== null) {
+          observationInfo && setObservations(JSON.parse(observationInfo));
+        }
+
+        if (meetingStatusIdInfo !== null) {
+          meetingStatusIdInfo && setMeetingStatusId(JSON.parse(meetingStatusIdInfo));
+        }
 
         if (meeting !== null) {
-          setMeetingStarted(JSON.parse(meeting));
+          meeting && setMeetingStarted(JSON.parse(meeting));
         }
 
         if (startTime !== '') {
@@ -91,7 +101,7 @@ const FirstTap = ({
           endTime && setEndTime(JSON.parse(endTime));
         }
 
-        if (meetingStartInfo !== null) {
+        if (meetingStartInfo !== "null") {
           const {
             companyNameToVisit,
             subject,
@@ -99,16 +109,17 @@ const FirstTap = ({
             email,
             meetingStart,
             documentId
-          } = JSON.parse(meetingStartInfo);
-          setCompanyNameToVisit(companyNameToVisit);
-          setSubject(subject);
-          setContactName(contactName);
-          setEmail(email);
-          setMeetingStart(meetingStart);
-          setDocumentId(documentId);
+          } = JSON.parse(meetingStartInfo || "");
+          companyNameToVisit && setCompanyNameToVisit(companyNameToVisit);
+          subject && setSubject(subject);
+          contactName && setContactName(contactName);
+          email && setEmail(email);
+          meetingStart && setMeetingStart(meetingStart);
+          documentId && setDocumentId(documentId);
         }
-        if (meetingEndInfo !== null) {
-          const { meetingEnd } = JSON.parse(meetingEndInfo);
+
+        if (meetingEndInfo !== "null") {
+          const { meetingEnd } = JSON.parse(meetingEndInfo || "");
           setMeetingEnd(meetingEnd);
         }
       } catch (error) {
@@ -139,7 +150,7 @@ const FirstTap = ({
     Geolocation.getCurrentPosition(
       async position => {
         const { latitude, longitude } = position.coords;
-        const address = await getAddressFromCoordinates(latitude, longitude); 
+        const address = await getAddressFromCoordinates(latitude, longitude);
 
         setMeetingStart({
           latitude,
@@ -393,6 +404,8 @@ const FirstTap = ({
         await AsyncStorage.setItem('@meeting', JSON.stringify(null));
         await AsyncStorage.setItem('@meetingStartInfo', JSON.stringify(null));
         await AsyncStorage.setItem('@meetingEndInfo', JSON.stringify(null));
+        await AsyncStorage.setItem('@meetingStatusIdInfo', JSON.stringify(null));
+        await AsyncStorage.setItem('@observationInfo', JSON.stringify(null));
       };
       resetAsyncStorage();
     }
@@ -484,7 +497,7 @@ const FirstTap = ({
                   placeholderTextColor="#000000"
                   underlineColorAndroid="transparent"
                   value={companyNameToVisit}
-                  onChangeText={(text: any) => {
+                  onChangeText={(text: string) => {
                     setCompanyNameToVisit(text);
                   }}
                 />
@@ -530,7 +543,7 @@ const FirstTap = ({
                   placeholderTextColor="#000000"
                   underlineColorAndroid="transparent"
                   value={subject}
-                  onChangeText={(text: any) => {
+                  onChangeText={(text: string) => {
                     setSubject(text);
                   }}
                 />
@@ -581,7 +594,7 @@ const FirstTap = ({
                   placeholderTextColor="#000000"
                   underlineColorAndroid="transparent"
                   value={contactName}
-                  onChangeText={(text: any) => {
+                  onChangeText={(text: string) => {
                     setContactName(text);
                   }}
                 />
@@ -629,7 +642,8 @@ const FirstTap = ({
                   placeholderTextColor="#000000"
                   underlineColorAndroid="transparent"
                   value={email}
-                  onChangeText={(text: any) => {
+                  autoCapitalize="none"
+                  onChangeText={(text: string) => {
                     setEmail(text);
                   }}
                 />
@@ -697,6 +711,62 @@ const FirstTap = ({
               </Text>
             </View>
           </View>
+
+          <View
+            style={{
+              backgroundColor: 'white',
+              height: 300,
+              width: '100%',
+              borderRadius: 20,
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+              elevation: 5,
+              marginVertical: 20
+            }}>
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'flex-start',
+                height: 50,
+                width: '100%',
+                paddingLeft: 20
+              }}>
+              <Text style={{ color: '#396593', fontSize: 16, fontWeight: '500' }}>
+                Observaciones:
+              </Text>
+            </View>
+            <View
+              style={{
+                marginBottom: 10,
+                height: 230,
+                width: '90%'
+              }}>
+              <TextInput
+                placeholderTextColor="#a0a0a0"
+                underlineColorAndroid="transparent"
+                selectionColor={'#396593'}
+                cursorColor={'#396593'}
+                multiline={true}
+                numberOfLines={8}
+                placeholder="Escribe tus comentarios aquí..."
+                style={{
+                  height: 230,
+                  textAlignVertical: 'top',
+                  fontSize: 16,
+                  padding: 10,
+                  fontWeight: 'normal',
+                  color: 'black'
+                }}
+                value={observations}
+                onChangeText={async (text: string) => {
+                  setObservations(text);
+                  await AsyncStorage.setItem('@observationInfo', JSON.stringify(text));
+                }}
+                editable={startTime !== ''}
+              />
+            </View>
+          </View>
+
           <View
             style={{
               flexDirection: 'row',
@@ -780,63 +850,12 @@ const FirstTap = ({
           <Dropdown
             label="Selecciona una opción"
             options={meetingStatus}
-            onSelect={selected => setMeetingStatusId(selected?.uid.toString())}
+            onSelect={async selected => {
+              setMeetingStatusId(selected?.uid.toString())
+              await AsyncStorage.setItem('@meetingStatusIdInfo', JSON.stringify(selected?.uid.toString()));
+            }}
             isEnable={endTime !== '' && startTime !== ''}
           />
-
-          <View
-            style={{
-              backgroundColor: 'white',
-              height: 300,
-              width: '100%',
-              borderRadius: 20,
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-              elevation: 5,
-              marginVertical: 20
-            }}>
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'flex-start',
-                height: 50,
-                width: '100%',
-                paddingLeft: 20
-              }}>
-              <Text style={{ color: '#396593', fontSize: 16, fontWeight: '500' }}>
-                Observaciones:
-              </Text>
-            </View>
-            <View
-              style={{
-                marginBottom: 10,
-                height: 230,
-                width: '90%'
-              }}>
-              <TextInput
-                placeholderTextColor="#a0a0a0"
-                underlineColorAndroid="transparent"
-                selectionColor={'#396593'}
-                cursorColor={'#396593'}
-                multiline={true}
-                numberOfLines={8}
-                placeholder="Escribe tus comentarios aquí..."
-                style={{
-                  height: 230,
-                  textAlignVertical: 'top',
-                  fontSize: 16,
-                  padding: 10,
-                  fontWeight: 'normal',
-                  color: 'black'
-                }}
-                value={observations}
-                onChangeText={(text: string) => {
-                  setObservations(text);
-                }}
-                editable={startTime !== ''}
-              />
-            </View>
-          </View>
 
           <View
             style={{

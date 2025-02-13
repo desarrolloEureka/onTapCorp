@@ -109,7 +109,7 @@ const AcercaDe = () => {
                   textAlign: 'left',
                   color: '#030124',
                 }}>
-                One Tap Version 1.0.9
+                One Tap Version 1.1.0
               </Text>
               <Text
                 style={{

@@ -454,7 +454,7 @@ const FirstTap = ({
                 <Text style={meetingsStyles.label}>Fecha</Text>
               </View>
               <Text style={{ color: 'black', fontSize: 13, fontWeight: 'normal' }}>
-                {new Date().toISOString().slice(0, 10)}
+                {new Date().toLocaleDateString('es-CO')}
               </Text>
             </View>
 
@@ -669,12 +669,12 @@ const FirstTap = ({
                 justifyContent: 'center',
                 alignItems: 'center',
                 backgroundColor:
-                  isFormValid() && !meetingStarted ? '#030124' : '#888888',
+                  isFormValid() && !meetingStarted && !meetingEnd ? '#030124' : '#888888',
                 height: 40,
                 width: 150
               }}
               onPress={isFormValid() ? handlePressStartMeeting : undefined}
-              disabled={!isFormValid() || meetingStarted || isLoadingFirebase}>
+              disabled={!isFormValid() || meetingStarted || isLoadingFirebase || !!meetingEnd}>
               <View
                 style={{
                   flex: 1,
